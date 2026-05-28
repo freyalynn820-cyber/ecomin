@@ -8,8 +8,8 @@
 // you've allowed via Row Level Security policies. Do NOT paste the
 // service_role key here.
 
-window.SUPABASE_URL = 'https://ilfwdubnowjtjdakuswb.supabase.co';
-window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZndkdWJub3dqdGpkYWt1c3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODU0NjUsImV4cCI6MjA5MjQ2MTQ2NX0.NCt_-IIzAkvOM7QQ3NPvOdIRKmeQmpcT4LSr9toQYD8';
+window.SUPABASE_URL = 'https://cdurxwgegjzznrvicdep.supabase.co';
+window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkdXJ4d2dlZ2p6em5ydmljZGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTk3ODYsImV4cCI6MjA5NTU3NTc4Nn0.LKrArWY3tZECtB0aW8rg6-a1tG7PM9qR76XoAF8dY5M';
 
 // Single entry point: returns a configured Supabase client, or null + alert
 // if the credentials above haven't been set yet.
