@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ASIC marketplace · Eco</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="marketplace.css" />
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <a href="../store/buy-cloud.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          BTC Mining Store
+        </a>
+        <a href="hashrate.html" class="is-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          Marketplace
+        </a>
+        <div class="side__sub">
+          <a href="hashrate.html">Hashrate</a>
+          <a href="asics.html" class="is-active">ASICs</a>
+          <a href="offers.html">Offers</a>
+        </div>
+        <a href="../account/referrals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Referrals
+        </a>
+        <a href="../account/rewards.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Eco Rewards
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="../account/settings.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="../account/transactions.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </a>
+        <a href="../admin/" id="adminLink" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+        <a href="#" id="logoutLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <a href="../dashboard.html">Dashboard</a> · <a href="hashrate.html">Marketplace</a> · <strong>ASICs</strong>
+      </div>
+      <div class="topbar__right">
+        <div class="ticker">
+          <span class="ticker__icon">₿</span>
+          <span class="ticker__label">BTC</span>
+          <span>$78,612.21</span>
+        </div>
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>ASIC <em>marketplace</em></h1>
+          <p>Used and refurbished ASICs from other miners. Inspected at Eco's Tallinn intake before shipping.</p>
+        </div>
+        <div class="page-head__cta">
+          <button class="btn btn--ghost" data-action="watchlist">★ Watchlist</button>
+          <button class="btn btn--primary" data-action="sell">+ Sell your ASIC</button>
+        </div>
+      </div>
+
+      <div class="mp-hero">
+        <div class="mp-hero__intro">
+          <div class="mp-hero__kicker">Resale · live</div>
+          <div class="mp-hero__title">186 ASICs for sale</div>
+          <div class="mp-hero__sub">Every unit is bench-tested at our Tallinn intake — refunds within 14 days if hashrate is more than 5% off spec.</div>
+        </div>
+        <div class="mp-hero__stat">
+          <div class="mp-hero__stat-l">Avg discount</div>
+          <div class="mp-hero__stat-v">−24%</div>
+        </div>
+        <div class="mp-hero__stat">
+          <div class="mp-hero__stat-l">Listings ≤ 1 yr</div>
+          <div class="mp-hero__stat-v">68%</div>
+        </div>
+        <div class="mp-hero__stat">
+          <div class="mp-hero__stat-l">Median ship time</div>
+          <div class="mp-hero__stat-v">3 <small>days</small></div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="chips" id="condChips">
+          <button class="chip is-active" data-cond="all">Any condition</button>
+          <button class="chip" data-cond="new">New, sealed</button>
+          <button class="chip" data-cond="used">Used</button>
+          <button class="chip" data-cond="refurb">Refurbished</button>
+        </div>
+        <div class="sort">
+          <span>Sort:</span>
+          <select id="sort">
+            <option value="best">Best deal</option>
+            <option value="price-asc">Price · low to high</option>
+            <option value="price-desc">Price · high to low</option>
+            <option value="newest">Newest listings</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-3" id="grid"></div>
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+const listings = [
+  { id: 'A-2241', model: 'Antminer S21',     hash: '200 TH/s', cond: 'new',    age: 'Sealed',    seller: 'kz_farm',     rating: 4.9, deals: 56,  ships: 'Almaty, KZ',    price: 4990, msrp: 5990, posted: '2 h ago',  badge: 'Verified' },
+  { id: 'A-2240', model: 'Antminer S19 XP',  hash: '140 TH/s', cond: 'used',   age: '8 months',  seller: 'jonas_k',     rating: 4.8, deals: 88,  ships: 'Reykjavík, IS', price: 2140, msrp: 2640, posted: '4 h ago' },
+  { id: 'A-2239', model: 'Whatsminer M50',   hash: '120 TH/s', cond: 'new',    age: 'Sealed',    seller: 'aishaminer',  rating: 4.7, deals: 64,  ships: 'Accra, GH',     price: 2890, msrp: 3490, posted: '6 h ago' },
+  { id: 'A-2237', model: 'Avalon A1366',     hash: '130 TH/s', cond: 'refurb', age: 'Refurb',    seller: 'marcus_d',    rating: 4.8, deals: 88,  ships: 'Austin, TX',    price: 1640, msrp: 2200, posted: '11 h ago' },
+  { id: 'A-2235', model: 'Antminer S19j Pro',hash: '104 TH/s', cond: 'used',   age: '14 months', seller: 'leah_r',      rating: 4.4, deals: 12,  ships: 'Madrid, ES',    price: 890,  msrp: 1490, posted: '1 d ago',  badge: 'Last one' },
+  { id: 'A-2233', model: 'Whatsminer M30S+', hash: '100 TH/s', cond: 'used',   age: '20 months', seller: 'reykjavik',   rating: 4.8, deals: 47,  ships: 'Reykjavík, IS', price: 740,  msrp: 1100, posted: '1 d ago' },
+  { id: 'A-2232', model: 'Antminer L7',      hash: '9.5 GH/s', cond: 'used',   age: '6 months',  seller: 'litepool',    rating: 4.9, deals: 173, ships: 'Toronto, CA',   price: 4100, msrp: 5400, posted: '2 d ago',  badge: 'Hot' },
+  { id: 'A-2228', model: 'Goldshell KD-Box', hash: '1.6 TH/s', cond: 'used',   age: '11 months', seller: 'kaspaman22',  rating: 4.6, deals: 30,  ships: 'Berlin, DE',    price: 240,  msrp: 460,  posted: '3 d ago' },
+  { id: 'A-2225', model: 'Antminer S21 Pro', hash: '234 TH/s', cond: 'new',    age: 'Sealed',    seller: 'whaleminer',  rating: 5.0, deals: 312, ships: 'Houston, TX',   price: 5290, msrp: 5490, posted: '5 d ago',  badge: 'Whale' },
+];
+
+function condPill(c) {
+  if (c === 'new')    return '<span class="pill pill--ok">New, sealed</span>';
+  if (c === 'refurb') return '<span class="pill pill--info">Refurbished</span>';
+  return '<span class="pill pill--warn">Used</span>';
+}
+function badgePill(b) {
+  if (!b) return '';
+  const cls = b === 'Hot' ? '' : b === 'Verified' ? 'pcard__badge--soft' : 'pcard__badge--gold';
+  return `<span class="pcard__badge ${cls}">${b}</span>`;
+}
+function rigArt(accent) {
+  return `
+    <svg viewBox="0 0 220 110" width="180" height="90" aria-hidden="true">
+      <rect x="22" y="22" width="176" height="68" rx="6" fill="#fff" opacity=".7"/>
+      <rect x="22" y="22" width="176" height="10" fill="rgba(11,45,79,.12)"/>
+      ${Array.from({length:14}).map((_,i)=>`<rect x="${32+i*11}" y="38" width="7" height="44" rx="1.5" fill="rgba(11,45,79,.18)"/>`).join('')}
+      <rect x="22" y="86" width="176" height="4" fill="rgba(11,45,79,.18)"/>
+      <circle cx="190" cy="27" r="2" fill="${accent}"/>
+    </svg>
+  `;
+}
+
+function card(l) {
+  const initials = l.seller.slice(0, 2).toUpperCase();
+  const heroClass = l.cond === 'refurb' ? 'pcard__hero--purple' : l.cond === 'new' ? '' : 'pcard__hero--gold';
+  const accent    = l.cond === 'refurb' ? '#7c3aed'             : l.cond === 'new' ? '#1256E3' : '#b8860b';
+  const discount  = Math.round((1 - l.price / l.msrp) * 100);
+  return `
+    <article class="pcard" data-cond="${l.cond}" data-price="${l.price}" data-discount="${discount}">
+      <div class="pcard__hero ${heroClass}">
+        ${badgePill(l.badge)}
+        <div class="pcard__art">${rigArt(accent)}</div>
+      </div>
+      <div class="pcard__body">
+        <div class="seller">
+          <span class="seller__avatar">${initials}</span>
+          <span class="seller__name">${l.seller}</span>
+          <span class="seller__rating">★ ${l.rating.toFixed(1)}</span>
+          <span class="seller__deals">· ${l.deals} deals</span>
+          <span class="seller__id">${l.id}</span>
+        </div>
+        <h3 class="pcard__name" style="margin-bottom:10px">${l.model}</h3>
+        <div class="pcard__specs">
+          <div><div class="pcard__spec-l">Condition</div><div class="pcard__spec-v">${condPill(l.cond)}</div></div>
+          <div><div class="pcard__spec-l">Age</div><div class="pcard__spec-v">${l.age}</div></div>
+          <div><div class="pcard__spec-l">Hashrate</div><div class="pcard__spec-v">${l.hash}</div></div>
+          <div><div class="pcard__spec-l">Ships from</div><div class="pcard__spec-v" style="font-size:12px;font-weight:500">${l.ships}</div></div>
+        </div>
+        <div class="pcard__price-row">
+          <div>
+            <div class="pcard__price-l">Asking price</div>
+            <div class="pcard__price-v">$${l.price.toLocaleString()}<span class="pcard__price-strike">$${l.msrp.toLocaleString()}</span></div>
+            <div class="bid-diff bid-diff--down" style="margin-top:4px">−${discount}% vs. MSRP</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pcard__price-l">Posted</div>
+            <div class="pcard__spec-v" style="font-size:12px;color:var(--muted);font-weight:500">${l.posted}</div>
+          </div>
+        </div>
+        <div class="pcard__actions">
+          <button class="btn btn--primary" data-buy="${l.id}">Buy</button>
+          <button class="btn btn--ghost" data-offer="${l.id}">Offer</button>
+          <button class="btn btn--ghost btn--sm" style="flex:0 0 auto;width:42px" title="Watchlist" data-watch="${l.id}">★</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function render() {
+  const cond = document.querySelector('#condChips .chip.is-active').dataset.cond;
+  const sort = document.getElementById('sort').value;
+  let list = listings.filter(l => cond === 'all' || l.cond === cond);
+  list.sort((a, b) => {
+    if (sort === 'price-asc')  return a.price - b.price;
+    if (sort === 'price-desc') return b.price - a.price;
+    if (sort === 'newest')     return 0;
+    return (b.msrp - b.price) / b.msrp - (a.msrp - a.price) / a.msrp;
+  });
+  document.getElementById('grid').innerHTML = list.length
+    ? list.map(card).join('')
+    : '<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px">No ASIC listings match these filters.</div>';
+}
+
+document.querySelectorAll('#condChips .chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('#condChips .chip').forEach(x => x.classList.remove('is-active'));
+  c.classList.add('is-active');
+  render();
+}));
+document.getElementById('sort').addEventListener('change', render);
+
+document.addEventListener('click', (e) => {
+  const buy   = e.target.closest('button[data-buy]');
+  const offer = e.target.closest('button[data-offer]');
+  const watch = e.target.closest('button[data-watch]');
+  const sell  = e.target.closest('button[data-action="sell"]');
+  if (buy   && window.ecoToast) window.ecoToast(`Demo: opening escrow for ${buy.dataset.buy}`);
+  if (offer && window.ecoToast) window.ecoToast(`Demo: open offer modal for ${offer.dataset.offer}`);
+  if (watch && window.ecoToast) window.ecoToast(`Added ${watch.dataset.watch} to watchlist`);
+  if (sell  && window.ecoToast) window.ecoToast(`Demo: open new-listing form`);
+});
+
+render();
+document.getElementById('gate').remove();
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Withdrawals · Eco</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="account.css" />
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Overview</a>
+        <a href="../store/buy-cloud.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>BTC Mining Store</a>
+        <a href="../marketplace/hashrate.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>Marketplace</a>
+        <a href="referrals.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Referrals</a>
+        <a href="rewards.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Eco Rewards</a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="settings.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+        <a href="transactions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>Transactions</a>
+        <a href="withdrawals.html" class="is-active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Withdrawals</a>
+        <a href="../admin/" id="adminLink" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin</a>
+        <a href="#" id="logoutLink"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><a href="../dashboard.html">Dashboard</a> · <strong>Withdrawals</strong></div>
+      <div class="topbar__right">
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>Withdrawals</h1>
+          <p>Send your BTC balance to an external wallet. Daily auto-payouts run separately — these are on-demand cashouts.</p>
+        </div>
+        <div class="page-head__cta">
+          <a href="settings.html#wallet" class="btn btn--ghost">Manage wallet</a>
+        </div>
+      </div>
+
+      <div class="mini-kpi">
+        <div class="mkpi"><div class="mkpi__l">Available balance</div><div class="mkpi__v">0.0382 <small>BTC</small></div><div class="mkpi__sub">≈ $2,704</div></div>
+        <div class="mkpi"><div class="mkpi__l">Pending</div><div class="mkpi__v">0.0420 <small>BTC</small></div><div class="mkpi__sub" style="color:var(--warn)">1 in flight</div></div>
+        <div class="mkpi"><div class="mkpi__l">Min withdrawal</div><div class="mkpi__v">0.001 <small>BTC</small></div></div>
+        <div class="mkpi"><div class="mkpi__l">Network fee</div><div class="mkpi__v">~0.00012 <small>BTC</small></div><div class="mkpi__sub" style="color:var(--muted)">est. at current mempool</div></div>
+      </div>
+
+      <div class="row-2">
+        <!-- Withdraw form -->
+        <div class="section-card">
+          <div class="section-card__head">
+            <div>
+              <h3>Send to wallet</h3>
+              <p>Withdrawals are queued for the next on-chain batch (within the hour).</p>
+            </div>
+          </div>
+          <div id="wdBanner" class="banner" role="status"></div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Network</strong><span>Choose Bitcoin or the Lightning Network for instant.</span></div>
+            <div class="form-row__r">
+              <select class="input" id="wdNet" style="max-width:200px">
+                <option value="btc">Bitcoin · on-chain</option>
+                <option value="ln">Lightning · instant</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Destination</strong><span id="wdAddrHint">Bech32 (bc1…) or P2SH (3…) address</span></div>
+            <div class="form-row__r" style="max-width:560px;width:100%">
+              <input class="input input--mono" id="wdAddr" placeholder="bc1q…" style="max-width:none" />
+              <button class="btn btn--ghost btn--sm" data-toast="Address book coming soon">Address book</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Amount</strong><span>Available: 0.0382 BTC</span></div>
+            <div class="form-row__r">
+              <input class="input" type="number" id="wdAmt" step="0.00001" min="0.001" max="0.0382" placeholder="0.00500" />
+              <button class="btn btn--ghost btn--sm" id="wdMax">Max</button>
+              <span style="font-size:13px;color:var(--muted)">≈ <span id="wdUsd">$0.00</span></span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Memo</strong><span>Internal note (optional, never sent on-chain).</span></div>
+            <div class="form-row__r"><input class="input" id="wdMemo" placeholder="e.g. Quarterly cashout" style="max-width:560px" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>2FA code</strong><span>Demo · enable 2FA in Settings to require this.</span></div>
+            <div class="form-row__r"><input class="input" placeholder="123456" style="max-width:140px;font-family:var(--mono)" disabled /></div>
+          </div>
+          <div class="form-row" style="background:var(--bg-alt)">
+            <div class="form-row__l"><strong>Summary</strong><span>What lands in your wallet after fees.</span></div>
+            <div class="form-row__r" style="font-family:var(--mono);font-size:13px;color:var(--ink)">
+              <span id="wdNet2">Bitcoin · on-chain</span> · sending <strong id="wdSendOut">0.00000</strong> BTC · fee <strong id="wdFeeOut">0.00012</strong> BTC
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"></div>
+            <div class="form-row__r" style="justify-content:flex-end;width:100%">
+              <button class="btn btn--ghost" id="wdReset">Reset</button>
+              <button class="btn btn--primary" id="wdSubmit">Withdraw →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Limits -->
+        <div class="section-card">
+          <div class="section-card__head">
+            <div>
+              <h3>Limits &amp; security</h3>
+              <p>Plan-level rules currently active.</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Daily limit</strong></div>
+            <div class="form-row__r"><strong>2.0 BTC</strong></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Per-tx limit</strong></div>
+            <div class="form-row__r"><strong>1.0 BTC</strong></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Cool-down</strong><span>Time between withdrawals.</span></div>
+            <div class="form-row__r">5 min</div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>2FA required</strong><span>For amounts &gt; 0.05 BTC.</span></div>
+            <div class="form-row__r"><span class="pill pill--warn">Off · enable in Settings</span></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Whitelisted only</strong><span>Restrict to address book entries.</span></div>
+            <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" /><span class="slider"></span></label></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="table-wrap" style="margin-top:18px">
+        <div class="table-tools">
+          <div class="chips" id="histChips">
+            <button class="chip is-active" data-st="all">All</button>
+            <button class="chip" data-st="confirmed">Confirmed</button>
+            <button class="chip" data-st="pending">Pending</button>
+            <button class="chip" data-st="failed">Failed</button>
+          </div>
+          <a href="transactions.html" class="btn btn--ghost btn--sm">Full transactions →</a>
+        </div>
+        <table class="table">
+          <thead><tr><th>Date · time</th><th>Network</th><th>To</th><th>Amount</th><th>Fee</th><th>Tx hash</th><th>Status</th></tr></thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+const BTC_USD = 78612.21;
+const NET_FEE = 0.00012;
+const AVAILABLE = 0.0382;
+
+const history = [
+  { dt: '2026-04-20 14:33', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.04200, fee: 0.00012, hash: 'd417…11c0', status: 'pending' },
+  { dt: '2026-04-09 11:08', net: 'Lightning', to: 'lnbc1…',    amount: 0.00500, fee: 0.000001,hash: 'instant',   status: 'confirmed' },
+  { dt: '2026-03-30 18:44', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.01200, fee: 0.00009, hash: 'a991…77ee', status: 'confirmed' },
+  { dt: '2026-03-15 22:01', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.02000, fee: 0.00011, hash: 'fb22…8a40', status: 'confirmed' },
+  { dt: '2026-03-02 09:30', net: 'Bitcoin',   to: '3J98…ZeP9', amount: 0.00800, fee: 0.00010, hash: 'failed',    status: 'failed' },
+];
+
+function statusPill(s) {
+  return ({
+    confirmed: '<span class="pill pill--ok">Confirmed</span>',
+    pending:   '<span class="pill pill--warn">Pending</span>',
+    failed:    '<span class="pill pill--off">Failed</span>',
+  })[s];
+}
+
+function renderHist() {
+  document.getElementById('histBody').innerHTML = history.map(h => `
+    <tr data-st="${h.status}">
+      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${h.dt}</span></td>
+      <td>${h.net}</td>
+      <td><span style="font-family:var(--mono);font-size:12px">${h.to}</span></td>
+      <td><div class="cell-strong">${h.amount.toFixed(5)} BTC</div></td>
+      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${h.fee.toFixed(5)}</span></td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${h.hash}</span></td>
+      <td>${statusPill(h.status)}</td>
+    </tr>
+  `).join('');
+  applyHist();
+}
+function applyHist() {
+  const st = document.querySelector('#histChips .chip.is-active').dataset.st;
+  document.querySelectorAll('#histBody tr').forEach(tr => {
+    tr.style.display = (st === 'all' || tr.dataset.st === st) ? '' : 'none';
+  });
+}
+document.querySelectorAll('#histChips .chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('#histChips .chip').forEach(x => x.classList.remove('is-active'));
+  c.classList.add('is-active');
+  applyHist();
+}));
+
+// Form
+function recompute() {
+  const amt = Number(document.getElementById('wdAmt').value) || 0;
+  const net = document.getElementById('wdNet').value;
+  const fee = net === 'ln' ? 0.000001 : NET_FEE;
+  const send = Math.max(0, amt - fee);
+  document.getElementById('wdSendOut').textContent = send.toFixed(5);
+  document.getElementById('wdFeeOut').textContent  = fee.toFixed(5);
+  document.getElementById('wdUsd').textContent     = '$' + (amt * BTC_USD).toFixed(2);
+  document.getElementById('wdNet2').textContent    = net === 'ln' ? 'Lightning · instant' : 'Bitcoin · on-chain';
+  document.getElementById('wdAddrHint').textContent = net === 'ln' ? 'Lightning invoice (lnbc...)' : 'Bech32 (bc1…) or P2SH (3…) address';
+}
+document.getElementById('wdAmt').addEventListener('input', recompute);
+document.getElementById('wdNet').addEventListener('change', recompute);
+document.getElementById('wdMax').addEventListener('click', () => { document.getElementById('wdAmt').value = AVAILABLE; recompute(); });
+document.getElementById('wdReset').addEventListener('click', () => {
+  ['wdAmt','wdAddr','wdMemo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('wdNet').value = 'btc';
+  recompute();
+});
+
+function showBanner(msg, ok) {
+  const b = document.getElementById('wdBanner');
+  b.textContent = msg;
+  b.className = 'banner is-show ' + (ok ? 'banner--ok' : 'banner--err');
+  setTimeout(() => b.classList.remove('is-show'), 4000);
+}
+
+document.getElementById('wdSubmit').addEventListener('click', () => {
+  const addr = document.getElementById('wdAddr').value.trim();
+  const amt  = Number(document.getElementById('wdAmt').value) || 0;
+  if (!addr) return showBanner('Enter a destination address.', false);
+  if (amt < 0.001) return showBanner('Minimum withdrawal is 0.001 BTC.', false);
+  if (amt > AVAILABLE) return showBanner('Insufficient balance.', false);
+  showBanner(`Demo: queued ${amt.toFixed(5)} BTC withdrawal to ${addr.slice(0, 8)}…`, true);
+  document.getElementById('wdReset').click();
+});
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-toast]');
+  if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
+});
+
+renderHist();
+recompute();
+document.getElementById('gate').remove();
+</script>
+</body>
+</html>

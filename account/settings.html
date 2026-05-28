@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Settings · Eco</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="account.css" />
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <a href="../store/buy-cloud.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          BTC Mining Store
+        </a>
+        <a href="../marketplace/hashrate.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          Marketplace
+        </a>
+        <a href="referrals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Referrals
+        </a>
+        <a href="rewards.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Eco Rewards
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="settings.html" class="is-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="transactions.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </a>
+        <a href="withdrawals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Withdrawals
+        </a>
+        <a href="../admin/" id="adminLink" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+        <a href="#" id="logoutLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><a href="../dashboard.html">Dashboard</a> · <strong>Settings</strong></div>
+      <div class="topbar__right">
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>Account <em>settings</em></h1>
+          <p>Update your profile, change your password, manage notifications and your payout wallet.</p>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Profile</h3>
+            <p>Shown across the app and on your marketplace listings.</p>
+          </div>
+          <button class="btn btn--primary" id="saveProfile">Save profile</button>
+        </div>
+        <div id="profileBanner" class="banner" role="status"></div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>First name</strong><span>Required</span></div>
+          <div class="form-row__r"><input class="input" id="firstName" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Last name</strong></div>
+          <div class="form-row__r"><input class="input" id="lastName" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Email</strong><span>Used for sign-in. Contact support to change.</span></div>
+          <div class="form-row__r"><input class="input" id="emailReadonly" disabled /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Account ID</strong><span>For support tickets.</span></div>
+          <div class="form-row__r"><input class="input input--mono" id="userIdReadonly" disabled /></div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Security</h3>
+            <p>Password and session controls.</p>
+          </div>
+          <button class="btn btn--primary" id="changePass">Change password</button>
+        </div>
+        <div id="passBanner" class="banner" role="status"></div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>New password</strong><span>At least 8 characters.</span></div>
+          <div class="form-row__r"><input class="input" type="password" id="newPass" autocomplete="new-password" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Confirm new password</strong></div>
+          <div class="form-row__r"><input class="input" type="password" id="confirmPass" autocomplete="new-password" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Two-factor auth</strong><span>Demo · enable an authenticator app.</span></div>
+          <div class="form-row__r">
+            <label class="toggle-sw"><input type="checkbox" /><span class="slider"></span></label>
+            <span style="font-size:12px;color:var(--muted)">Off</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Sign out everywhere</strong><span>Revoke every active session on every device.</span></div>
+          <div class="form-row__r"><button class="btn btn--danger" id="signOutAll">Sign out everywhere</button></div>
+        </div>
+      </div>
+
+      <!-- Wallet -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Payout wallet</h3>
+            <p>Where daily BTC rewards are sent.</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>BTC address</strong><span>Bech32 (bc1...) recommended.</span></div>
+          <div class="form-row__r" style="max-width:560px;width:100%">
+            <input class="input input--mono" id="walletAddr" placeholder="bc1q…" style="max-width:none" />
+            <button class="btn btn--ghost" data-toast="Wallet saved (demo)">Save</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Min payout</strong><span>Threshold before a payout is triggered.</span></div>
+          <div class="form-row__r">
+            <input class="input" type="number" step="0.0001" value="0.005" />
+            <span style="font-size:12px;color:var(--muted)">BTC</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Schedule</strong><span>When payouts run.</span></div>
+          <div class="form-row__r">
+            <select class="input" style="max-width:200px">
+              <option>Daily · 09:00 UTC</option>
+              <option>Weekly · Mondays</option>
+              <option>Manual only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Notifications</h3>
+            <p>Choose what we email you about.</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Daily payout summary</strong><span>One email per day with your rewards + fees.</span></div>
+          <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" checked /><span class="slider"></span></label></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Rig offline alerts</strong><span>Page you when a hosted rig drops offline.</span></div>
+          <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" checked /><span class="slider"></span></label></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Marketplace bids</strong><span>When someone bids on your listings.</span></div>
+          <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" checked /><span class="slider"></span></label></div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Promos &amp; product updates</strong><span>Occasional, opt-in marketing.</span></div>
+          <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" /><span class="slider"></span></label></div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="section-card section-card--danger">
+        <div class="section-card__head">
+          <div>
+            <h3 style="color:var(--danger)">Danger zone</h3>
+            <p>Irreversible actions. Please be sure.</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-row__l"><strong>Delete account</strong><span>Remove all profile data and active sessions. Hosted rigs continue to mine but stop paying out — contact support to liquidate.</span></div>
+          <div class="form-row__r"><button class="btn btn--danger" data-toast="Demo: contact support to delete an account">Delete account</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+(async () => {
+  const sb = window.getSupabase();
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) return; // store/auth.js already redirected
+  const u = session.user;
+
+  // Pre-fill profile
+  document.getElementById('emailReadonly').value = u.email;
+  document.getElementById('userIdReadonly').value = u.id;
+
+  // Try to read profile row first; fall back to user_metadata
+  const { data: profile } = await sb.from('profiles')
+    .select('first_name, last_name')
+    .eq('id', u.id)
+    .maybeSingle();
+  const meta = u.user_metadata || {};
+  document.getElementById('firstName').value = profile?.first_name ?? meta.first_name ?? '';
+  document.getElementById('lastName').value  = profile?.last_name  ?? meta.last_name  ?? '';
+
+  function showBanner(id, msg, ok) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'banner is-show ' + (ok ? 'banner--ok' : 'banner--err');
+    setTimeout(() => el.classList.remove('is-show'), 4000);
+  }
+
+  // Save profile
+  document.getElementById('saveProfile').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    if (!firstName) { showBanner('profileBanner', 'First name is required.', false); return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    // Update profiles row + auth user_metadata in parallel
+    const [profRes, userRes] = await Promise.all([
+      sb.from('profiles').update({ first_name: firstName, last_name: lastName }).eq('id', u.id),
+      sb.auth.updateUser({ data: { first_name: firstName, last_name: lastName, full_name: `${firstName} ${lastName}`.trim() } }),
+    ]);
+
+    btn.disabled = false; btn.textContent = 'Save profile';
+    if (profRes.error || userRes.error) {
+      const msg = profRes.error?.message || userRes.error?.message || 'Could not save.';
+      showBanner('profileBanner', msg, false);
+    } else {
+      showBanner('profileBanner', 'Profile saved.', true);
+    }
+  });
+
+  // Change password
+  document.getElementById('changePass').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const np = document.getElementById('newPass').value;
+    const cp = document.getElementById('confirmPass').value;
+    if (np.length < 8) { showBanner('passBanner', 'Password must be at least 8 characters.', false); return; }
+    if (np !== cp)     { showBanner('passBanner', 'Passwords do not match.', false); return; }
+    btn.disabled = true; btn.textContent = 'Updating…';
+    const { error } = await sb.auth.updateUser({ password: np });
+    btn.disabled = false; btn.textContent = 'Change password';
+    if (error) {
+      showBanner('passBanner', error.message, false);
+    } else {
+      document.getElementById('newPass').value = '';
+      document.getElementById('confirmPass').value = '';
+      showBanner('passBanner', 'Password updated.', true);
+    }
+  });
+
+  // Sign out everywhere
+  document.getElementById('signOutAll').addEventListener('click', async () => {
+    if (!confirm('Sign out of every active session on every device?')) return;
+    await sb.auth.signOut({ scope: 'global' });
+    window.location.href = '../login.html';
+  });
+
+  // Toast handlers
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
+  });
+
+  document.getElementById('gate').remove();
+})();
+</script>
+</body>
+</html>

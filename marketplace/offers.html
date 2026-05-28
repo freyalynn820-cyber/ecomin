@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>My offers · Eco</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="marketplace.css" />
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <a href="../store/buy-cloud.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          BTC Mining Store
+        </a>
+        <a href="hashrate.html" class="is-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          Marketplace
+        </a>
+        <div class="side__sub">
+          <a href="hashrate.html">Hashrate</a>
+          <a href="asics.html">ASICs</a>
+          <a href="offers.html" class="is-active">Offers</a>
+        </div>
+        <a href="../account/referrals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Referrals
+        </a>
+        <a href="../account/rewards.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Eco Rewards
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="../account/settings.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="../account/transactions.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </a>
+        <a href="../admin/" id="adminLink" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+        <a href="#" id="logoutLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <a href="../dashboard.html">Dashboard</a> · <a href="hashrate.html">Marketplace</a> · <strong>Offers</strong>
+      </div>
+      <div class="topbar__right">
+        <div class="ticker">
+          <span class="ticker__icon">₿</span>
+          <span class="ticker__label">BTC</span>
+          <span>$78,612.21</span>
+        </div>
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>My <em>offers</em></h1>
+          <p>Bids you've placed on other miners' listings, and offers others have made on yours. Respond fast — most offers expire in 48 hours.</p>
+        </div>
+        <div class="page-head__cta">
+          <a href="hashrate.html" class="btn btn--ghost">Browse hashrate</a>
+          <a href="asics.html" class="btn btn--primary">Browse ASICs</a>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs" style="margin-bottom:16px">
+        <button class="is-active" data-tab="active">Active bids <span class="count" id="cntActive">0</span></button>
+        <button data-tab="incoming">Incoming offers <span class="count" id="cntIncoming">0</span></button>
+        <button data-tab="history">History <span class="count" id="cntHistory">0</span></button>
+      </div>
+
+      <div class="table-wrap" id="tableWrap"></div>
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+// Bids you've placed on other people's listings
+const activeBids = [
+  { id: 'B-7741', listing: 'L-9382', listingType: 'hashrate', desc: '500 TH/s · 12 mo',  counterparty: 'jonas_k',    bid: 9.20, ask: 9.80, unit: '/ TH·mo', status: 'pending',   expires: '47 h' },
+  { id: 'B-7740', listing: 'A-2240', listingType: 'asic',     desc: 'Antminer S19 XP',    counterparty: 'jonas_k',    bid: 1980, ask: 2140, unit: '',         status: 'countered', expires: '36 h', counter: 2050 },
+  { id: 'B-7738', listing: 'A-2237', listingType: 'asic',     desc: 'Avalon A1366 refurb',counterparty: 'marcus_d',   bid: 1500, ask: 1640, unit: '',         status: 'pending',   expires: '12 h' },
+  { id: 'B-7735', listing: 'L-9377', listingType: 'hashrate', desc: '170 TH/s · 6 mo',    counterparty: 'priya_s',    bid: 10.80, ask: 11.40, unit: '/ TH·mo', status: 'pending',   expires: '4 h' },
+];
+
+// Offers others made on YOUR listings
+const incomingOffers = [
+  { id: 'O-3382', listing: 'L-9342', listingType: 'hashrate', desc: 'Your 80 TH/s · 6 mo', counterparty: 'kaspaman22', bid: 10.40, ask: 11.10, unit: '/ TH·mo', status: 'pending',   expires: '22 h' },
+  { id: 'O-3380', listing: 'A-2199', listingType: 'asic',     desc: 'Your Antminer L7',    counterparty: 'litepool',   bid: 3850, ask: 4100, unit: '',         status: 'pending',   expires: '8 h' },
+];
+
+// Closed deals (both directions)
+const history = [
+  { id: 'B-7720', listing: 'L-9301', listingType: 'hashrate', desc: '120 TH/s · 3 mo',     counterparty: 'reykjavik',  bid: 10.90, ask: 10.95, unit: '/ TH·mo', status: 'accepted', closed: 'Apr 19' },
+  { id: 'O-3340', listing: 'A-2102', listingType: 'asic',     desc: 'Your Whatsminer M30S',counterparty: 'aishaminer', bid: 720,  ask: 740,  unit: '',         status: 'accepted', closed: 'Apr 16' },
+  { id: 'B-7708', listing: 'A-2088', listingType: 'asic',     desc: 'Antminer S19j Pro',   counterparty: 'leah_r',     bid: 800,  ask: 990,  unit: '',         status: 'rejected', closed: 'Apr 14' },
+  { id: 'B-7691', listing: 'L-9255', listingType: 'hashrate', desc: '50 TH/s · 6 mo',      counterparty: 'whaleminer', bid: 11.10, ask: 11.50, unit: '/ TH·mo', status: 'expired',  closed: 'Apr 10' },
+];
+
+document.getElementById('cntActive').textContent   = activeBids.length;
+document.getElementById('cntIncoming').textContent = incomingOffers.length;
+document.getElementById('cntHistory').textContent  = history.length;
+
+function fmtMoney(v, unit) {
+  if (typeof v === 'number') return '$' + (v < 100 ? v.toFixed(2) : v.toLocaleString()) + (unit ? ' ' + unit : '');
+  return v;
+}
+function diffEl(bid, ask) {
+  if (typeof bid !== 'number' || typeof ask !== 'number') return '';
+  const pct = ((bid - ask) / ask) * 100;
+  const sign = pct < 0 ? '−' : '+';
+  const cls  = pct < 0 ? 'bid-diff--down' : 'bid-diff--up';
+  return `<div class="bid-diff ${cls}">${sign}${Math.abs(pct).toFixed(1)}% vs. ask</div>`;
+}
+function statusPill(s) {
+  return ({
+    pending:   '<span class="pill pill--warn">Pending</span>',
+    countered: '<span class="pill pill--info">Countered</span>',
+    accepted:  '<span class="pill pill--ok">Accepted</span>',
+    rejected:  '<span class="pill pill--off">Rejected</span>',
+    expired:   '<span class="pill pill--off">Expired</span>',
+  })[s] || `<span class="pill pill--info">${s}</span>`;
+}
+function listingIcon(t) {
+  return t === 'hashrate'
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>';
+}
+
+function rowActive(o) {
+  const counterRow = o.counter
+    ? `<div class="cell-sub">Counter: <strong style="color:var(--ink)">${fmtMoney(o.counter, o.unit)}</strong></div>`
+    : '';
+  return `
+    <tr>
+      <td>
+        <div style="display:inline-flex;align-items:center;gap:8px;color:var(--muted)">${listingIcon(o.listingType)}<span class="cell-strong" style="color:var(--ink)">${o.listing}</span></div>
+        <div class="cell-sub">${o.desc}</div>
+      </td>
+      <td>${o.counterparty}</td>
+      <td>
+        <div class="cell-strong">${fmtMoney(o.bid, o.unit)}</div>
+        ${diffEl(o.bid, o.ask)}
+      </td>
+      <td>${fmtMoney(o.ask, o.unit)}${counterRow}</td>
+      <td>${statusPill(o.status)}</td>
+      <td>${o.expires} left</td>
+      <td>
+        <div class="row-actions">
+          ${o.status === 'countered' ? '<button class="btn btn--primary btn--sm" data-act="accept-counter" data-id="'+o.id+'">Accept counter</button>' : ''}
+          <button class="btn btn--ghost btn--sm" data-act="modify" data-id="${o.id}">Modify</button>
+          <button class="btn btn--danger btn--sm" data-act="withdraw" data-id="${o.id}">Withdraw</button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+function rowIncoming(o) {
+  return `
+    <tr>
+      <td>
+        <div style="display:inline-flex;align-items:center;gap:8px;color:var(--muted)">${listingIcon(o.listingType)}<span class="cell-strong" style="color:var(--ink)">${o.listing}</span></div>
+        <div class="cell-sub">${o.desc}</div>
+      </td>
+      <td>${o.counterparty}</td>
+      <td>
+        <div class="cell-strong">${fmtMoney(o.bid, o.unit)}</div>
+        ${diffEl(o.bid, o.ask)}
+      </td>
+      <td>${fmtMoney(o.ask, o.unit)}</td>
+      <td>${statusPill(o.status)}</td>
+      <td>${o.expires} left</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn--primary btn--sm" data-act="accept" data-id="${o.id}">Accept</button>
+          <button class="btn btn--ghost btn--sm" data-act="counter" data-id="${o.id}">Counter</button>
+          <button class="btn btn--danger btn--sm" data-act="reject" data-id="${o.id}">Reject</button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+function rowHistory(o) {
+  return `
+    <tr>
+      <td>
+        <div style="display:inline-flex;align-items:center;gap:8px;color:var(--muted)">${listingIcon(o.listingType)}<span class="cell-strong" style="color:var(--ink)">${o.listing}</span></div>
+        <div class="cell-sub">${o.desc}</div>
+      </td>
+      <td>${o.counterparty}</td>
+      <td><div class="cell-strong">${fmtMoney(o.bid, o.unit)}</div></td>
+      <td>${fmtMoney(o.ask, o.unit)}</td>
+      <td>${statusPill(o.status)}</td>
+      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${o.closed}</span></td>
+      <td><div class="row-actions"><button class="btn btn--ghost btn--sm" data-act="view" data-id="${o.id}">View</button></div></td>
+    </tr>
+  `;
+}
+
+const wrap = document.getElementById('tableWrap');
+
+function renderTable(tab) {
+  if (tab === 'incoming') {
+    if (!incomingOffers.length) return renderEmpty('No incoming offers yet', 'When buyers bid on your listings, they\'ll show up here. List something on the hashrate or ASIC marketplace to get started.', 'Sell hashrate', 'hashrate.html');
+    wrap.innerHTML = `
+      <table class="table">
+        <thead><tr><th>Listing</th><th>From</th><th>Their offer</th><th>Your ask</th><th>Status</th><th>Expires</th><th></th></tr></thead>
+        <tbody>${incomingOffers.map(rowIncoming).join('')}</tbody>
+      </table>
+    `;
+  } else if (tab === 'history') {
+    if (!history.length) return renderEmpty('No deals yet', 'Closed and expired offers land here once they\'re settled.', '', '');
+    wrap.innerHTML = `
+      <table class="table">
+        <thead><tr><th>Listing</th><th>Counterparty</th><th>Final bid</th><th>Ask</th><th>Outcome</th><th>Closed</th><th></th></tr></thead>
+        <tbody>${history.map(rowHistory).join('')}</tbody>
+      </table>
+    `;
+  } else {
+    if (!activeBids.length) return renderEmpty('No active bids', 'When you make an offer on a listing, you\'ll be able to track it here. Browse what\'s on the marketplace right now.', 'Browse hashrate', 'hashrate.html');
+    wrap.innerHTML = `
+      <table class="table">
+        <thead><tr><th>Listing</th><th>To</th><th>Your bid</th><th>Ask</th><th>Status</th><th>Expires</th><th></th></tr></thead>
+        <tbody>${activeBids.map(rowActive).join('')}</tbody>
+      </table>
+    `;
+  }
+}
+
+function renderEmpty(title, body, ctaLabel, ctaHref) {
+  wrap.innerHTML = `
+    <div class="offer-empty">
+      <div class="offer-empty__icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      </div>
+      <h3 class="offer-empty__title">${title}</h3>
+      <p class="offer-empty__body">${body}</p>
+      ${ctaLabel ? `<a href="${ctaHref}" class="btn btn--primary">${ctaLabel} →</a>` : ''}
+    </div>
+  `;
+}
+
+document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('is-active'));
+  b.classList.add('is-active');
+  renderTable(b.dataset.tab);
+}));
+
+wrap.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn || !window.ecoToast) return;
+  const labels = {
+    accept: 'Demo: offer accepted · escrow opening',
+    'accept-counter': 'Demo: counter accepted · escrow opening',
+    counter: 'Demo: counter form opening',
+    reject: 'Demo: offer rejected',
+    withdraw: 'Demo: bid withdrawn',
+    modify: 'Demo: modify form opening',
+    view: 'Demo: opening deal details',
+  };
+  window.ecoToast(labels[btn.dataset.act] || 'Demo action');
+});
+
+renderTable('active');
+document.getElementById('gate').remove();
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Rent ASICs · Eco</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="store.css" />
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <a href="promo.html" class="is-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          BTC Mining Store
+        </a>
+        <div class="side__sub">
+          <a href="promo.html">Promo</a>
+          <a href="buy-cloud.html">Buy Cloud</a>
+          <a href="rent-asics.html" class="is-active">Rent ASICs</a>
+          <a href="buy-asics.html">Buy ASICs</a>
+        </div>
+        <a href="../marketplace/hashrate.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          Marketplace
+        </a>
+        <a href="../account/referrals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Referrals
+        </a>
+        <a href="../account/rewards.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Eco Rewards
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="../account/settings.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="../account/transactions.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </a>
+        <a href="../admin/" id="adminLink" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+        <a href="#" id="logoutLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <a href="../dashboard.html">Dashboard</a> · <a href="promo.html">BTC Mining Store</a> · <strong>Rent ASICs</strong>
+      </div>
+      <div class="topbar__right">
+        <div class="ticker">
+          <span class="ticker__icon">₿</span>
+          <span class="ticker__label">BTC</span>
+          <span>$78,612.21</span>
+        </div>
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>Rent <em>ASICs</em></h1>
+          <p>Lease our hardware, hosted in our datacenters. No CapEx, no shipping — pay a daily rate, keep the BTC you mine.</p>
+        </div>
+      </div>
+
+      <!-- Calculator -->
+      <div class="calc">
+        <div class="calc__field">
+          <label class="calc__label">Model</label>
+          <select class="calc__select" id="calcModel"></select>
+        </div>
+        <div class="calc__field">
+          <label class="calc__label">Units</label>
+          <input class="calc__input" id="calcUnits" type="number" min="1" max="100" value="1" />
+        </div>
+        <div class="calc__field">
+          <label class="calc__label">Term (days)</label>
+          <input class="calc__input" id="calcDays" type="number" min="30" step="30" value="90" />
+        </div>
+        <div class="calc__total">
+          <div class="calc__total-l">Estimated total</div>
+          <div class="calc__total-v" id="calcTotal">$0</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="chips" id="siteChips">
+          <button class="chip is-active" data-site="all">All sites</button>
+          <button class="chip" data-site="kazakhstan">Kazakhstan</button>
+          <button class="chip" data-site="iceland">Iceland</button>
+          <button class="chip" data-site="texas">Texas</button>
+          <button class="chip" data-site="paraguay">Paraguay</button>
+        </div>
+        <div class="sort">
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);cursor:pointer">
+            <input type="checkbox" id="availOnly" style="accent-color:var(--primary)" /> Available only
+          </label>
+          <span>Sort:</span>
+          <select id="sort">
+            <option value="popular">Most popular</option>
+            <option value="rate-asc">Daily rate · low to high</option>
+            <option value="rate-desc">Daily rate · high to low</option>
+            <option value="hash-desc">Hashrate · high to low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-3" id="grid"></div>
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="auth.js"></script>
+<script>
+const rentals = [
+  { id: 's21pro-kz', model: 'Antminer S21 Pro', hash: '234 TH/s', hashN: 234, daily: 8.40, minTerm: 90,  units: 22, site: 'Kazakhstan · R.04', siteKey: 'kazakhstan', popular: 5, badge: 'Best value' },
+  { id: 'm60-is',    model: 'Whatsminer M60',   hash: '170 TH/s', hashN: 170, daily: 5.90, minTerm: 60,  units: 14, site: 'Iceland · R.11',    siteKey: 'iceland',    popular: 4 },
+  { id: 's19jpro-tx',model: 'Antminer S19j Pro',hash: '104 TH/s', hashN: 104, daily: 3.20, minTerm: 30,  units: 0,  site: 'Texas · R.02',      siteKey: 'texas',      popular: 3 },
+  { id: 'a1466-py',  model: 'Avalon A1466',     hash: '150 TH/s', hashN: 150, daily: 4.80, minTerm: 90,  units: 9,  site: 'Paraguay · R.01',   siteKey: 'paraguay',   popular: 3 },
+  { id: 's21-kz',    model: 'Antminer S21',     hash: '200 TH/s', hashN: 200, daily: 7.20, minTerm: 60,  units: 18, site: 'Kazakhstan · R.04', siteKey: 'kazakhstan', popular: 4 },
+  { id: 'm50s-is',   model: 'Whatsminer M50S++', hash: '142 TH/s',hashN: 142, daily: 4.60, minTerm: 60,  units: 7,  site: 'Iceland · R.11',    siteKey: 'iceland',    popular: 3 },
+];
+
+function availPill(u) {
+  if (u === 0) return '<span class="pill pill--off">Sold out</span>';
+  if (u < 10)  return `<span class="pill pill--warn">${u} units left</span>`;
+  return `<span class="pill pill--ok">${u} units</span>`;
+}
+
+function rigArt(accent) {
+  return `
+    <svg viewBox="0 0 220 110" width="180" height="90" aria-hidden="true">
+      <rect x="22" y="22" width="176" height="68" rx="6" fill="#fff" opacity=".7"/>
+      <rect x="22" y="22" width="176" height="10" fill="rgba(11,45,79,.12)"/>
+      ${Array.from({length:14}).map((_,i)=>`<rect x="${32+i*11}" y="38" width="7" height="44" rx="1.5" fill="rgba(11,45,79,.18)"/>`).join('')}
+      <rect x="22" y="86" width="176" height="4" fill="rgba(11,45,79,.18)"/>
+      <circle cx="190" cy="27" r="2" fill="${accent}"/>
+    </svg>
+  `;
+}
+
+function card(r) {
+  const featured = r.badge === 'Best value';
+  const monthly = (r.daily * 30).toFixed(0);
+  const badge = r.badge ? `<span class="pcard__badge">${r.badge}</span>` : '';
+  return `
+    <article class="pcard ${featured ? 'pcard--featured' : ''}" data-site="${r.siteKey}" data-units="${r.units}" data-rate="${r.daily}" data-hash="${r.hashN}" data-popular="${r.popular}">
+      <div class="pcard__hero pcard__hero--purple">
+        ${badge}
+        <div class="pcard__art">${rigArt('#7c3aed')}</div>
+      </div>
+      <div class="pcard__body">
+        <div class="pcard__brand">${r.site}</div>
+        <h3 class="pcard__name">${r.model}</h3>
+        <div class="pcard__specs">
+          <div><div class="pcard__spec-l">Hashrate</div><div class="pcard__spec-v">${r.hash}</div></div>
+          <div><div class="pcard__spec-l">Daily rate</div><div class="pcard__spec-v">$${r.daily.toFixed(2)}</div></div>
+          <div><div class="pcard__spec-l">Min term</div><div class="pcard__spec-v">${r.minTerm} days</div></div>
+          <div><div class="pcard__spec-l">Available</div><div class="pcard__spec-v">${availPill(r.units)}</div></div>
+        </div>
+        <div class="pcard__price-row">
+          <div>
+            <div class="pcard__price-l">~Monthly</div>
+            <div class="pcard__price-v">$${monthly}<small>/ unit</small></div>
+          </div>
+          <div style="text-align:right">
+            <div class="pcard__price-l">Min total</div>
+            <div class="pcard__spec-v">$${(r.daily * r.minTerm).toFixed(0)}</div>
+          </div>
+        </div>
+        <div class="pcard__actions">
+          ${r.units === 0
+            ? `<button class="btn btn--ghost" data-notify="${r.id}">Notify me</button>`
+            : `<button class="btn btn--${featured ? 'primary' : 'ghost'}" data-rent="${r.id}">Rent →</button>`}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function render() {
+  const site = document.querySelector('#siteChips .chip.is-active').dataset.site;
+  const sort = document.getElementById('sort').value;
+  const availOnly = document.getElementById('availOnly').checked;
+  let list = rentals
+    .filter(r => site === 'all' || r.siteKey === site)
+    .filter(r => !availOnly || r.units > 0);
+  list.sort((a, b) => {
+    if (sort === 'rate-asc')  return a.daily - b.daily;
+    if (sort === 'rate-desc') return b.daily - a.daily;
+    if (sort === 'hash-desc') return b.hashN - a.hashN;
+    return b.popular - a.popular;
+  });
+  document.getElementById('grid').innerHTML = list.length
+    ? list.map(card).join('')
+    : '<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px">No rentals match these filters.</div>';
+}
+
+// Calculator
+const modelSel = document.getElementById('calcModel');
+modelSel.innerHTML = rentals.map(r => `<option value="${r.id}">${r.model} · ${r.site} · $${r.daily.toFixed(2)}/day</option>`).join('');
+function updateCalc() {
+  const r = rentals.find(x => x.id === modelSel.value);
+  const units = Math.max(1, Number(document.getElementById('calcUnits').value) || 1);
+  const days  = Math.max(1, Number(document.getElementById('calcDays').value)  || 1);
+  const total = r ? r.daily * units * days : 0;
+  document.getElementById('calcTotal').textContent = '$' + total.toFixed(0).toLocaleString();
+}
+modelSel.addEventListener('change', updateCalc);
+document.getElementById('calcUnits').addEventListener('input', updateCalc);
+document.getElementById('calcDays').addEventListener('input', updateCalc);
+
+document.querySelectorAll('#siteChips .chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('#siteChips .chip').forEach(x => x.classList.remove('is-active'));
+  c.classList.add('is-active');
+  render();
+}));
+document.getElementById('sort').addEventListener('change', render);
+document.getElementById('availOnly').addEventListener('change', render);
+
+document.addEventListener('click', (e) => {
+  const rent = e.target.closest('button[data-rent]');
+  if (rent) {
+    const r = rentals.find(x => x.id === rent.dataset.rent);
+    if (r && window.ecoToast) window.ecoToast(`Demo: ${r.model} reserved · $${r.daily.toFixed(2)}/day`);
+    return;
+  }
+  const notify = e.target.closest('button[data-notify]');
+  if (notify) {
+    const r = rentals.find(x => x.id === notify.dataset.notify);
+    if (r && window.ecoToast) window.ecoToast(`We'll email you when ${r.model} is back`);
+  }
+});
+
+render();
+updateCalc();
+document.getElementById('gate').remove();
+</script>
+</body>
+</html>

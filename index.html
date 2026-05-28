@@ -1,0 +1,1487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Eco — Crypto Mining Hardware & Hosting</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============ Tokens ============ */
+:root {
+  --ink: #0b2d4f;
+  --ink-2: #1d3c5f;
+  --muted: #6b7a8e;
+  --line: #e5ebf2;
+  --bg: #ffffff;
+  --bg-alt: #f5f8fc;
+  --primary: #1256E3;
+  --primary-dk: #0e43b4;
+  --green: #1a8f62;
+  --leaf: #6bd1a4;
+  --gold: #f4b936;
+  --warn: #c68017;
+  --danger: #c44;
+  --radius: 14px;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; display: block; }
+button { font-family: inherit; }
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+.container--narrow { max-width: 1000px; }
+
+.mono { font-family: var(--mono); }
+.muted { color: var(--muted); }
+.sm { font-size: 12px; }
+.up { color: var(--green); }
+
+/* ============ Buttons ============ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  font-family: var(--sans);
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--sm { padding: 8px 14px; font-size: 13px; }
+.btn--lg { padding: 14px 22px; font-size: 15px; }
+.btn--full { width: 100%; }
+.btn--primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn--primary:hover { background: var(--primary-dk); border-color: var(--primary-dk); }
+.btn--ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--ink); }
+.btn--dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn--link {
+  background: transparent;
+  color: var(--primary);
+  padding: 6px 0;
+  border: none;
+  border-radius: 0;
+}
+.btn--outline-light {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,.3);
+  padding: 14px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.i-arrow,
+.i-check {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+.i-arrow {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><line x1='5' y1='12' x2='19' y2='12'/><polyline points='12 5 19 12 12 19'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><line x1='5' y1='12' x2='19' y2='12'/><polyline points='12 5 19 12 12 19'/></svg>");
+}
+.i-check {
+  color: var(--primary);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+}
+.i-check--green { color: var(--leaf); }
+
+.i-star {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: var(--gold);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>");
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+}
+
+/* ============ Nav ============ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.nav__left { display: flex; align-items: center; gap: 40px; }
+.nav__right { display: flex; align-items: center; gap: 12px; }
+.nav__links { display: flex; gap: 26px; }
+.nav__links a {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  opacity: .82;
+}
+.nav__links a:hover { opacity: 1; }
+.lang { font-size: 13px; color: var(--muted); text-decoration: none; }
+
+.logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; }
+.logo__word {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+}
+.logo--inv .logo__word { color: #fff; }
+
+/* ============ Hero ============ */
+.hero { background: var(--bg); padding: 72px 0 40px; }
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+.pill__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.pill__main { font-weight: 500; }
+.pill__sub { color: var(--muted); }
+.hero__title {
+  font-size: 68px;
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: -2.2px;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+.hero__sub {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 0 30px;
+}
+.hero__ctas { display: flex; gap: 12px; margin-bottom: 36px; }
+.hero__stats {
+  display: flex;
+  gap: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.stat__value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--ink);
+  font-family: var(--sans);
+}
+.stat__value span {
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: -1.5px;
+}
+.stat__value em {
+  font-size: 22px;
+  font-weight: 500;
+  font-style: normal;
+  opacity: .7;
+}
+.stat__label {
+  font-size: 13px;
+  color: var(--ink);
+  opacity: .65;
+  margin-top: 2px;
+}
+.stat__sub {
+  font-size: 11px;
+  color: var(--ink);
+  opacity: .45;
+  margin-top: 2px;
+}
+.stat--inv .stat__value,
+.stat--inv .stat__label,
+.stat--inv .stat__sub { color: #fff; }
+
+.hero__dash-wrap { position: relative; }
+.dash {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 24px 60px -30px rgba(11,45,79,.28);
+}
+.dash__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.kicker {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--mono);
+}
+.kicker--primary { color: var(--primary); font-size: 12px; letter-spacing: 1.5px; margin-bottom: 10px; }
+.kicker--green { color: var(--leaf); font-size: 12px; letter-spacing: 1.5px; margin-bottom: 10px; }
+.dash__title { font-size: 22px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.badge--online { color: var(--green); background: rgba(26,143,98,.1); }
+.badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+.dash__rev {
+  background: var(--bg-alt);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.dash__rev-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.dash__rev-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+.dash__rev-amount .num {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.dash__rev-amount .btc { transform: translateY(2px); }
+.spark { width: 100%; height: 52px; display: block; }
+.spark__fill { fill: var(--primary); opacity: .12; }
+.spark__line { fill: none; stroke: var(--primary); stroke-width: 1.5; }
+
+.dash__rigs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.rig {
+  padding: 10px 12px;
+  background: var(--bg-alt);
+  border-radius: 10px;
+  font-size: 12px;
+}
+.rig__name { font-weight: 600; color: var(--ink); }
+.rig__hash { color: var(--muted); margin-top: 2px; font-size: 11px; }
+.rig__hash--off { color: var(--danger); }
+.rig__loc { color: var(--muted); margin-top: 1px; font-size: 11px; }
+
+.floating-badge {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  background: var(--ink);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 16px 40px -16px rgba(11,45,79,.5);
+}
+.floating-badge__kicker {
+  font-size: 11px;
+  opacity: .7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.floating-badge__main { font-size: 15px; font-weight: 600; }
+
+.featured {
+  margin-top: 72px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.featured__label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.featured__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: .65;
+  letter-spacing: .3px;
+}
+.featured__name--serif { font-family: var(--serif); font-weight: 400; }
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+  gap: 40px;
+}
+.section-head--single { display: block; max-width: 640px; margin-bottom: 50px; }
+.section-head__title {
+  font-size: 44px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -1.4px;
+  margin: 0;
+  line-height: 1.1;
+  max-width: 700px;
+}
+
+.hardware { padding: 90px 0; background: var(--bg-alt); }
+.chips { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.chip.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.rigs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.rcard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.rcard__badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(18,86,227,.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.rcard__art { margin-bottom: 14px; }
+.rcard__brand {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.rcard__name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.rcard__specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+}
+.rcard__spec-l { font-size: 11px; color: var(--muted); }
+.rcard__spec-v { font-size: 13px; font-weight: 600; color: var(--ink); }
+.rcard__spec-v--ok { color: var(--green); }
+.rcard__spec-v--warn { color: var(--warn); }
+.rcard__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rcard__from { font-size: 11px; color: var(--muted); }
+.rcard__price { font-size: 20px; font-weight: 600; color: var(--ink); letter-spacing: -.4px; }
+
+.how { padding: 90px 0; background: #fff; }
+.how__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.how__step {
+  padding: 36px 32px;
+  border-right: 1px solid var(--line);
+}
+.how__step:last-child { border-right: none; }
+.how__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.how__num { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+.how__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+.how__step h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 10px;
+  letter-spacing: -.4px;
+}
+.how__step p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.sus {
+  padding: 90px 0;
+  background: var(--ink);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.sus__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.sus__title {
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: -1.6px;
+  margin: 0 0 20px;
+  line-height: 1.05;
+}
+.sus__title em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--leaf);
+}
+.sus__lede {
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(255,255,255,.75);
+  margin: 0 0 28px;
+  max-width: 500px;
+}
+.sus__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(255,255,255,.12);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  margin-bottom: 28px;
+}
+.sus__cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.sus__card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+.sus__card-icon { color: var(--c); margin-bottom: 18px; }
+.sus__card-loc {
+  font-size: 11px;
+  color: rgba(255,255,255,.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.sus__card-name { font-size: 20px; font-weight: 600; margin-bottom: 14px; }
+.bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.bar__fill { height: 100%; background: var(--c); }
+.sus__card-pct { font-size: 12px; color: rgba(255,255,255,.65); }
+
+.pricing { padding: 90px 0; background: var(--bg-alt); }
+.toggle {
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px;
+}
+.toggle__opt {
+  padding: 7px 14px;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.toggle__opt.is-active { background: var(--ink); color: #fff; }
+
+.pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.plan {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px;
+  position: relative;
+}
+.plan--highlight {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+  box-shadow: 0 24px 50px -20px rgba(11,45,79,.4);
+}
+.plan__badge {
+  position: absolute;
+  top: -11px;
+  left: 24px;
+  background: var(--primary);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.plan__name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.plan__price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.plan__price span {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -1.5px;
+}
+.plan__price em {
+  font-style: normal;
+  font-size: 14px;
+  opacity: .6;
+}
+.plan__desc { font-size: 13px; opacity: .7; margin-bottom: 22px; min-height: 20px; }
+.plan__rule {
+  margin: 22px 0;
+  height: 1px;
+  border: none;
+  background: var(--line);
+}
+.plan--highlight .plan__rule { background: rgba(255,255,255,.12); }
+.plan__bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.plan__bullets li {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  line-height: 1.45;
+  align-items: center;
+}
+
+.testimonials { padding: 90px 0; background: #fff; }
+.trustpilot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stars { display: inline-flex; gap: 2px; }
+.stars--sm .i-star { width: 14px; height: 14px; }
+.trustpilot__main { font-size: 13px; font-weight: 600; color: var(--ink); }
+.trustpilot__sub { font-size: 11px; color: var(--muted); }
+
+.t-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.tcard {
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 26px;
+}
+.tcard .stars { margin-bottom: 18px; }
+.tcard__quote {
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 24px;
+  letter-spacing: -.2px;
+}
+.tcard__person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--leaf));
+}
+.tcard__name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.tcard__role { font-size: 12px; color: var(--muted); }
+
+.faq { padding: 90px 0; background: var(--bg-alt); }
+.faq__title { margin: 0 0 40px; }
+.faq__list {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.faq__item + .faq__item { border-top: 1px solid var(--line); }
+.faq__q {
+  width: 100%;
+  padding: 22px 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  font-family: var(--sans);
+}
+.faq__q span:first-child {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -.2px;
+}
+.faq__icon {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  display: inline-block;
+}
+.faq__icon::before,
+.faq__icon::after {
+  content: "";
+  position: absolute;
+  background: var(--muted);
+  border-radius: 1px;
+}
+.faq__icon::before { left: 1px; right: 1px; top: 50%; height: 1.6px; transform: translateY(-50%); }
+.faq__icon::after  { top: 1px; bottom: 1px; left: 50%; width: 1.6px; transform: translateX(-50%); }
+.faq__item.is-open .faq__icon::after { display: none; }
+
+.faq__a {
+  display: none;
+  padding: 0 26px 22px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 780px;
+}
+.faq__item.is-open .faq__a { display: block; }
+
+.cta { padding: 80px 0; background: #fff; }
+.cta__card {
+  background: linear-gradient(115deg, #0b2d4f, #1256E3);
+  border-radius: 24px;
+  padding: 60px 56px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.cta__blob {
+  position: absolute;
+  border-radius: 50%;
+}
+.cta__blob--a { right: -80px; top: -80px; width: 360px; height: 360px; background: rgba(255,255,255,.06); }
+.cta__blob--b { right: 60px; bottom: -120px; width: 260px; height: 260px; background: rgba(255,255,255,.04); }
+.cta__copy { position: relative; max-width: 560px; }
+.cta__copy h2 {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -1.4px;
+  margin: 0 0 14px;
+  line-height: 1.1;
+}
+.cta__copy p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.75);
+  margin: 0;
+}
+.cta__ctas { display: flex; gap: 12px; position: relative; }
+
+.footer { background: var(--ink); color: rgba(255,255,255,.7); padding: 70px 0 30px; }
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(4, 1fr);
+  gap: 48px;
+}
+.footer__blurb {
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255,255,255,.55);
+  margin: 18px 0 20px;
+  max-width: 280px;
+}
+.footer__social { display: flex; gap: 10px; }
+.footer__social span {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: var(--mono);
+}
+.footer__title {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.footer__col a {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.footer__col a:hover { color: #fff; }
+.footer__bar {
+  margin-top: 50px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+}
+.footer__bar-right { display: flex; gap: 24px; }
+.ok { color: var(--leaf); }
+
+@media (max-width: 1100px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .sus__grid { grid-template-columns: 1fr; gap: 40px; }
+  .rigs-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing__grid { grid-template-columns: 1fr; }
+  .t-grid { grid-template-columns: 1fr; }
+  .how__grid { grid-template-columns: 1fr; }
+  .how__step { border-right: none; border-bottom: 1px solid var(--line); }
+  .how__step:last-child { border-bottom: none; }
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .featured { flex-wrap: wrap; gap: 16px 24px; }
+}
+@media (max-width: 700px) {
+  .container { padding: 0 20px; }
+  .nav__links { display: none; }
+  .hero { padding: 48px 0 24px; }
+  .hero__title { font-size: 44px; letter-spacing: -1.4px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-head__title { font-size: 32px; }
+  .sus__title { font-size: 32px; }
+  .sus__cards { grid-template-columns: 1fr; }
+  .sus__stats { grid-template-columns: 1fr; gap: 16px; }
+  .rigs-grid { grid-template-columns: 1fr; }
+  .cta__card { flex-direction: column; align-items: flex-start; padding: 36px 28px; }
+  .cta__copy h2 { font-size: 30px; }
+  .footer__grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer__bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .hero__stats { flex-wrap: wrap; gap: 24px; }
+  .floating-badge { left: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav__inner container">
+    <div class="nav__left">
+      <a href="#" class="logo" aria-label="Eco home">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+          <rect x="1" y="1" width="24" height="24" rx="6" fill="var(--primary)"/>
+          <path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo__word">Eco</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#hardware">Hardware</a>
+        <a href="#hosting">Hosting</a>
+        <a href="#calculator">Calculator</a>
+        <a href="#sustainability">Sustainability</a>
+        <a href="#learn">Learn</a>
+        <a href="#company">Company</a>
+      </nav>
+    </div>
+    <div class="nav__right">
+      <a href="#" class="lang">EN ▾</a>
+      <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
+      <a href="register.html" class="btn btn--primary btn--sm">Start mining <span class="i-arrow" aria-hidden="true"></span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__grid container">
+    <div class="hero__copy">
+      <div class="pill">
+        <span class="pill__dot"></span>
+        <span class="pill__main">92% renewable-powered fleet</span>
+        <span class="pill__sub">· Tier-III datacenters</span>
+      </div>
+      <h1 class="hero__title">Own a mining rig. Earn Bitcoin daily.</h1>
+      <p class="hero__sub">Buy a factory-sealed ASIC. We host it on 92% renewable energy. You earn BTC every 24 hours — paid straight to your wallet.</p>
+      <div class="hero__ctas">
+        <a href="register.html" class="btn btn--primary btn--lg">Buy an ASIC <span class="i-arrow"></span></a>
+        <a href="#hosting" class="btn btn--ghost btn--lg">See hosting plans</a>
+      </div>
+      <div class="hero__stats">
+        <div class="stat">
+          <div class="stat__value"><span>118,000</span><em>+</em></div>
+          <div class="stat__label">active miners</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value"><span>2.4</span><em>EH/s</em></div>
+          <div class="stat__label">total hashrate</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value"><span>99.98</span><em>%</em></div>
+          <div class="stat__label">uptime</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard mock -->
+    <div class="hero__dash-wrap">
+      <div class="dash">
+        <div class="dash__head">
+          <div>
+            <div class="kicker">Your fleet · live</div>
+            <div class="dash__title">4 rigs · 580 TH/s</div>
+          </div>
+          <div class="badge badge--online">
+            <span class="badge__dot"></span> ONLINE
+          </div>
+        </div>
+        <div class="dash__rev">
+          <div class="dash__rev-row">
+            <span class="muted sm">30-day revenue</span>
+            <span class="up mono sm">▲ 8.4%</span>
+          </div>
+          <div class="dash__rev-amount">
+            <span class="num">0.0382</span>
+            <svg class="btc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.06 10.96c.24-1.61-.98-2.48-2.66-3.06l.55-2.18-1.33-.33-.53 2.13c-.35-.09-.71-.17-1.07-.25l.54-2.15-1.33-.33-.55 2.18c-.29-.07-.57-.13-.85-.2v-.01L7.1 6.3l-.35 1.42s.98.22.96.24c.54.13.63.49.62.77l-.62 2.49c.04.01.09.02.14.04-.04-.01-.09-.02-.14-.03l-.87 3.49c-.07.16-.24.41-.62.31.02.02-.96-.24-.96-.24l-.66 1.52 1.73.43c.32.08.64.17.95.25l-.56 2.21 1.33.33.55-2.18c.36.1.72.19 1.06.27l-.54 2.17 1.33.33.56-2.21c2.27.43 3.98.26 4.7-1.79.58-1.65-.03-2.6-1.22-3.23.86-.2 1.52-.77 1.69-1.93zm-3.03 4.26c-.41 1.65-3.19.76-4.09.54l.73-2.93c.9.23 3.79.67 3.36 2.39zm.41-4.28c-.37 1.5-2.69.74-3.44.55l.66-2.66c.75.19 3.17.54 2.78 2.11z"/></svg>
+            <span class="muted sm">≈ $2,704.20</span>
+          </div>
+          <svg class="spark" viewBox="0 0 360 52" preserveAspectRatio="none" aria-hidden="true">
+            <path class="spark__fill" d="M0 36 L19 30 L38 33 L57 27 L76 28 L94 22 L113 25 L132 19 L151 22 L170 16 L189 19 L208 14 L227 17 L246 11 L265 14 L284 8 L303 11 L322 5 L341 8 L360 2 L360 52 L0 52 Z"/>
+            <path class="spark__line" d="M0 36 L19 30 L38 33 L57 27 L76 28 L94 22 L113 25 L132 19 L151 22 L170 16 L189 19 L208 14 L227 17 L246 11 L265 14 L284 8 L303 11 L322 5 L341 8 L360 2"/>
+          </svg>
+        </div>
+        <div class="dash__rigs">
+          <div class="rig">
+            <div class="rig__name">Antminer S21 Pro</div>
+            <div class="rig__hash mono">234 TH/s</div>
+            <div class="rig__loc">Kazakhstan · R.04</div>
+          </div>
+          <div class="rig">
+            <div class="rig__name">Antminer S21 Pro</div>
+            <div class="rig__hash mono">234 TH/s</div>
+            <div class="rig__loc">Kazakhstan · R.04</div>
+          </div>
+          <div class="rig">
+            <div class="rig__name">Whatsminer M60</div>
+            <div class="rig__hash mono">170 TH/s</div>
+            <div class="rig__loc">Iceland · R.11</div>
+          </div>
+          <div class="rig">
+            <div class="rig__name">Whatsminer M60</div>
+            <div class="rig__hash mono rig__hash--off">— offline</div>
+            <div class="rig__loc">Rebooting</div>
+          </div>
+        </div>
+      </div>
+      <div class="floating-badge">
+        <svg class="leaf" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6bd1a4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 019.8 6.14a6.84 6.84 0 017.7-3A6.94 6.94 0 0120 9c0 7-7 11-9 11z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+        <div>
+          <div class="floating-badge__kicker">This month</div>
+          <div class="floating-badge__main">4.2 tons CO₂ offset</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="featured container">
+    <span class="featured__label mono">Featured in</span>
+    <span class="featured__name">COINDESK</span>
+    <span class="featured__name">The Block</span>
+    <span class="featured__name featured__name--serif">Bitcoin Mag</span>
+    <span class="featured__name">Forbes</span>
+    <span class="featured__name">Decrypt</span>
+    <span class="featured__name">CoinTelegraph</span>
+  </div>
+</section>
+
+<!-- ============ HARDWARE ============ -->
+<section id="hardware" class="hardware">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="kicker kicker--primary mono">01 — Hardware</div>
+        <h2 class="section-head__title">Factory-direct ASICs, delivered to a hosting rack or your door.</h2>
+      </div>
+      <a href="#" class="btn btn--link">Browse all 18 models <span class="i-arrow"></span></a>
+    </div>
+
+    <div class="chips" role="tablist" aria-label="Algorithm filter">
+      <button class="chip is-active" role="tab" aria-selected="true">All</button>
+      <button class="chip" role="tab">Bitcoin (SHA-256)</button>
+      <button class="chip" role="tab">Litecoin (Scrypt)</button>
+      <button class="chip" role="tab">Kaspa (kHeavyHash)</button>
+      <button class="chip" role="tab">Ethereum Classic</button>
+    </div>
+
+    <div class="rigs-grid">
+      <!-- Card template repeated; first is featured -->
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="how">
+  <div class="container">
+    <div class="section-head section-head--single">
+      <div class="kicker kicker--primary mono">02 — How it works</div>
+      <h2 class="section-head__title">Three steps to your first block reward.</h2>
+    </div>
+    <div class="how__grid">
+      <article class="how__step">
+        <div class="how__row">
+          <div class="how__num mono">01 / 03</div>
+          <div class="how__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+          </div>
+        </div>
+        <h3>Choose a rig</h3>
+        <p>Pick an ASIC matched to your budget and payback goal. We only list new, factory-sealed units.</p>
+      </article>
+      <article class="how__step">
+        <div class="how__row">
+          <div class="how__num mono">02 / 03</div>
+          <div class="how__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+        </div>
+        <h3>We host it for you</h3>
+        <p>Ship direct to our Tier-III facilities in Kazakhstan, Texas or Iceland. No setup, no noise, no heat.</p>
+      </article>
+      <article class="how__step">
+        <div class="how__row">
+          <div class="how__num mono">03 / 03</div>
+          <div class="how__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12V8H6a2 2 0 01-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 002 2h14v-4"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg>
+          </div>
+        </div>
+        <h3>Earn daily in BTC</h3>
+        <p>Rewards paid every 24h to your wallet, minus a flat hosting fee. Watch it all from the dashboard.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUSTAINABILITY ============ -->
+<section id="sustainability" class="sus">
+  <div class="container sus__grid">
+    <div class="sus__copy">
+      <div class="kicker kicker--green mono">03 — Sustainability</div>
+      <h2 class="sus__title">Mining that runs on what the grid <em>wastes</em>, not what it needs.</h2>
+      <p class="sus__lede">Our facilities sit next to hydro spillways, flared gas sites, and curtailed wind farms — turning stranded energy into verifiable hashrate. Every rig's carbon footprint is audited and offset by Gold Standard credits.</p>
+      <div class="sus__stats">
+        <div class="stat stat--inv">
+          <div class="stat__value"><span>92</span><em>%</em></div>
+          <div class="stat__label">renewable mix</div>
+          <div class="stat__sub mono">Q1 2026</div>
+        </div>
+        <div class="stat stat--inv">
+          <div class="stat__value"><span>14,280</span></div>
+          <div class="stat__label">tons CO₂ offset</div>
+          <div class="stat__sub mono">since 2021</div>
+        </div>
+        <div class="stat stat--inv">
+          <div class="stat__value"><span>0</span><em>kWh</em></div>
+          <div class="stat__label">from coal</div>
+          <div class="stat__sub mono">certified</div>
+        </div>
+      </div>
+      <a href="#" class="btn btn--primary">Read the ESG report <span class="i-arrow"></span></a>
+    </div>
+    <div class="sus__cards">
+      <div class="sus__card" style="--c:#7dd3fc">
+        <div class="sus__card-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+        </div>
+        <div class="sus__card-loc mono">Kazakhstan, Georgia</div>
+        <div class="sus__card-name">Hydro</div>
+        <div class="bar"><div class="bar__fill" style="width:58%"></div></div>
+        <div class="sus__card-pct mono">58% of fleet</div>
+      </div>
+      <div class="sus__card" style="--c:#a7f3d0">
+        <div class="sus__card-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/></svg>
+        </div>
+        <div class="sus__card-loc mono">Texas panhandle</div>
+        <div class="sus__card-name">Wind</div>
+        <div class="bar"><div class="bar__fill" style="width:22%"></div></div>
+        <div class="sus__card-pct mono">22% of fleet</div>
+      </div>
+      <div class="sus__card" style="--c:#fde68a">
+        <div class="sus__card-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="sus__card-loc mono">Nevada grid-tied</div>
+        <div class="sus__card-name">Solar</div>
+        <div class="bar"><div class="bar__fill" style="width:12%"></div></div>
+        <div class="sus__card-pct mono">12% of fleet</div>
+      </div>
+      <div class="sus__card" style="--c:#fca5a5">
+        <div class="sus__card-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="sus__card-loc mono">North Dakota</div>
+        <div class="sus__card-name">Flared gas capture</div>
+        <div class="bar"><div class="bar__fill" style="width:8%"></div></div>
+        <div class="sus__card-pct mono">8% of fleet</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="hosting" class="pricing">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="kicker kicker--primary mono">04 — Hosting plans</div>
+        <h2 class="section-head__title">Flat per-kWh pricing. No setup fees. Ever.</h2>
+      </div>
+      <div class="toggle">
+        <button class="toggle__opt is-active">Monthly</button>
+        <button class="toggle__opt">Annual −12%</button>
+      </div>
+    </div>
+
+    <div class="pricing__grid">
+      <article class="plan">
+        <div class="plan__name">Starter</div>
+        <div class="plan__price"><span>$0.058</span><em>$/kWh</em></div>
+        <div class="plan__desc">Great for a first rig or two.</div>
+        <hr class="plan__rule" />
+        <ul class="plan__bullets">
+          <li><span class="i-check"></span>1–3 rigs hosted</li>
+          <li><span class="i-check"></span>Monthly billing in BTC</li>
+          <li><span class="i-check"></span>Email support</li>
+          <li><span class="i-check"></span>Real-time dashboard</li>
+          <li><span class="i-check"></span>Auto-payout at 0.005 BTC</li>
+        </ul>
+        <a href="#" class="btn btn--ghost btn--full">Get started <span class="i-arrow"></span></a>
+      </article>
+
+      <article class="plan plan--highlight">
+        <div class="plan__badge">Most chosen</div>
+        <div class="plan__name">Pro</div>
+        <div class="plan__price"><span>$0.049</span><em>$/kWh</em></div>
+        <div class="plan__desc">For miners scaling beyond a few units.</div>
+        <hr class="plan__rule" />
+        <ul class="plan__bullets">
+          <li><span class="i-check i-check--green"></span>Up to 25 rigs</li>
+          <li><span class="i-check i-check--green"></span>Priority firmware tuning</li>
+          <li><span class="i-check i-check--green"></span>Priority support (24/7)</li>
+          <li><span class="i-check i-check--green"></span>Custom payout thresholds</li>
+          <li><span class="i-check i-check--green"></span>Dedicated rack space</li>
+          <li><span class="i-check i-check--green"></span>Free on-site diagnostics</li>
+        </ul>
+        <a href="#" class="btn btn--primary btn--full">Get started <span class="i-arrow"></span></a>
+      </article>
+
+      <article class="plan">
+        <div class="plan__name">Fleet</div>
+        <div class="plan__price"><span>Custom</span></div>
+        <div class="plan__desc">Institutional co-location.</div>
+        <hr class="plan__rule" />
+        <ul class="plan__bullets">
+          <li><span class="i-check"></span>25+ rigs or containers</li>
+          <li><span class="i-check"></span>Direct PPA pricing</li>
+          <li><span class="i-check"></span>Named account manager</li>
+          <li><span class="i-check"></span>SLA-backed 99.99% uptime</li>
+          <li><span class="i-check"></span>API access + webhooks</li>
+          <li><span class="i-check"></span>White-label dashboards</li>
+        </ul>
+        <a href="#" class="btn btn--ghost btn--full">Talk to sales <span class="i-arrow"></span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="kicker kicker--primary mono">05 — What miners say</div>
+        <h2 class="section-head__title">Trusted by retail investors and mining pools alike.</h2>
+      </div>
+      <div class="trustpilot">
+        <div class="stars" aria-hidden="true">
+          <span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span>
+        </div>
+        <div>
+          <div class="trustpilot__main">4.9 on Trustpilot</div>
+          <div class="trustpilot__sub">from 3,240 reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="t-grid">
+      <article class="tcard">
+        <div class="stars stars--sm" aria-hidden="true">
+          <span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span>
+        </div>
+        <p class="tcard__quote">"I was tired of babysitting rigs in my garage. Shipping them to Eco cut my power bill and doubled my uptime."</p>
+        <div class="tcard__person">
+          <div class="avatar"></div>
+          <div>
+            <div class="tcard__name">Marcus D.</div>
+            <div class="tcard__role">Miner since 2019 · 8 rigs</div>
+          </div>
+        </div>
+      </article>
+      <article class="tcard">
+        <div class="stars stars--sm" aria-hidden="true">
+          <span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span>
+        </div>
+        <p class="tcard__quote">"The dashboard is the first one I actually trust. Daily payouts, transparent fees, no surprises on the invoice."</p>
+        <div class="tcard__person">
+          <div class="avatar"></div>
+          <div>
+            <div class="tcard__name">Priya S.</div>
+            <div class="tcard__role">Portfolio diversifier · 2 rigs</div>
+          </div>
+        </div>
+      </article>
+      <article class="tcard">
+        <div class="stars stars--sm" aria-hidden="true">
+          <span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span><span class="i-star"></span>
+        </div>
+        <p class="tcard__quote">"We moved 40 units from a competing host. Onboarding took four days and we haven't had a ticket since."</p>
+        <div class="tcard__person">
+          <div class="avatar"></div>
+          <div>
+            <div class="tcard__name">Jonas K.</div>
+            <div class="tcard__role">Mining DAO lead · 40 rigs</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="learn" class="faq">
+  <div class="container container--narrow">
+    <div class="kicker kicker--primary mono">06 — FAQ</div>
+    <h2 class="section-head__title faq__title">Common questions.</h2>
+    <div class="faq__list">
+      <div class="faq__item is-open">
+        <button class="faq__q" aria-expanded="true">
+          <span>What's the minimum to start?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">A single ASIC, roughly $2,600. There's no subscription — you own the hardware and pay only a flat per-kWh hosting fee.</div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">
+          <span>How are payouts handled?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">Rewards are paid in BTC to the wallet you register, every 24 hours. Hosting fees are deducted automatically and itemized on your monthly invoice.</div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">
+          <span>Can I ship my own rigs in?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">Yes. Colocation is available from 1 rig up to container-scale. We inspect, install, and bring units online within 72 hours of arrival.</div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">
+          <span>What happens if a rig breaks?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">All hosted rigs are covered by a hardware SLA. We swap faulty units from on-site spares and you don't lose hashrate while a claim is processed.</div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">
+          <span>Is the electricity really green?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">The fleet runs on 92% renewable energy, audited annually by a third party. Any remaining carbon is offset with Gold Standard credits — the certificates are on the ESG report.</div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q" aria-expanded="false">
+          <span>Do you operate in my country?</span>
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a">We sell hardware globally. Hosting is available in Kazakhstan, the United States (Texas, Wyoming), Iceland and Paraguay. Regional availability may vary by plan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <div class="container">
+    <div class="cta__card">
+      <div class="cta__blob cta__blob--a"></div>
+      <div class="cta__blob cta__blob--b"></div>
+      <div class="cta__copy">
+        <h2>Ready to mine your first block?</h2>
+        <p>Create an account in 60 seconds. No hardware required upfront — we'll match you to a rig that fits your budget and payback target.</p>
+      </div>
+      <div class="cta__ctas">
+        <a href="register.html" class="btn btn--primary btn--lg">Create account <span class="i-arrow"></span></a>
+        <a href="#" class="btn btn--outline-light btn--lg">Book a call →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="company" class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <a href="#" class="logo logo--inv" aria-label="Eco home">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+          <rect x="1" y="1" width="24" height="24" rx="6" fill="var(--primary)"/>
+          <path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo__word">Eco</span>
+      </a>
+      <p class="footer__blurb">Mining hardware and green-energy hosting for people who'd rather own the block than buy the coin.</p>
+      <div class="footer__social">
+        <span>X</span><span>in</span><span>tg</span><span>gh</span>
+      </div>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Product</div>
+      <a href="#">Hardware</a><a href="#">Hosting plans</a><a href="#">Calculator</a><a href="#">API</a><a href="#">Status</a>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Company</div>
+      <a href="#">About</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Sustainability report</a><a href="#">Contact</a>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Learn</div>
+      <a href="#">Mining 101</a><a href="#">Glossary</a><a href="#">Guides</a><a href="#">Blog</a><a href="#">Research</a>
+    </div>
+    <div class="footer__col">
+      <div class="footer__title">Legal</div>
+      <a href="#">Terms</a><a href="#">Privacy</a><a href="#">Risk disclosure</a><a href="#">Licences</a><a href="#">Cookies</a>
+    </div>
+  </div>
+  <div class="container footer__bar">
+    <div>© 2026 Eco Mining Inc. · Tallinn · Registration 14682310</div>
+    <div class="footer__bar-right">
+      <span>EN / DE / ES / PT</span>
+      <span>Status: <span class="ok">● all systems operational</span></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const rigs = [
+  { brand: 'Bitmain', name: 'Antminer S21 Pro', hash: '234 TH/s', power: '3,531 W', eff: '15 J/TH', price: '$5,490', stock: 'In stock', feat: true },
+  { brand: 'MicroBT', name: 'Whatsminer M60S', hash: '186 TH/s', power: '3,441 W', eff: '18.5 J/TH', price: '$3,890', stock: 'In stock' },
+  { brand: 'Bitmain', name: 'Antminer S19 XP', hash: '140 TH/s', power: '3,010 W', eff: '21.5 J/TH', price: '$2,640', stock: 'Ships May 18' },
+  { brand: 'Canaan', name: 'Avalon A1566', hash: '185 TH/s', power: '3,420 W', eff: '18.5 J/TH', price: '$3,120', stock: 'In stock' },
+];
+
+function rigArt() {
+  return `
+    <svg viewBox="0 0 220 140" width="100%" height="140" aria-hidden="true">
+      <rect x="22" y="34" width="176" height="82" rx="6" fill="#d9e3f0"/>
+      <rect x="22" y="34" width="176" height="10" fill="#cdd9ea"/>
+      ${Array.from({ length: 14 }).map((_, i) =>
+        `<rect x="${32 + i * 11}" y="50" width="7" height="58" rx="1.5" fill="#c0d0e4"/>`
+      ).join('')}
+      <rect x="22" y="116" width="176" height="4" fill="#b7c6dc"/>
+      <circle cx="190" cy="39" r="2" fill="#1256E3"/>
+      <rect x="84" y="120" width="52" height="8" rx="2" fill="#b7c6dc"/>
+    </svg>
+  `;
+}
+
+function rigCardHTML(r) {
+  const stockClass = r.stock.startsWith('In') ? 'rcard__spec-v--ok' : 'rcard__spec-v--warn';
+  return `
+    <article class="rcard">
+      ${r.feat ? `<div class="rcard__badge">MOST POPULAR</div>` : ''}
+      <div class="rcard__art">${rigArt()}</div>
+      <div class="rcard__brand">${r.brand}</div>
+      <div class="rcard__name">${r.name}</div>
+      <div class="rcard__specs">
+        <div><div class="rcard__spec-l">Hashrate</div><div class="rcard__spec-v">${r.hash}</div></div>
+        <div><div class="rcard__spec-l">Power</div><div class="rcard__spec-v">${r.power}</div></div>
+        <div><div class="rcard__spec-l">Efficiency</div><div class="rcard__spec-v">${r.eff}</div></div>
+        <div><div class="rcard__spec-l">Status</div><div class="rcard__spec-v ${stockClass}">${r.stock}</div></div>
+      </div>
+      <div class="rcard__foot">
+        <div>
+          <div class="rcard__from">from</div>
+          <div class="rcard__price">${r.price}</div>
+        </div>
+        <a href="#" class="btn ${r.feat ? 'btn--primary' : 'btn--ghost'} btn--sm">Buy <span class="i-arrow"></span></a>
+      </div>
+    </article>
+  `;
+}
+
+document.querySelector('.rigs-grid').innerHTML = rigs.map(rigCardHTML).join('');
+
+document.querySelectorAll('.chips .chip').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chips .chip').forEach((c) => {
+      c.classList.remove('is-active');
+      c.setAttribute('aria-selected', 'false');
+    });
+    chip.classList.add('is-active');
+    chip.setAttribute('aria-selected', 'true');
+  });
+});
+
+document.querySelectorAll('.toggle .toggle__opt').forEach((opt) => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.toggle .toggle__opt').forEach((o) => o.classList.remove('is-active'));
+    opt.classList.add('is-active');
+  });
+});
+
+document.querySelectorAll('.faq__item').forEach((item) => {
+  const btn = item.querySelector('.faq__q');
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.contains('is-open');
+    document.querySelectorAll('.faq__item').forEach((i) => {
+      i.classList.remove('is-open');
+      i.querySelector('.faq__q').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+</body>
+</html>

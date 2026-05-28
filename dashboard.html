@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dashboard — Eco Mining</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0b2d4f;
+  --ink-2: #1d3c5f;
+  --muted: #6b7a8e;
+  --line: #e5ebf2;
+  --line-2: #eef2f7;
+  --bg: #ffffff;
+  --bg-alt: #f5f8fc;
+  --primary: #1256E3;
+  --primary-dk: #0e43b4;
+  --primary-soft: #eaf2ff;
+  --green: #1a8f62;
+  --leaf: #6bd1a4;
+  --gold: #f4b936;
+  --warn: #c68017;
+  --orange: #ea7a1f;
+  --orange-soft: #fdebd6;
+  --purple: #7c3aed;
+  --purple-soft: #f1ebff;
+  --btc: #f7931a;
+  --danger: #c4453d;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink); background: var(--bg-alt); }
+
+.app { display: grid; grid-template-columns: 244px 1fr; min-height: 100vh; }
+
+/* ============ Sidebar ============ */
+.side {
+  background: var(--ink);
+  color: rgba(255,255,255,.8);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.side__logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; padding: 4px 8px; margin-bottom: 24px; }
+.side__logo span { font-family: var(--sans); font-weight: 700; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
+
+.side__group { margin-bottom: 18px; }
+.side__group-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.4);
+  font-family: var(--mono);
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+.side__nav { display: flex; flex-direction: column; gap: 1px; }
+.side__nav a, .side__nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.72);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.side__nav a:hover, .side__nav button:hover { color: #fff; background: rgba(255,255,255,.05); }
+.side__nav a.is-active { background: rgba(18,86,227,.22); color: #fff; }
+.side__nav a svg, .side__nav button svg { color: rgba(255,255,255,.5); flex: 0 0 auto; }
+.side__nav a.is-active svg { color: var(--leaf); }
+
+.side__sub { display: none; padding: 4px 0 4px 32px; gap: 1px; flex-direction: column; }
+.side__sub.is-open { display: flex; }
+.side__sub a { font-size: 13px; padding: 7px 10px; color: rgba(255,255,255,.6); }
+.side__chev { margin-left: auto; transition: transform .2s; }
+.side__nav button.is-open .side__chev { transform: rotate(180deg); }
+
+.side__foot {
+  margin-top: auto;
+  padding: 14px 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.side__foot .ok { color: var(--leaf); }
+
+/* ============ Main ============ */
+.main { padding: 0; min-width: 0; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ticker__icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--btc);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+.ticker__label { color: var(--muted); font-weight: 500; }
+
+.topbar__right { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+}
+.user:hover { border-color: var(--ink); }
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--leaf));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.user__name { font-size: 13px; font-weight: 500; color: var(--ink); }
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.lang__flag {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #b22234 0%, #b22234 33%, #fff 33%, #fff 66%, #3c3b6e 66%);
+}
+
+/* ============ Content ============ */
+.content { padding: 24px 28px 56px; max-width: 1500px; }
+
+.greeting {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.greeting h1 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.7px;
+  margin: 0 0 4px;
+}
+.greeting h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--primary); }
+.greeting p { font-size: 13px; color: var(--muted); margin: 0; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  font-family: var(--sans);
+  transition: transform .15s, background .15s, border-color .15s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn--primary:hover { background: var(--primary-dk); border-color: var(--primary-dk); }
+.btn--ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--ink); }
+.btn--full { width: 100%; }
+.btn--lg { padding: 13px 18px; font-size: 14px; }
+
+.row-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Section title */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.4px;
+  margin: 0 0 14px;
+}
+
+/* ============ My Account ============ */
+.account {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.acard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.acard__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.acard__balance { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.acard__balance-row {
+  font-family: var(--mono);
+  font-size: 13.5px;
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+.acard__balance-row strong { font-weight: 600; }
+.acard__balance-row span { color: var(--muted); }
+.acard__actions { display: flex; gap: 8px; margin-top: auto; }
+.acard__actions .btn { flex: 1; padding: 9px 12px; font-size: 13px; }
+
+.acard__big {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.acard__big-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.acard__big-num {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.acard__big-unit {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 2px;
+}
+.acard__cta {
+  background: var(--primary-soft);
+  color: var(--ink);
+  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-top: auto;
+  line-height: 1.4;
+}
+
+/* ============ Mining Vault ============ */
+.vault {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+.vault__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.vault__head-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vault__title { font-size: 17px; font-weight: 600; margin: 0; }
+.vault__sub { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+.vault__hero {
+  background: linear-gradient(135deg, #eaf2ff 0%, #d9e6ff 100%);
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.vault__hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255,255,255,.6), transparent 50%);
+  pointer-events: none;
+}
+.vault__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,.85);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 14px;
+  position: relative;
+}
+.vault__apy {
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -2px;
+  line-height: 1;
+  position: relative;
+}
+.vault__apy small {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0;
+  margin-left: 6px;
+}
+.vault__lede {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 10px;
+  position: relative;
+}
+.vault__features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.vault__feat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.vault__feat-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.vault__feat-icon--gold { background: rgba(244,185,54,.16); color: #b8860b; }
+.vault__feat-icon--green { background: rgba(26,143,98,.12); color: var(--green); }
+.vault__feat-icon--blue { background: rgba(18,86,227,.1); color: var(--primary); }
+
+/* ============ My Offers ============ */
+.offers {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+.offers__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.offers__head-l { display: flex; align-items: center; gap: 12px; }
+.offers__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.offers__title { font-size: 16px; font-weight: 600; margin: 0; }
+.offers__sub { font-size: 13px; color: var(--muted); margin: 2px 0 0; }
+
+.offers__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.offers__col {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+.offers__col-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-bottom: 14px;
+}
+.offers__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted);
+}
+.offers__empty-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px dashed var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.offers__empty-text { font-size: 13px; }
+
+/* ============ BTC Mining Products ============ */
+.products { margin-bottom: 24px; }
+.products__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.pcard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.pcard__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pcard__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.pcard__icon--blue { background: var(--primary-soft); color: var(--primary); }
+.pcard__icon--orange { background: var(--orange-soft); color: var(--orange); }
+.pcard__icon--purple { background: var(--purple-soft); color: var(--purple); }
+.pcard__icon--green { background: rgba(26,143,98,.12); color: var(--green); }
+.pcard__title { font-size: 15px; font-weight: 600; margin: 0; flex: 1; letter-spacing: -.2px; }
+.pcard__price {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pcard__price--blue { background: var(--primary-soft); color: var(--primary); }
+.pcard__price--orange { background: var(--orange-soft); color: var(--orange); }
+.pcard__price--purple { background: var(--purple-soft); color: var(--purple); }
+.pcard__arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.pcard__arrow:hover { color: var(--ink); border-color: var(--ink); }
+.pcard__features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-radius: 10px;
+  padding: 18px 14px;
+  margin-bottom: 16px;
+  flex: 1;
+}
+.pcard__features--blue { background: var(--primary-soft); }
+.pcard__features--orange { background: var(--orange-soft); }
+.pcard__features--purple { background: var(--purple-soft); }
+.pcard__feat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-right: 1px solid rgba(11,45,79,.08);
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.pcard__feat:last-child { border-right: none; }
+.pcard__feat-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(11,45,79,.15);
+  background: rgba(255,255,255,.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+/* Hashrate contracts card */
+.pcard__hashrate {
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px;
+  gap: 14px;
+  align-items: center;
+  background: var(--primary-soft);
+  border-radius: 10px;
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  flex: 1;
+}
+.pcard__h-l {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.pcard__h-v {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -.6px;
+  color: var(--ink);
+}
+.pcard__h-v small { font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 4px; }
+
+.pcard__h-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) 0% 22%, rgba(18,86,227,.18) 22% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-left: auto;
+}
+.pcard__h-circle::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  background: var(--primary-soft);
+  border-radius: 50%;
+}
+.pcard__h-circle-text {
+  position: relative;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.pcard__h-circle-text small { display: block; font-size: 10px; color: var(--muted); font-weight: 500; }
+
+.pcard__tabs {
+  position: absolute;
+  top: 22px;
+  right: 60px;
+  display: flex;
+  gap: 4px;
+  background: var(--bg-alt);
+  border-radius: 8px;
+  padding: 3px;
+}
+.pcard__tabs button {
+  padding: 5px 11px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+.pcard__tabs button.is-active { background: var(--primary); color: #fff; }
+
+@media (max-width: 1100px) {
+  .account { grid-template-columns: 1fr; }
+  .vault__features { grid-template-columns: 1fr; }
+  .offers__grid { grid-template-columns: 1fr; }
+  .products__grid { grid-template-columns: 1fr; }
+  .pcard__features { grid-template-columns: 1fr; gap: 14px; }
+  .pcard__feat { border-right: none; border-bottom: 1px solid rgba(11,45,79,.08); padding-bottom: 14px; }
+  .pcard__feat:last-child { border-bottom: none; padding-bottom: 0; }
+  .pcard__hashrate { grid-template-columns: 1fr; }
+  .pcard__h-circle { margin: 0 auto; }
+  .pcard__tabs { position: static; margin-bottom: 12px; align-self: flex-end; }
+}
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; }
+  .topbar { padding: 10px 14px; flex-wrap: wrap; }
+  .ticker { display: none; }
+  .content { padding: 16px; }
+  .greeting { flex-direction: column; align-items: flex-start; }
+  .vault__apy { font-size: 44px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="side">
+    <a href="index.html" class="side__logo" aria-label="Eco home">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="dashboard.html" class="is-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <button data-toggle="store">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          BTC Mining Store
+          <svg class="side__chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="side__sub" data-sub="store">
+          <a href="store/promo.html">Promo</a>
+          <a href="store/buy-cloud.html">Buy Cloud</a>
+          <a href="store/rent-asics.html">Rent ASICs</a>
+          <a href="store/buy-asics.html">Buy ASICs</a>
+        </div>
+        <button data-toggle="market">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          Marketplace
+          <svg class="side__chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="side__sub" data-sub="market">
+          <a href="marketplace/hashrate.html">Hashrate Marketplace</a>
+          <a href="marketplace/asics.html">ASICs Marketplace</a>
+          <a href="marketplace/offers.html">Offers</a>
+        </div>
+        <a href="account/referrals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Referrals
+        </a>
+        <a href="account/rewards.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Eco Rewards
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="account/settings.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="account/transactions.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </a>
+        <a href="account/withdrawals.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Withdrawals
+        </a>
+        <a href="admin/" id="adminLink" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+        <a href="#" id="logoutLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </a>
+      </nav>
+    </div>
+
+    <div class="side__foot">
+      <span>v1.4.2</span>
+      <span><span class="ok">●</span> all systems</span>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <main class="main">
+    <div class="topbar">
+      <div class="ticker">
+        <span class="ticker__icon">₿</span>
+        <span class="ticker__label">BTC</span>
+        <span>$78,612.21</span>
+      </div>
+      <div class="topbar__right">
+        <button class="icon-btn" aria-label="Support chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        </button>
+        <button class="user" id="userBtn">
+          <span class="avatar" id="userAvatar">EM</span>
+          <span class="user__name" id="userName">Loading…</span>
+        </button>
+        <span class="lang">
+          <span class="lang__flag"></span>
+          EN
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Greeting -->
+      <div class="greeting">
+        <div>
+          <h1>Welcome back, <em id="greetName">friend</em>.</h1>
+          <p id="topbarDate">Your fleet is ready.</p>
+        </div>
+        <a href="index.html#hardware" class="btn btn--primary">+ Add hardware</a>
+      </div>
+
+      <!-- ===== My Account ===== -->
+      <h2 class="section-title">My Account</h2>
+      <section class="account">
+        <!-- Total Balance -->
+        <div class="acard">
+          <div class="acard__label">Total Balance</div>
+          <div class="acard__balance">
+            <div class="acard__balance-row"><strong>BTC:</strong> 0.00000000 BTC <span>/ USD: $0.00</span></div>
+            <div class="acard__balance-row"><strong>USD:</strong> $0.00</div>
+          </div>
+          <div class="acard__actions">
+            <a class="btn btn--ghost" href="account/withdrawals.html">Withdraw</a>
+            <button class="btn btn--ghost" data-toast="Demo: deposit modal coming soon">Deposit</button>
+            <button class="btn btn--ghost" data-toast="Demo: top-up via card coming soon">+$</button>
+          </div>
+        </div>
+
+        <!-- Total Mining Power -->
+        <div class="acard">
+          <div class="acard__label">Total Mining Power</div>
+          <div class="acard__big">
+            <span class="acard__big-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
+            <span class="acard__big-num">0</span>
+            <span class="acard__big-unit">TH</span>
+          </div>
+          <div class="acard__cta">Nothing yet? Browse our intro promos to get started in minutes.</div>
+        </div>
+
+        <!-- Total Mining Reward -->
+        <div class="acard">
+          <div class="acard__label">Total Mining Reward</div>
+          <div class="acard__big">
+            <span class="acard__big-icon" style="background:rgba(244,185,54,.16);color:#b8860b">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
+            </span>
+            <span class="acard__big-num">0</span>
+            <span class="acard__big-unit">BTC</span>
+          </div>
+          <div class="acard__cta">Buying 25+ rigs? Talk to a manager about volume pricing.</div>
+        </div>
+      </section>
+
+      <!-- ===== Mining Vault ===== -->
+      <section class="vault">
+        <div class="vault__head">
+          <div class="vault__head-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 11 12 4 21 11"/><path d="M5 11v9h14v-9"/><line x1="9" y1="14" x2="9" y2="20"/><line x1="15" y1="14" x2="15" y2="20"/><line x1="12" y1="14" x2="12" y2="20"/></svg>
+          </div>
+          <div>
+            <h3 class="vault__title">Mining Vault</h3>
+            <p class="vault__sub">Your mining allocations and rewards</p>
+          </div>
+        </div>
+
+        <div class="vault__hero">
+          <div class="vault__pill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Start Earning Today
+          </div>
+          <div class="vault__apy">8.3<small>% APY</small></div>
+          <div class="vault__lede">Earn up to 8.3% with weekly compound rewards</div>
+        </div>
+
+        <div class="vault__features">
+          <div class="vault__feat">
+            <span class="vault__feat-icon vault__feat-icon--gold">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><circle cx="16" cy="16" r="6"/></svg>
+            </span>
+            Weekly compound
+          </div>
+          <div class="vault__feat">
+            <span class="vault__feat-icon vault__feat-icon--green">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            Secure mining
+          </div>
+          <div class="vault__feat">
+            <span class="vault__feat-icon vault__feat-icon--blue">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            From 0.001 BTC
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--full btn--lg" data-toast="Demo: vault creation flow coming soon">Create your first vault →</button>
+      </section>
+
+      <!-- ===== My Offers ===== -->
+      <section class="offers">
+        <div class="offers__head">
+          <div class="offers__head-l">
+            <div class="offers__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            </div>
+            <div>
+              <h3 class="offers__title">My offers</h3>
+              <p class="offers__sub">Manage deals — every response counts</p>
+            </div>
+          </div>
+          <a href="marketplace/offers.html" class="row-link">View all →</a>
+        </div>
+
+        <div class="offers__grid">
+          <div class="offers__col">
+            <div class="offers__col-label">Active bids</div>
+            <div class="offers__empty">
+              <div class="offers__empty-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </div>
+              <div class="offers__empty-text">No offers yet</div>
+            </div>
+          </div>
+          <div class="offers__col">
+            <div class="offers__col-label">Incoming offers</div>
+            <div class="offers__empty">
+              <div class="offers__empty-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </div>
+              <div class="offers__empty-text">No incoming offers</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BTC Mining Products ===== -->
+      <section class="products">
+        <h2 class="section-title">BTC Mining Products</h2>
+        <div class="products__grid">
+
+          <!-- Cloud Mining -->
+          <article class="pcard">
+            <div class="pcard__head">
+              <span class="pcard__icon pcard__icon--blue">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8 4 18M14 4l6 6M9 13l2 2"/><path d="M3 21l3-1 14-14-2-2L4 18z"/></svg>
+              </span>
+              <h4 class="pcard__title">Buy Cloud Mining Contracts</h4>
+              <span class="pcard__price pcard__price--blue">From $99</span>
+              <a href="store/buy-cloud.html" class="pcard__arrow" aria-label="Open">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div class="pcard__features pcard__features--blue">
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Rent hashpower and earn daily rewards
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Start mining and earn BTC from as low as $99
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Live within 24 hours of purchase
+              </div>
+            </div>
+            <a href="store/buy-cloud.html" class="btn btn--ghost">Buy</a>
+          </article>
+
+          <!-- Buy ASICs -->
+          <article class="pcard">
+            <div class="pcard__head">
+              <span class="pcard__icon pcard__icon--orange">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"/></svg>
+              </span>
+              <h4 class="pcard__title">Buy ASICs With Hosting</h4>
+              <span class="pcard__price pcard__price--orange">From $2,955</span>
+              <a href="store/buy-asics.html" class="pcard__arrow" aria-label="Open">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div class="pcard__features pcard__features--orange">
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Build your own mining farm, hosted by Eco
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Your ASICs run in our Tier-III datacenters
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                You collect mined BTC daily
+              </div>
+            </div>
+            <a href="store/buy-asics.html" class="btn btn--ghost">Buy</a>
+          </article>
+
+          <!-- Rent ASICs -->
+          <article class="pcard">
+            <div class="pcard__head">
+              <span class="pcard__icon pcard__icon--purple">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14M5 2h14M17 22v-4.17a2 2 0 00-.59-1.42L12 12l-4.41 4.41A2 2 0 007 17.83V22M17 2v4.17a2 2 0 01-.59 1.42L12 12 7.59 7.59A2 2 0 017 6.17V2"/></svg>
+              </span>
+              <h4 class="pcard__title">Rent ASICs With Hosting</h4>
+              <span class="pcard__price pcard__price--purple">From $1,825</span>
+              <a href="store/rent-asics.html" class="pcard__arrow" aria-label="Open">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div class="pcard__features pcard__features--purple">
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Rent an ASIC, hosted in our datacenter
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                Latest models, mining within 24 hours
+              </div>
+              <div class="pcard__feat">
+                <span class="pcard__feat-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+                ~99.98% uptime, SLA-backed
+              </div>
+            </div>
+            <a href="store/rent-asics.html" class="btn btn--ghost">Rent</a>
+          </article>
+
+          <!-- Hashrate Contracts -->
+          <article class="pcard">
+            <div class="pcard__tabs" id="hashTabs">
+              <button class="is-active" data-tab="hash">Hashrate</button>
+              <button data-tab="asic">ASICs</button>
+            </div>
+            <div class="pcard__head">
+              <span class="pcard__icon pcard__icon--green">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </span>
+              <h4 class="pcard__title">Hashrate Contracts</h4>
+              <a href="marketplace/hashrate.html" class="pcard__arrow" aria-label="Open">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+            <div class="pcard__hashrate">
+              <div>
+                <div class="pcard__h-l">Active contracts</div>
+                <div class="pcard__h-v">231</div>
+              </div>
+              <div>
+                <div class="pcard__h-l">Total value</div>
+                <div class="pcard__h-v">$10.4M</div>
+              </div>
+              <div class="pcard__h-circle">
+                <div class="pcard__h-circle-text">−12%<small>avg discount</small></div>
+              </div>
+            </div>
+            <a href="marketplace/hashrate.html" class="btn btn--ghost">Go to hashrate marketplace</a>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+(async () => {
+  const sb = window.getSupabase();
+  if (!sb) return;
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) {
+    window.location.replace('login.html');
+    return;
+  }
+  const user = session.user;
+  const meta = user.user_metadata || {};
+  const firstName = meta.first_name || '';
+  const lastName = meta.last_name || '';
+  const fullName = meta.full_name || [firstName, lastName].filter(Boolean).join(' ') || user.email.split('@')[0];
+  const initials = ((firstName[0] || '') + (lastName[0] || '') || user.email[0]).toUpperCase();
+
+  document.getElementById('userName').textContent = user.email;
+  document.getElementById('userAvatar').textContent = initials;
+  document.getElementById('greetName').textContent = firstName || fullName;
+
+  if (user.app_metadata?.role === 'admin') {
+    document.getElementById('adminLink').style.display = '';
+  }
+
+  const now = new Date();
+  document.getElementById('topbarDate').textContent = now.toLocaleString(undefined, {
+    weekday: 'long', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
+  document.getElementById('logoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') window.location.replace('login.html');
+  });
+
+  // Sidebar collapsible groups
+  document.querySelectorAll('.side__nav button[data-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-toggle');
+      const sub = document.querySelector(`.side__sub[data-sub="${target}"]`);
+      if (!sub) return;
+      sub.classList.toggle('is-open');
+      btn.classList.toggle('is-open');
+    });
+  });
+
+  // Hashrate / ASICs tab toggle
+  document.querySelectorAll('#hashTabs button').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#hashTabs button').forEach((x) => x.classList.remove('is-active'));
+      b.classList.add('is-active');
+    });
+  });
+
+  // Lightweight toast for demo-only buttons
+  function toast(msg) {
+    let t = document.getElementById('ecoToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'ecoToast';
+      t.style.cssText = 'position:fixed;right:24px;bottom:24px;background:#0b2d4f;color:#fff;padding:14px 18px;border-radius:12px;font-size:13px;box-shadow:0 16px 40px -16px rgba(11,45,79,.5);z-index:100;display:none';
+      document.body.appendChild(t);
+    }
+    t.innerHTML = '<span style="color:#6bd1a4;margin-right:8px">●</span>' + msg;
+    t.style.display = 'inline-block';
+    clearTimeout(window.__ecoToastTimer);
+    window.__ecoToastTimer = setTimeout(() => { t.style.display = 'none'; }, 2400);
+  }
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-toast]');
+    if (el) { e.preventDefault(); toast(el.dataset.toast); }
+  });
+})();
+</script>
+</body>
+</html>

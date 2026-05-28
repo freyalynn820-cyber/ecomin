@@ -1,0 +1,1380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Admin · Eco Mining</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0b2d4f;
+  --ink-2: #1d3c5f;
+  --muted: #6b7a8e;
+  --line: #e5ebf2;
+  --line-2: #eef2f7;
+  --bg: #ffffff;
+  --bg-alt: #f5f8fc;
+  --primary: #1256E3;
+  --primary-dk: #0e43b4;
+  --primary-soft: #eaf2ff;
+  --green: #1a8f62;
+  --leaf: #6bd1a4;
+  --gold: #f4b936;
+  --warn: #c68017;
+  --danger: #c4453d;
+  --orange: #ea7a1f;
+  --orange-soft: #fdebd6;
+  --purple: #7c3aed;
+  --purple-soft: #f1ebff;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink); background: var(--bg-alt); }
+
+.app { display: grid; grid-template-columns: 244px 1fr; min-height: 100vh; }
+
+/* ============ Sidebar ============ */
+.side {
+  background: #0a223d;
+  color: rgba(255,255,255,.8);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.side__logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; padding: 4px 8px; }
+.side__logo span { font-family: var(--sans); font-weight: 700; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
+.side__tag {
+  font-size: 10px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  background: var(--primary);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.side__group { margin-top: 24px; }
+.side__group-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.4);
+  font-family: var(--mono);
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+.side__nav { display: flex; flex-direction: column; gap: 1px; }
+.side__nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.72);
+  font-size: 13.5px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.side__nav button:hover { color: #fff; background: rgba(255,255,255,.05); }
+.side__nav button.is-active { background: rgba(18,86,227,.22); color: #fff; }
+.side__nav button svg { color: rgba(255,255,255,.5); flex: 0 0 auto; }
+.side__nav button.is-active svg { color: var(--leaf); }
+.side__nav .badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--mono);
+}
+
+.side__foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+}
+.side__foot a { color: rgba(255,255,255,.7); text-decoration: none; display: block; padding: 8px 10px; font-size: 13px; }
+.side__foot a:hover { color: #fff; }
+
+/* ============ Topbar ============ */
+.main { padding: 0; min-width: 0; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.crumb strong { color: var(--ink); }
+.topbar__right { display: flex; align-items: center; gap: 10px; }
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 280px;
+}
+.search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+}
+.search svg { color: var(--muted); }
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon-btn:hover { color: var(--ink); border-color: var(--ink); }
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--leaf));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.user__name { font-size: 13px; font-weight: 500; color: var(--ink); }
+
+/* ============ Content shell ============ */
+.content { padding: 24px 28px 56px; max-width: 1500px; }
+.section { display: none; }
+.section.is-active { display: block; }
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+.page-head h1 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -.7px;
+  margin: 0 0 4px;
+}
+.page-head p { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  font-family: var(--sans);
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn--primary:hover { background: var(--primary-dk); border-color: var(--primary-dk); }
+.btn--ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--ink); }
+.btn--danger { background: #fff; color: var(--danger); border-color: #f3c4c0; }
+.btn--danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn--sm { padding: 6px 10px; font-size: 12px; border-radius: 7px; }
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+}
+.card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  gap: 16px;
+}
+.card__title { font-size: 16px; font-weight: 600; margin: 0; }
+.card__sub { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+
+/* KPI grid */
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.kcard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+}
+.kcard__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-bottom: 12px;
+}
+.kcard__value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.kcard__value span { font-size: 28px; font-weight: 600; letter-spacing: -.8px; }
+.kcard__value em { font-style: normal; font-size: 13px; color: var(--muted); }
+.kcard__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--green);
+  font-family: var(--mono);
+}
+.kcard__delta--down { color: var(--danger); }
+
+/* Table */
+.table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.table-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.chip.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.search-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  width: 220px;
+}
+.search-sm input { flex: 1; border: none; background: transparent; outline: none; font-size: 12px; font-family: var(--sans); color: var(--ink); }
+
+.table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.table th, .table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line-2); vertical-align: middle; }
+.table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-family: var(--mono);
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--line);
+}
+.table tr:last-child td { border-bottom: none; }
+.table td .cell-strong { font-weight: 600; color: var(--ink); }
+.table td .cell-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.table td:last-child, .table th:last-child { text-align: right; }
+.row-actions { display: inline-flex; gap: 4px; }
+
+/* Pills / status */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+  letter-spacing: .3px;
+}
+.pill--ok { color: var(--green); background: rgba(26,143,98,.1); }
+.pill--warn { color: var(--warn); background: rgba(198,128,23,.12); }
+.pill--off { color: var(--danger); background: rgba(196,69,61,.1); }
+.pill--info { color: var(--primary); background: var(--primary-soft); }
+.pill--mute { color: var(--muted); background: var(--bg-alt); }
+.pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+.tag--admin { background: var(--primary); color: #fff; }
+.tag--user  { background: var(--bg-alt); color: var(--muted); }
+
+/* Mini avatar in tables */
+.miniavatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--leaf));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  flex: 0 0 auto;
+}
+.user-cell { display: inline-flex; align-items: center; }
+
+/* Package grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.gcard {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+}
+.gcard__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.gcard__title { font-size: 15px; font-weight: 600; margin: 0; }
+.gcard__price { font-size: 26px; font-weight: 600; letter-spacing: -.6px; margin: 4px 0; }
+.gcard__price em { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 4px; font-style: normal; }
+.gcard__meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 0; margin: 14px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+.gcard__meta-l { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .5px; }
+.gcard__meta-v { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+.gcard__actions { display: flex; gap: 8px; }
+.gcard__actions .btn { flex: 1; }
+
+/* Form (settings) */
+.form-row { display: grid; grid-template-columns: 240px 1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--line-2); align-items: center; }
+.form-row:last-child { border-bottom: none; }
+.form-row__l strong { display: block; font-size: 14px; font-weight: 600; }
+.form-row__l span { font-size: 12px; color: var(--muted); }
+.form-row__r { display: flex; gap: 10px; align-items: center; }
+.input {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  font-size: 13px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+  width: 100%;
+  max-width: 360px;
+}
+.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(18,86,227,.12); }
+
+.toggle-sw { position: relative; display: inline-block; width: 40px; height: 22px; }
+.toggle-sw input { opacity: 0; width: 0; height: 0; }
+.toggle-sw .slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background-color: var(--line); border-radius: 999px; transition: .2s;
+}
+.toggle-sw .slider:before {
+  content: ""; position: absolute; height: 16px; width: 16px;
+  left: 3px; top: 3px; background-color: #fff; border-radius: 50%;
+  transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle-sw input:checked + .slider { background-color: var(--primary); }
+.toggle-sw input:checked + .slider:before { transform: translateX(18px); }
+
+/* Activity feed */
+.feed { display: flex; flex-direction: column; gap: 0; }
+.feed-item {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line-2);
+}
+.feed-item:first-child { border-top: none; padding-top: 0; }
+.feed-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--bg-alt);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.feed-text { font-size: 13px; }
+.feed-text strong { font-weight: 600; color: var(--ink); }
+.feed-text span { color: var(--muted); }
+.feed-time { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+.row-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+/* Banned rows */
+.table tr.is-banned td { opacity: .5; }
+
+/* Loading + access denied */
+.gate {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+.gate__card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 36px;
+  max-width: 420px;
+  text-align: center;
+}
+.gate__card h2 { margin: 0 0 8px; font-size: 22px; }
+.gate__card p { margin: 0 0 20px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+@media (max-width: 1100px) {
+  .kpi { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3, .row-2 { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; }
+  .topbar { padding: 10px 14px; flex-wrap: wrap; }
+  .search { width: 100%; order: 3; }
+  .content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hidden until guard passes -->
+<div class="app" id="app" style="display:none">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Eco</span>
+      <span class="side__tag">Admin</span>
+    </a>
+
+    <div class="side__group">
+      <div class="side__group-title">Operate</div>
+      <nav class="side__nav" id="nav">
+        <button class="is-active" data-section="overview">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </button>
+        <button data-section="users">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Users <span class="badge" id="usersBadge">0</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Catalog</div>
+      <nav class="side__nav">
+        <button data-section="cloud">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
+          Cloud Packages
+        </button>
+        <button data-section="buyAsics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"/></svg>
+          Buy ASICs
+        </button>
+        <button data-section="rentAsics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14M5 2h14M17 22v-4.17a2 2 0 00-.59-1.42L12 12l-4.41 4.41A2 2 0 007 17.83V22M17 2v4.17a2 2 0 01-.59 1.42L12 12 7.59 7.59A2 2 0 017 6.17V2"/></svg>
+          Rent ASICs
+        </button>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Marketplaces</div>
+      <nav class="side__nav">
+        <button data-section="hashMarket">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          Hashrate market
+        </button>
+        <button data-section="asicMarket">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>
+          ASIC market
+        </button>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">System</div>
+      <nav class="side__nav">
+        <button data-section="transactions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
+          Transactions
+        </button>
+        <button data-section="settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </button>
+      </nav>
+    </div>
+
+    <div class="side__foot">
+      <a href="../dashboard.html">← Back to user app</a>
+      <a href="#" id="logoutLink">Sign out</a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        Admin · <strong id="crumbCurrent">Overview</strong>
+      </div>
+      <div class="topbar__right">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search anything…" />
+        </div>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </button>
+        <span class="user">
+          <span class="avatar" id="adminAvatar">A</span>
+          <span class="user__name" id="adminEmail">admin</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== Overview ===== -->
+      <section class="section is-active" data-section="overview">
+        <div class="page-head">
+          <div>
+            <h1>Overview</h1>
+            <p>What's happening across the platform today.</p>
+          </div>
+          <button class="btn btn--ghost">Export report</button>
+        </div>
+
+        <div class="kpi">
+          <div class="kcard">
+            <div class="kcard__label">Total users</div>
+            <div class="kcard__value"><span id="kpiUsers">—</span></div>
+            <div class="kcard__delta">▲ 12 new this week</div>
+          </div>
+          <div class="kcard">
+            <div class="kcard__label">Active rigs</div>
+            <div class="kcard__value"><span>1,284</span></div>
+            <div class="kcard__delta">▲ 3.2% vs. last week</div>
+          </div>
+          <div class="kcard">
+            <div class="kcard__label">MRR (hosting)</div>
+            <div class="kcard__value"><span>$184,920</span></div>
+            <div class="kcard__delta">▲ 5.8%</div>
+          </div>
+          <div class="kcard">
+            <div class="kcard__label">Pending withdrawals</div>
+            <div class="kcard__value"><span>9</span> <em>· $42,140</em></div>
+            <div class="kcard__delta kcard__delta--down">▲ 2 since yesterday</div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="card">
+            <div class="card__head">
+              <div>
+                <h3 class="card__title">Recent activity</h3>
+                <p class="card__sub">Across the platform — last 24h</p>
+              </div>
+              <a href="#" class="btn btn--ghost btn--sm">View log</a>
+            </div>
+            <div class="feed" id="activityFeed"></div>
+          </div>
+
+          <div class="card">
+            <div class="card__head">
+              <div>
+                <h3 class="card__title">Quick actions</h3>
+                <p class="card__sub">Common admin tasks</p>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn--primary" data-jump="users">+ Invite user</button>
+              <button class="btn btn--ghost" data-jump="cloud">+ New cloud package</button>
+              <button class="btn btn--ghost" data-jump="buyAsics">+ Add ASIC to inventory</button>
+              <button class="btn btn--ghost" data-jump="settings">⚙ System settings</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Users ===== -->
+      <section class="section" data-section="users">
+        <div class="page-head">
+          <div>
+            <h1>Users</h1>
+            <p>Search, edit, suspend, or promote any user.</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn--ghost">Export CSV</button>
+            <button class="btn btn--primary">+ Invite user</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips" id="userChips">
+              <button class="chip is-active" data-filter="all">All</button>
+              <button class="chip" data-filter="active">Active</button>
+              <button class="chip" data-filter="unverified">Unverified</button>
+              <button class="chip" data-filter="banned">Banned</button>
+              <button class="chip" data-filter="admin">Admins</button>
+            </div>
+            <div class="search-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="userSearch" placeholder="Search by email or name…" />
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Mining power</th>
+                <th>Balance</th>
+                <th>Joined</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Cloud Packages ===== -->
+      <section class="section" data-section="cloud">
+        <div class="page-head">
+          <div>
+            <h1>Cloud Mining Packages</h1>
+            <p>Hashrate contracts customers can rent.</p>
+          </div>
+          <button class="btn btn--primary">+ New package</button>
+        </div>
+        <div class="grid-3" id="cloudGrid"></div>
+      </section>
+
+      <!-- ===== Buy ASICs ===== -->
+      <section class="section" data-section="buyAsics">
+        <div class="page-head">
+          <div>
+            <h1>Buy ASICs · Inventory</h1>
+            <p>ASICs available for purchase + hosting.</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn--ghost">Bulk import</button>
+            <button class="btn btn--primary">+ Add model</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Algorithm</th>
+                <th>Hashrate</th>
+                <th>Power</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="buyAsicsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Rent ASICs ===== -->
+      <section class="section" data-section="rentAsics">
+        <div class="page-head">
+          <div>
+            <h1>Rent ASICs · Inventory</h1>
+            <p>ASICs offered on rental terms.</p>
+          </div>
+          <button class="btn btn--primary">+ Add rental</button>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Hashrate</th>
+                <th>Daily rate</th>
+                <th>Min term</th>
+                <th>Available units</th>
+                <th>Site</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rentAsicsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Hashrate Marketplace ===== -->
+      <section class="section" data-section="hashMarket">
+        <div class="page-head">
+          <div>
+            <h1>Hashrate marketplace</h1>
+            <p>P2P listings — review and moderate.</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn--ghost">Open disputes (3)</button>
+            <button class="btn btn--primary">+ Create listing</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips">
+              <button class="chip is-active">All</button>
+              <button class="chip">Live</button>
+              <button class="chip">Pending review</button>
+              <button class="chip">Closed</button>
+            </div>
+            <div class="search-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input placeholder="Search listings…" />
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Listing</th>
+                <th>Seller</th>
+                <th>Hashrate</th>
+                <th>Price / TH</th>
+                <th>Term</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="hashMarketBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== ASIC Marketplace ===== -->
+      <section class="section" data-section="asicMarket">
+        <div class="page-head">
+          <div>
+            <h1>ASIC marketplace</h1>
+            <p>Resale listings posted by users.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips">
+              <button class="chip is-active">All</button>
+              <button class="chip">Pending review</button>
+              <button class="chip">Live</button>
+              <button class="chip">Sold</button>
+              <button class="chip">Rejected</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Condition</th>
+                <th>Seller</th>
+                <th>Asking price</th>
+                <th>Posted</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="asicMarketBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Transactions ===== -->
+      <section class="section" data-section="transactions">
+        <div class="page-head">
+          <div>
+            <h1>Transactions</h1>
+            <p>Deposits, withdrawals, payouts, hosting fees.</p>
+          </div>
+          <button class="btn btn--ghost">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips">
+              <button class="chip is-active">All</button>
+              <button class="chip">Deposit</button>
+              <button class="chip">Withdrawal</button>
+              <button class="chip">Payout</button>
+              <button class="chip">Hosting fee</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Tx hash</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="txBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Settings ===== -->
+      <section class="section" data-section="settings">
+        <div class="page-head">
+          <div>
+            <h1>Settings</h1>
+            <p>Platform-wide configuration.</p>
+          </div>
+          <button class="btn btn--primary">Save changes</button>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card__head"><div><h3 class="card__title">General</h3></div></div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Site name</strong><span>Shown across the public site and emails.</span></div>
+            <div class="form-row__r"><input class="input" value="Eco Mining" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Support email</strong><span>Replies from this address.</span></div>
+            <div class="form-row__r"><input class="input" type="email" value="support@eco-mining.com" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Maintenance mode</strong><span>Take the public site offline for updates.</span></div>
+            <div class="form-row__r">
+              <label class="toggle-sw"><input type="checkbox" /><span class="slider"></span></label>
+              <span style="font-size:12px;color:var(--muted)">Off</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card__head"><div><h3 class="card__title">Fees & limits</h3></div></div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Withdrawal min (BTC)</strong><span>Minimum payout threshold.</span></div>
+            <div class="form-row__r"><input class="input" type="number" step="0.0001" value="0.005" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Hosting fee (USD/kWh)</strong><span>Default Pro tier rate.</span></div>
+            <div class="form-row__r"><input class="input" type="number" step="0.001" value="0.049" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Marketplace commission (%)</strong><span>Platform fee on P2P listings.</span></div>
+            <div class="form-row__r"><input class="input" type="number" step="0.1" value="2.5" /></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__head"><div><h3 class="card__title">Auth & access</h3></div></div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Require email confirmation</strong><span>Block sign-in until verified.</span></div>
+            <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" /><span class="slider"></span></label></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Allow signups</strong><span>If off, only invites can register.</span></div>
+            <div class="form-row__r"><label class="toggle-sw"><input type="checkbox" checked /><span class="slider"></span></label></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Session lifetime (hours)</strong><span>Re-login required after this.</span></div>
+            <div class="form-row__r"><input class="input" type="number" value="168" /></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Gate (shown while loading or on access denied) -->
+<div class="gate" id="gate">
+  <div class="gate__card">
+    <h2 id="gateTitle">Checking permissions…</h2>
+    <p id="gateText">One moment while we verify your access.</p>
+    <div id="gateActions"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+const gate = document.getElementById('gate');
+const gateTitle = document.getElementById('gateTitle');
+const gateText = document.getElementById('gateText');
+const gateActions = document.getElementById('gateActions');
+const app = document.getElementById('app');
+
+function denyAccess(title, text, link) {
+  gateTitle.textContent = title;
+  gateText.textContent = text;
+  gateActions.innerHTML = '<a class="btn btn--primary" href="' + link.href + '">' + link.label + '</a>';
+}
+
+(async () => {
+  const sb = window.getSupabase();
+  if (!sb) return;
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) {
+    denyAccess('Sign in required', 'You must be signed in to view the admin area.', { href: '../login.html', label: 'Sign in' });
+    return;
+  }
+  const role = session.user.app_metadata?.role;
+  if (role !== 'admin') {
+    denyAccess('Access denied', 'Your account does not have admin permission. If this is a mistake, contact a workspace owner.', { href: '../dashboard.html', label: 'Back to dashboard' });
+    return;
+  }
+
+  // Granted — reveal the app
+  gate.style.display = 'none';
+  app.style.display = '';
+
+  // Topbar
+  const u = session.user;
+  document.getElementById('adminEmail').textContent = u.email;
+  document.getElementById('adminAvatar').textContent = (u.email[0] || 'A').toUpperCase();
+
+  // Logout
+  document.getElementById('logoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await sb.auth.signOut();
+    window.location.href = '../login.html';
+  });
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') window.location.replace('../login.html');
+  });
+
+  // Section nav
+  const sections = document.querySelectorAll('.section');
+  const navBtns = document.querySelectorAll('#nav button, .side__nav button[data-section]');
+  const titles = {
+    overview: 'Overview', users: 'Users', cloud: 'Cloud packages',
+    buyAsics: 'Buy ASICs', rentAsics: 'Rent ASICs',
+    hashMarket: 'Hashrate marketplace', asicMarket: 'ASIC marketplace',
+    transactions: 'Transactions', settings: 'Settings',
+  };
+  function showSection(name) {
+    sections.forEach(s => s.classList.toggle('is-active', s.dataset.section === name));
+    navBtns.forEach(b => b.classList.toggle('is-active', b.dataset.section === name));
+    document.getElementById('crumbCurrent').textContent = titles[name] || name;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  navBtns.forEach(b => b.addEventListener('click', () => showSection(b.dataset.section)));
+  document.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => showSection(b.dataset.jump)));
+
+  // ============ Real user data from Supabase ============
+  // Reads from public.profiles (see db/setup.sql). RLS lets admins
+  // read all rows; non-admins can only read their own.
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  function userRow(x) {
+    const display = (x.first_name || x.last_name)
+      ? `${x.first_name || ''} ${x.last_name || ''}`.trim()
+      : x.email.split('@')[0];
+    const initials = (display[0] || x.email[0] || '?').toUpperCase();
+    const statusPill = {
+      active:     '<span class="pill pill--ok">Active</span>',
+      unverified: '<span class="pill pill--warn">Unverified</span>',
+      banned:     '<span class="pill pill--off">Banned</span>',
+    }[x.status] || `<span class="pill pill--mute">${escapeHtml(x.status)}</span>`;
+    const roleTag = x.role === 'admin'
+      ? '<span class="tag tag--admin">ADMIN</span>'
+      : '<span class="tag tag--user">USER</span>';
+    const isYou = x.id === u.id;
+    const th = Number(x.mining_power_th) || 0;
+    const bal = Number(x.balance_btc) || 0;
+    const joined = (x.created_at || '').slice(0, 10);
+    const searchKey = `${display} ${x.email}`.toLowerCase();
+    const banBtn = isYou
+      ? ''
+      : (x.status === 'banned'
+          ? `<button class="btn btn--ghost btn--sm" data-act="unban" data-id="${x.id}">Unban</button>`
+          : `<button class="btn btn--danger btn--sm" data-act="ban" data-id="${x.id}">Ban</button>`);
+    return `
+      <tr class="${x.status === 'banned' ? 'is-banned' : ''}" data-status="${x.status}" data-role="${x.role}" data-search="${escapeHtml(searchKey)}" data-id="${x.id}">
+        <td>
+          <div class="user-cell">
+            <span class="miniavatar">${escapeHtml(initials)}</span>
+            <div>
+              <div class="cell-strong">${escapeHtml(display)}${isYou ? ' <span style="color:var(--muted);font-weight:500">(you)</span>' : ''}</div>
+              <div class="cell-sub">${escapeHtml(x.email)}</div>
+            </div>
+          </div>
+        </td>
+        <td>${roleTag}</td>
+        <td>${statusPill}</td>
+        <td>${th ? th.toLocaleString() + ' TH/s' : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${bal.toFixed(4)} BTC</td>
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(joined)}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn--ghost btn--sm" data-act="edit" data-id="${x.id}">Edit</button>
+            ${banBtn}
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  async function loadUsers() {
+    const tbody = document.getElementById('usersBody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Loading users…</td></tr>';
+
+    const { data, error } = await sb
+      .from('profiles')
+      .select('id, email, first_name, last_name, role, status, mining_power_th, balance_btc, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      tbody.innerHTML = `
+        <tr><td colspan="7" style="text-align:center;color:var(--danger);padding:30px">
+          Could not load users: ${escapeHtml(error.message)}<br>
+          <span style="color:var(--muted);font-size:12px">Make sure you've run <code>db/setup.sql</code> in your Supabase SQL editor.</span>
+        </td></tr>`;
+      document.getElementById('kpiUsers').textContent = '—';
+      document.getElementById('usersBadge').textContent = '0';
+      return;
+    }
+
+    const rows = data || [];
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">No users yet.</td></tr>';
+    } else {
+      tbody.innerHTML = rows.map(userRow).join('');
+    }
+    document.getElementById('kpiUsers').textContent = rows.length.toLocaleString();
+    document.getElementById('usersBadge').textContent = rows.length;
+    applyUserFilter();
+  }
+
+  // Mutation handlers
+  document.getElementById('usersBody').addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const act = btn.dataset.act;
+
+    if (act === 'ban' || act === 'unban') {
+      const newStatus = act === 'ban' ? 'banned' : 'active';
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('profiles').update({ status: newStatus }).eq('id', id);
+      if (error) { alert('Could not update status: ' + error.message); btn.disabled = false; }
+      await loadUsers();
+      return;
+    }
+
+    if (act === 'edit') {
+      const tr = btn.closest('tr');
+      const currentName = tr.querySelector('.cell-strong').textContent.replace(/\s+\(you\)$/, '').trim();
+      const next = prompt('Edit display name (first last):', currentName);
+      if (next === null) return;
+      const parts = next.trim().split(/\s+/);
+      const first_name = parts.shift() || '';
+      const last_name = parts.join(' ');
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('profiles').update({ first_name, last_name }).eq('id', id);
+      if (error) { alert('Could not update: ' + error.message); btn.disabled = false; btn.textContent = 'Edit'; return; }
+      await loadUsers();
+    }
+  });
+
+  await loadUsers();
+
+  // User filter chips + search
+  function applyUserFilter() {
+    const filter = document.querySelector('#userChips .chip.is-active').dataset.filter;
+    const term = document.getElementById('userSearch').value.toLowerCase().trim();
+    document.querySelectorAll('#usersBody tr').forEach(tr => {
+      const matchFilter =
+        filter === 'all' ||
+        (filter === 'admin' && tr.dataset.role === 'admin') ||
+        tr.dataset.status === filter;
+      const matchSearch = !term || tr.dataset.search.includes(term);
+      tr.style.display = (matchFilter && matchSearch) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('#userChips .chip').forEach(c => c.addEventListener('click', () => {
+    document.querySelectorAll('#userChips .chip').forEach(x => x.classList.remove('is-active'));
+    c.classList.add('is-active');
+    applyUserFilter();
+  }));
+  document.getElementById('userSearch').addEventListener('input', applyUserFilter);
+
+  // Cloud packages
+  const cloud = [
+    { name: 'Starter',  hash: '50 TH/s',  term: '12 mo', price: 99,   status: 'active', signups: 412 },
+    { name: 'Growth',   hash: '200 TH/s', term: '12 mo', price: 379,  status: 'active', signups: 286 },
+    { name: 'Pro',      hash: '500 TH/s', term: '24 mo', price: 899,  status: 'active', signups: 154 },
+    { name: 'Whale',    hash: '2 PH/s',   term: '24 mo', price: 3490, status: 'active', signups: 22 },
+    { name: 'Halving 2026', hash: '120 TH/s', term: '6 mo', price: 249, status: 'draft', signups: 0 },
+    { name: 'Test sandbox', hash: '10 TH/s', term: '1 mo', price: 19, status: 'archived', signups: 0 },
+  ];
+  document.getElementById('cloudGrid').innerHTML = cloud.map(p => `
+    <div class="gcard">
+      <div class="gcard__head">
+        <h4 class="gcard__title">${p.name}</h4>
+        <span class="pill ${p.status === 'active' ? 'pill--ok' : p.status === 'draft' ? 'pill--warn' : 'pill--mute'}">${p.status}</span>
+      </div>
+      <div class="gcard__price">$${p.price.toLocaleString()}<em>/ contract</em></div>
+      <div class="gcard__meta">
+        <div><div class="gcard__meta-l">Hashrate</div><div class="gcard__meta-v">${p.hash}</div></div>
+        <div><div class="gcard__meta-l">Term</div><div class="gcard__meta-v">${p.term}</div></div>
+        <div><div class="gcard__meta-l">Signups</div><div class="gcard__meta-v">${p.signups}</div></div>
+        <div><div class="gcard__meta-l">Margin</div><div class="gcard__meta-v">${(28 + Math.round(Math.random() * 14))}%</div></div>
+      </div>
+      <div class="gcard__actions">
+        <button class="btn btn--ghost btn--sm">Edit</button>
+        <button class="btn btn--ghost btn--sm">${p.status === 'active' ? 'Pause' : 'Activate'}</button>
+        <button class="btn btn--danger btn--sm">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Buy ASICs inventory
+  const buyRows = [
+    { model: 'Antminer S21 Pro', algo: 'SHA-256', hash: '234 TH/s', power: '3,531 W', stock: 42, price: '$5,490', status: 'active' },
+    { model: 'Whatsminer M60S',  algo: 'SHA-256', hash: '186 TH/s', power: '3,441 W', stock: 16, price: '$3,890', status: 'active' },
+    { model: 'Antminer S19 XP',  algo: 'SHA-256', hash: '140 TH/s', power: '3,010 W', stock: 0,  price: '$2,640', status: 'restock' },
+    { model: 'Avalon A1566',     algo: 'SHA-256', hash: '185 TH/s', power: '3,420 W', stock: 31, price: '$3,120', status: 'active' },
+    { model: 'iPollo G1',        algo: 'kHeavyHash', hash: '36 GH/s', power: '3,000 W', stock: 8, price: '$2,980', status: 'active' },
+  ];
+  function inventoryRow(r) {
+    const stockPill = r.stock === 0 ? '<span class="pill pill--off">Out</span>' :
+                      r.stock < 10  ? '<span class="pill pill--warn">Low</span>' :
+                                      '<span class="pill pill--ok">In stock</span>';
+    return `
+      <tr>
+        <td><div class="cell-strong">${r.model}</div><div class="cell-sub">${r.algo}</div></td>
+        <td>${r.algo}</td>
+        <td>${r.hash}</td>
+        <td>${r.power}</td>
+        <td>${r.stock} ${stockPill}</td>
+        <td><strong>${r.price}</strong></td>
+        <td><span class="pill ${r.status === 'active' ? 'pill--ok' : 'pill--warn'}">${r.status}</span></td>
+        <td><div class="row-actions"><button class="btn btn--ghost btn--sm">Edit</button><button class="btn btn--ghost btn--sm">Restock</button></div></td>
+      </tr>
+    `;
+  }
+  document.getElementById('buyAsicsBody').innerHTML = buyRows.map(inventoryRow).join('');
+
+  // Rent ASICs
+  const rentRows = [
+    { model: 'Antminer S21 Pro', hash: '234 TH/s', daily: '$8.40',  term: '90 days', units: 22, site: 'Kazakhstan · R.04', status: 'active' },
+    { model: 'Whatsminer M60',   hash: '170 TH/s', daily: '$5.90',  term: '60 days', units: 14, site: 'Iceland · R.11',    status: 'active' },
+    { model: 'Antminer S19j Pro',hash: '104 TH/s', daily: '$3.20',  term: '30 days', units: 0,  site: 'Texas · R.02',      status: 'sold-out' },
+    { model: 'Avalon A1466',     hash: '150 TH/s', daily: '$4.80',  term: '90 days', units: 9,  site: 'Paraguay · R.01',   status: 'active' },
+  ];
+  document.getElementById('rentAsicsBody').innerHTML = rentRows.map(r => `
+    <tr>
+      <td><div class="cell-strong">${r.model}</div></td>
+      <td>${r.hash}</td>
+      <td><strong>${r.daily}</strong></td>
+      <td>${r.term}</td>
+      <td>${r.units}</td>
+      <td><span style="color:var(--muted);font-size:12px">${r.site}</span></td>
+      <td><span class="pill ${r.status === 'active' ? 'pill--ok' : 'pill--off'}">${r.status}</span></td>
+      <td><div class="row-actions"><button class="btn btn--ghost btn--sm">Edit</button><button class="btn btn--ghost btn--sm">Pause</button></div></td>
+    </tr>
+  `).join('');
+
+  // Hashrate marketplace
+  const hashListings = [
+    { id: 'L-9382', seller: 'jonas.k@example.com', hash: '500 TH/s', price: '$11.20', term: '12 mo', status: 'live' },
+    { id: 'L-9381', seller: 'aisha.m@example.com', hash: '120 TH/s', price: '$10.80', term: '6 mo',  status: 'live' },
+    { id: 'L-9380', seller: 'New seller',          hash: '60 TH/s',  price: '$9.40',  term: '3 mo',  status: 'pending' },
+    { id: 'L-9379', seller: 'marcus.d@example.com', hash: '234 TH/s', price: '$12.10', term: '12 mo', status: 'live' },
+    { id: 'L-9378', seller: 'leah.r@example.com',  hash: '40 TH/s',  price: '$13.90', term: '1 mo',  status: 'pending' },
+    { id: 'L-9377', seller: 'priya.s@example.com', hash: '170 TH/s', price: '$11.40', term: '6 mo',  status: 'closed' },
+  ];
+  document.getElementById('hashMarketBody').innerHTML = hashListings.map(l => {
+    const pill = l.status === 'live' ? '<span class="pill pill--ok">Live</span>'
+              : l.status === 'pending' ? '<span class="pill pill--warn">Pending</span>'
+              : '<span class="pill pill--mute">Closed</span>';
+    const actions = l.status === 'pending'
+      ? '<button class="btn btn--primary btn--sm">Approve</button><button class="btn btn--danger btn--sm">Reject</button>'
+      : '<button class="btn btn--ghost btn--sm">Open</button><button class="btn btn--danger btn--sm">Close</button>';
+    return `
+      <tr>
+        <td><div class="cell-strong">${l.id}</div></td>
+        <td>${l.seller}</td>
+        <td>${l.hash}</td>
+        <td><strong>${l.price}</strong></td>
+        <td>${l.term}</td>
+        <td>${pill}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>
+    `;
+  }).join('');
+
+  // ASIC marketplace
+  const asicListings = [
+    { model: 'Antminer S19 XP', cond: 'Used · 8 mo',  seller: 'jonas.k@example.com',  price: '$2,140', posted: '2026-04-19', status: 'live' },
+    { model: 'Whatsminer M50',  cond: 'New, sealed',  seller: 'aisha.m@example.com',  price: '$2,890', posted: '2026-04-21', status: 'pending' },
+    { model: 'Antminer S21',    cond: 'Used · 2 mo',  seller: 'priya.s@example.com',  price: '$4,990', posted: '2026-04-22', status: 'pending' },
+    { model: 'Avalon A1366',    cond: 'Refurb',       seller: 'marcus.d@example.com', price: '$1,640', posted: '2026-04-15', status: 'sold' },
+    { model: 'Antminer S19j',   cond: 'Used · 14 mo', seller: 'leah.r@example.com',   price: '$890',   posted: '2026-04-10', status: 'rejected' },
+  ];
+  document.getElementById('asicMarketBody').innerHTML = asicListings.map(l => {
+    const pill = l.status === 'live' ? '<span class="pill pill--ok">Live</span>'
+              : l.status === 'pending' ? '<span class="pill pill--warn">Pending</span>'
+              : l.status === 'sold' ? '<span class="pill pill--info">Sold</span>'
+              : '<span class="pill pill--off">Rejected</span>';
+    const actions = l.status === 'pending'
+      ? '<button class="btn btn--primary btn--sm">Approve</button><button class="btn btn--danger btn--sm">Reject</button>'
+      : '<button class="btn btn--ghost btn--sm">Open</button>';
+    return `
+      <tr>
+        <td><div class="cell-strong">${l.model}</div></td>
+        <td>${l.cond}</td>
+        <td>${l.seller}</td>
+        <td><strong>${l.price}</strong></td>
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${l.posted}</span></td>
+        <td>${pill}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>
+    `;
+  }).join('');
+
+  // Transactions
+  const txs = [
+    { date: '2026-04-23 09:01', user: adminEmail,            type: 'Payout',      amount: '+0.00128 BTC', hash: 'a1f3…d92e', status: 'confirmed' },
+    { date: '2026-04-23 08:42', user: 'jonas.k@example.com', type: 'Deposit',     amount: '+0.50000 BTC', hash: 'b8c0…7741', status: 'confirmed' },
+    { date: '2026-04-23 08:14', user: 'aisha.m@example.com', type: 'Withdrawal',  amount: '−0.04200 BTC', hash: '—',         status: 'pending' },
+    { date: '2026-04-23 07:55', user: 'marcus.d@example.com', type: 'Hosting fee', amount: '−0.00041 BTC', hash: 'auto',     status: 'confirmed' },
+    { date: '2026-04-23 06:10', user: 'priya.s@example.com', type: 'Payout',      amount: '+0.00029 BTC', hash: 'e2aa…0c11', status: 'confirmed' },
+    { date: '2026-04-22 22:31', user: 'leah.r@example.com',  type: 'Deposit',     amount: '+0.00500 BTC', hash: 'fa19…6630', status: 'failed' },
+  ];
+  document.getElementById('txBody').innerHTML = txs.map(t => {
+    const pill = t.status === 'confirmed' ? '<span class="pill pill--ok">Confirmed</span>'
+              : t.status === 'pending' ? '<span class="pill pill--warn">Pending</span>'
+              : '<span class="pill pill--off">Failed</span>';
+    const actions = t.status === 'pending'
+      ? '<button class="btn btn--primary btn--sm">Approve</button><button class="btn btn--danger btn--sm">Reject</button>'
+      : '<button class="btn btn--ghost btn--sm">View</button>';
+    return `
+      <tr>
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${t.date}</span></td>
+        <td>${t.user}</td>
+        <td>${t.type}</td>
+        <td><strong>${t.amount}</strong></td>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${t.hash}</span></td>
+        <td>${pill}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>
+    `;
+  }).join('');
+
+  // Activity feed (overview)
+  const feed = [
+    { icon: 'user', text: '<strong>Aisha Mensah</strong> <span>requested withdrawal of 0.042 BTC</span>', time: '8m ago' },
+    { icon: 'cart', text: '<strong>Jonas K.</strong> <span>purchased Cloud · Pro</span>', time: '24m ago' },
+    { icon: 'tag',  text: '<strong>New listing</strong> <span>posted to ASIC marketplace · pending review</span>', time: '1h ago' },
+    { icon: 'user', text: '<strong>Leah R.</strong> <span>signed up</span>', time: '2h ago' },
+    { icon: 'wrench', text: '<strong>Settings updated</strong> <span>Hosting fee changed to $0.049/kWh</span>', time: '6h ago' },
+  ];
+  const icons = {
+    user: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0113 0"/></svg>',
+    cart: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>',
+    tag:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L13.42 20.58a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+    wrench: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 105.4 5.4l-3.7 3.7-1.7 1.7-7.7 7.7a2.4 2.4 0 11-3.4-3.4l7.7-7.7 1.7-1.7 3.7-3.7z"/></svg>',
+  };
+  document.getElementById('activityFeed').innerHTML = feed.map(f => `
+    <div class="feed-item">
+      <span class="feed-icon">${icons[f.icon]}</span>
+      <div class="feed-text">${f.text}</div>
+      <span class="feed-time">${f.time}</span>
+    </div>
+  `).join('');
+
+})();
+</script>
+</body>
+</html>

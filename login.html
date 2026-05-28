@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sign in — Eco Mining</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0b2d4f;
+  --muted: #6b7a8e;
+  --line: #e5ebf2;
+  --bg-alt: #f5f8fc;
+  --primary: #1256E3;
+  --primary-dk: #0e43b4;
+  --green: #1a8f62;
+  --leaf: #6bd1a4;
+  --danger: #c4453d;
+  --sans: 'Inter Tight', system-ui, sans-serif;
+  --serif: 'Instrument Serif', serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink); }
+body { min-height: 100vh; display: flex; }
+
+.auth-aside {
+  width: 44%;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #0b2d4f 0%, #0e3a6a 60%, #1256E3 130%);
+  color: #fff;
+  padding: 40px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.auth-aside::before, .auth-aside::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.05);
+}
+.auth-aside::before { width: 420px; height: 420px; right: -120px; top: -120px; }
+.auth-aside::after { width: 280px; height: 280px; left: -100px; bottom: -80px; background: rgba(107,209,164,.08); }
+
+.aside-logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; position: relative; z-index: 1; }
+.aside-logo span { font-family: var(--sans); font-weight: 700; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
+
+.aside-body { position: relative; z-index: 1; }
+.aside-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px;
+  font-size: 12px;
+  margin-bottom: 28px;
+  font-family: var(--mono);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.aside-pill__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--leaf); }
+
+.aside-h1 {
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -1.6px;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+.aside-h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--leaf); }
+.aside-sub {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.75);
+  margin: 0 0 36px;
+  max-width: 420px;
+}
+
+.live-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 420px;
+}
+.live-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.live-card__kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.55);
+  font-family: var(--mono);
+}
+.live-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--leaf);
+  background: rgba(107,209,164,.12);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.live-card__badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.live-card__num {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  margin: 6px 0 4px;
+}
+.live-card__sub { font-size: 12px; color: rgba(255,255,255,.6); }
+.live-card__bar {
+  margin-top: 14px;
+  height: 4px;
+  background: rgba(255,255,255,.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.live-card__bar-fill {
+  height: 100%;
+  width: 92%;
+  background: linear-gradient(90deg, var(--leaf), #1256E3);
+}
+
+.aside-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255,255,255,.55);
+  font-family: var(--mono);
+  letter-spacing: .5px;
+}
+
+.auth-main {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 56px;
+  background: #fff;
+}
+.auth-card { width: 100%; max-width: 420px; }
+.auth-card__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+.auth-card__back:hover { color: var(--ink); }
+.auth-card h1 {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  margin: 0 0 8px;
+}
+.auth-card__lead {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 32px;
+  line-height: 1.5;
+}
+
+.field { margin-bottom: 18px; }
+.field__row { display: flex; justify-content: space-between; align-items: baseline; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.field__hint-link {
+  font-size: 12px;
+  color: var(--primary);
+  text-decoration: none;
+}
+.field input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(18,86,227,.12);
+}
+.field input.has-error { border-color: var(--danger); }
+.field__err { font-size: 12px; color: var(--danger); margin-top: 6px; display: none; }
+.field.is-invalid .field__err { display: block; }
+
+.checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 6px 0 22px;
+}
+.checkbox input { accent-color: var(--primary); }
+
+.submit {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--primary);
+  color: #fff;
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+}
+.submit:hover { background: var(--primary-dk); border-color: var(--primary-dk); transform: translateY(-1px); }
+.submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+.alt {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.alt a { color: var(--primary); font-weight: 500; text-decoration: none; }
+
+.banner {
+  display: none;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 18px;
+  border: 1px solid;
+}
+.banner.is-show { display: block; }
+.banner--err { background: #fdecec; color: var(--danger); border-color: #f5c6c2; }
+.banner--ok  { background: #e8f6ef; color: var(--green); border-color: #b8e0cb; }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.sso { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sso button {
+  padding: 11px 14px;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+.sso button:hover { border-color: var(--ink); }
+
+@media (max-width: 880px) {
+  body { flex-direction: column; }
+  .auth-aside { width: 100%; min-height: auto; padding: 32px 28px 48px; }
+  .aside-h1 { font-size: 32px; }
+  .auth-main { padding: 40px 24px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="auth-aside">
+  <a href="index.html" class="aside-logo" aria-label="Eco home">
+    <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Eco</span>
+  </a>
+
+  <div class="aside-body">
+    <div class="aside-pill"><span class="aside-pill__dot"></span> Network · live</div>
+    <h1 class="aside-h1">Welcome back to your <em>fleet</em>.</h1>
+    <p class="aside-sub">Pick up where you left off — your rigs have kept hashing while you were away.</p>
+
+    <div class="live-card">
+      <div class="live-card__head">
+        <span class="live-card__kicker">Eco network · 24h</span>
+        <span class="live-card__badge">ONLINE</span>
+      </div>
+      <div class="live-card__num">2.4 EH/s</div>
+      <div class="live-card__sub">118,000+ active miners · 99.98% uptime</div>
+      <div class="live-card__bar"><div class="live-card__bar-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="aside-foot">
+    <span>EN · DE · ES · PT</span>
+    <span>● all systems operational</span>
+  </div>
+</aside>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <a href="index.html" class="auth-card__back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to site
+    </a>
+    <h1>Sign in</h1>
+    <p class="auth-card__lead">Welcome back. Enter your credentials to access your dashboard.</p>
+
+    <div id="banner" class="banner banner--err" role="alert"></div>
+
+    <form id="form" novalidate autocomplete="on">
+      <div class="field" data-field="email">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+        <div class="field__err">Enter a valid email address.</div>
+      </div>
+      <div class="field" data-field="password">
+        <div class="field__row">
+          <label for="password">Password</label>
+          <a href="#" class="field__hint-link" id="forgotLink">Forgot?</a>
+        </div>
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
+        <div class="field__err">Password is required.</div>
+      </div>
+      <div class="checkbox">
+        <input id="remember" type="checkbox" checked />
+        <label for="remember">Keep me signed in on this device</label>
+      </div>
+      <button id="submit" class="submit" type="submit">Sign in →</button>
+    </form>
+
+    <div class="divider"><span>or</span></div>
+    <div class="sso">
+      <button type="button" data-oauth="google">Google</button>
+      <button type="button" data-oauth="github">GitHub</button>
+    </div>
+
+    <div class="alt">
+      New to Eco? <a href="register.html">Create an account</a>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+const sb = window.getSupabase();
+
+if (sb) {
+  sb.auth.getSession().then(({ data }) => {
+    if (data?.session) window.location.replace('dashboard.html');
+  });
+}
+
+const form = document.getElementById('form');
+const banner = document.getElementById('banner');
+const submit = document.getElementById('submit');
+
+function showError(msg) { banner.textContent = msg; banner.classList.add('is-show', 'banner--err'); banner.classList.remove('banner--ok'); }
+function showSuccess(msg) { banner.textContent = msg; banner.classList.add('is-show', 'banner--ok'); banner.classList.remove('banner--err'); }
+function clearError() { banner.classList.remove('is-show', 'banner--ok'); banner.classList.add('banner--err'); banner.textContent = ''; }
+function markField(name, invalid) {
+  const wrap = form.querySelector(`[data-field="${name}"]`);
+  if (!wrap) return;
+  wrap.classList.toggle('is-invalid', invalid);
+  const input = wrap.querySelector('input');
+  if (input) input.classList.toggle('has-error', invalid);
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearError();
+  if (!sb) return;
+
+  const data = Object.fromEntries(new FormData(form));
+  const email = (data.email || '').trim().toLowerCase();
+  const password = data.password || '';
+
+  let valid = true;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  markField('email', !emailOk); if (!emailOk) valid = false;
+  markField('password', !password); if (!password) valid = false;
+  if (!valid) return;
+
+  submit.disabled = true;
+  submit.textContent = 'Signing in…';
+
+  const { data: result, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error || !result?.session) {
+    submit.disabled = false;
+    submit.textContent = 'Sign in →';
+    const msg = error?.message || '';
+    if (/Email not confirmed/i.test(msg)) {
+      showError('Please confirm your email first — check your inbox.');
+    } else if (/Invalid login credentials/i.test(msg)) {
+      showError('Email or password is incorrect.');
+    } else {
+      showError(msg || 'Could not sign in. Please try again.');
+    }
+    return;
+  }
+
+  window.location.href = 'dashboard.html';
+});
+
+['email', 'password'].forEach((k) => {
+  const input = form.querySelector(`[name="${k}"]`);
+  if (input) input.addEventListener('input', () => markField(k, false));
+});
+
+document.getElementById('forgotLink').addEventListener('click', async (e) => {
+  e.preventDefault();
+  clearError();
+  if (!sb) return;
+
+  const email = (document.getElementById('email').value || '').trim().toLowerCase();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailOk) {
+    markField('email', true);
+    document.getElementById('email').focus();
+    showError('Enter your email above, then click "Forgot?" to receive a reset link.');
+    return;
+  }
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/reset-password.html',
+  });
+  if (error) { showError(error.message || 'Could not send reset email.'); return; }
+  showSuccess('Reset link sent — check ' + email + '.');
+});
+
+document.querySelectorAll('[data-oauth]').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    if (!sb) return;
+    clearError();
+    const provider = btn.dataset.oauth;
+    const { error } = await sb.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin + '/dashboard.html' },
+    });
+    if (error) showError(error.message || ('Could not start ' + provider + ' sign-in.'));
+  });
+});
+</script>
+</body>
+</html>

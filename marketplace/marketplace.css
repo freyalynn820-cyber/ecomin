@@ -1,0 +1,141 @@
+/* ============================================================
+   Marketplace · page-specific additions on top of ../store/store.css
+   ============================================================ */
+
+/* Hero strip with marketplace-wide stats */
+.mp-hero {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.mp-hero__intro {
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #0b2d4f 0%, #1256E3 100%);
+  color: #fff;
+}
+.mp-hero__kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,.65);
+  font-family: var(--mono);
+  margin-bottom: 6px;
+}
+.mp-hero__title { font-size: 18px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.3px; }
+.mp-hero__sub { font-size: 13px; color: rgba(255,255,255,.78); margin: 0; line-height: 1.45; }
+
+.mp-hero__stat { padding: 22px 20px; border-left: 1px solid var(--line); }
+.mp-hero__stat-l { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: .8px; }
+.mp-hero__stat-v { font-size: 22px; font-weight: 600; letter-spacing: -.4px; margin-top: 6px; }
+.mp-hero__stat-v small { font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 4px; }
+
+/* Seller bar inside listing cards */
+.seller {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line-2);
+  font-size: 12px;
+}
+.seller__avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4b6fad, #1256E3);
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex: 0 0 auto;
+}
+.seller__name { font-weight: 600; color: var(--ink); }
+.seller__rating { color: var(--gold); font-weight: 600; margin-left: 2px; }
+.seller__deals { color: var(--muted); margin-left: 4px; font-family: var(--mono); font-size: 11px; }
+.seller__id { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+/* Tabs (used on offers page) */
+.tabs {
+  display: inline-flex;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 2px;
+}
+.tabs button {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--sans);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.tabs button .count {
+  background: var(--bg-alt);
+  color: var(--ink);
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--mono);
+}
+.tabs button.is-active { background: var(--ink); color: #fff; }
+.tabs button.is-active .count { background: rgba(255,255,255,.15); color: #fff; }
+
+/* Offers table */
+.table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.table th, .table td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line-2); vertical-align: middle; }
+.table th {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .8px; font-family: var(--mono);
+  background: var(--bg-alt); border-bottom: 1px solid var(--line);
+}
+.table tr:last-child td { border-bottom: none; }
+.table td .cell-strong { font-weight: 600; color: var(--ink); }
+.table td .cell-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.table td:last-child, .table th:last-child { text-align: right; }
+.row-actions { display: inline-flex; gap: 4px; justify-content: flex-end; }
+.btn--danger { background: #fff; color: var(--danger); border-color: #f3c4c0; }
+.btn--danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+.offer-empty {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--muted);
+}
+.offer-empty__icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 1px dashed var(--line);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+  color: var(--muted);
+}
+.offer-empty__title { font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 6px; }
+.offer-empty__body { font-size: 13px; max-width: 340px; margin: 0 auto 18px; line-height: 1.5; }
+
+/* Diff bid vs ask */
+.bid-diff { font-family: var(--mono); font-size: 12px; }
+.bid-diff--down { color: var(--green); }
+.bid-diff--up   { color: var(--warn); }
+
+@media (max-width: 1100px) {
+  .mp-hero { grid-template-columns: 1fr 1fr; }
+  .mp-hero__intro { grid-column: 1 / -1; }
+  .mp-hero__stat { border-top: 1px solid var(--line); }
+}
+@media (max-width: 760px) {
+  .mp-hero { grid-template-columns: 1fr; }
+  .mp-hero__stat { border-left: none; }
+}
