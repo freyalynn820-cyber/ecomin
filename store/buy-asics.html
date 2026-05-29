@@ -243,11 +243,35 @@ document.querySelectorAll('#algoChips .chip').forEach(c => c.addEventListener('c
 document.getElementById('sort').addEventListener('change', render);
 document.getElementById('inStockOnly').addEventListener('change', render);
 
+async function placeOrder(payload, label) {
+  const sb = window.getSupabase ? window.getSupabase() : null;
+  if (!sb) return;
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) { window.location.href = '../login.html'; return; }
+  const { error } = await sb.from('orders').insert({ user_id: user.id, ...payload });
+  if (error) {
+    const msg = /relation .* does not exist|schema cache/.test(error.message)
+      ? 'Orders table not set up yet — run db/orders-withdrawals.sql in Supabase.'
+      : 'Could not place order: ' + error.message;
+    if (window.ecoToast) window.ecoToast(msg);
+    return;
+  }
+  if (window.ecoToast) window.ecoToast(`Order placed: ${label}. Pending review.`);
+}
+
 document.addEventListener('click', (e) => {
   const buy = e.target.closest('button[data-buy]');
   if (buy) {
     const r = asics.find(x => x.id === buy.dataset.buy);
-    if (r && window.ecoToast) window.ecoToast(`Demo: ${r.name} added to cart · $${r.price.toLocaleString()}`);
+    if (!r) return;
+    if (!confirm(`Order ${r.name} — $${r.price.toLocaleString()}?\n\nAn admin will contact you with payment + shipping instructions.`)) return;
+    placeOrder({
+      product_type: 'asic_buy',
+      product_id:   r.id,
+      product_name: r.brand + ' ' + r.name + ' · ' + r.hash,
+      price_usd:    r.price,
+      units:        1,
+    }, r.name + ' · $' + r.price.toLocaleString());
     return;
   }
   const notify = e.target.closest('button[data-notify]');

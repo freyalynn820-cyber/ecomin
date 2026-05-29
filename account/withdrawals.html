@@ -67,10 +67,10 @@
       </div>
 
       <div class="mini-kpi">
-        <div class="mkpi"><div class="mkpi__l">Available balance</div><div class="mkpi__v">0.0382 <small>BTC</small></div><div class="mkpi__sub">≈ $2,704</div></div>
-        <div class="mkpi"><div class="mkpi__l">Pending</div><div class="mkpi__v">0.0420 <small>BTC</small></div><div class="mkpi__sub" style="color:var(--warn)">1 in flight</div></div>
+        <div class="mkpi"><div class="mkpi__l">Available balance</div><div class="mkpi__v"><span id="kpiAvail">0.0000</span> <small>BTC</small></div><div class="mkpi__sub" id="kpiAvailSub">&nbsp;</div></div>
+        <div class="mkpi"><div class="mkpi__l">Pending</div><div class="mkpi__v"><span id="kpiPending">0.0000</span> <small>BTC</small></div><div class="mkpi__sub" id="kpiPendingSub">&nbsp;</div></div>
         <div class="mkpi"><div class="mkpi__l">Min withdrawal</div><div class="mkpi__v">0.001 <small>BTC</small></div></div>
-        <div class="mkpi"><div class="mkpi__l">Network fee</div><div class="mkpi__v">~0.00012 <small>BTC</small></div><div class="mkpi__sub" style="color:var(--muted)">est. at current mempool</div></div>
+        <div class="mkpi"><div class="mkpi__l">Network</div><div class="mkpi__v">Bitcoin</div><div class="mkpi__sub">on-chain</div></div>
       </div>
 
       <div class="row-2">
@@ -187,98 +187,149 @@
 <script src="../config.js"></script>
 <script src="../store/auth.js"></script>
 <script>
-const BTC_USD = 78612.21;
-const NET_FEE = 0.00012;
-const AVAILABLE = 0.0382;
+(async () => {
+  const sb = window.getSupabase ? window.getSupabase() : null;
+  if (!sb) { document.getElementById('gate').remove(); return; }
 
-const history = [
-  { dt: '2026-04-20 14:33', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.04200, fee: 0.00012, hash: 'd417…11c0', status: 'pending' },
-  { dt: '2026-04-09 11:08', net: 'Lightning', to: 'lnbc1…',    amount: 0.00500, fee: 0.000001,hash: 'instant',   status: 'confirmed' },
-  { dt: '2026-03-30 18:44', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.01200, fee: 0.00009, hash: 'a991…77ee', status: 'confirmed' },
-  { dt: '2026-03-15 22:01', net: 'Bitcoin',   to: 'bc1q…r5tk', amount: 0.02000, fee: 0.00011, hash: 'fb22…8a40', status: 'confirmed' },
-  { dt: '2026-03-02 09:30', net: 'Bitcoin',   to: '3J98…ZeP9', amount: 0.00800, fee: 0.00010, hash: 'failed',    status: 'failed' },
-];
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) { document.getElementById('gate').remove(); return; }
 
-function statusPill(s) {
-  return ({
-    confirmed: '<span class="pill pill--ok">Confirmed</span>',
-    pending:   '<span class="pill pill--warn">Pending</span>',
-    failed:    '<span class="pill pill--off">Failed</span>',
-  })[s];
-}
+  let availableBtc = 0;
 
-function renderHist() {
-  document.getElementById('histBody').innerHTML = history.map(h => `
-    <tr data-st="${h.status}">
-      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${h.dt}</span></td>
-      <td>${h.net}</td>
-      <td><span style="font-family:var(--mono);font-size:12px">${h.to}</span></td>
-      <td><div class="cell-strong">${h.amount.toFixed(5)} BTC</div></td>
-      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${h.fee.toFixed(5)}</span></td>
-      <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${h.hash}</span></td>
-      <td>${statusPill(h.status)}</td>
-    </tr>
-  `).join('');
-  applyHist();
-}
-function applyHist() {
-  const st = document.querySelector('#histChips .chip.is-active').dataset.st;
-  document.querySelectorAll('#histBody tr').forEach(tr => {
-    tr.style.display = (st === 'all' || tr.dataset.st === st) ? '' : 'none';
+  function showBanner(msg, ok) {
+    const b = document.getElementById('wdBanner');
+    b.textContent = msg;
+    b.className = 'banner is-show ' + (ok ? 'banner--ok' : 'banner--err');
+    setTimeout(() => b.classList.remove('is-show'), 5000);
+  }
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+  function shortAddr(s) { return !s ? '' : (s.length <= 16 ? s : s.slice(0,8) + '…' + s.slice(-4)); }
+
+  async function loadBalance() {
+    const { data, error } = await sb.from('profiles').select('balance_btc').eq('id', user.id).single();
+    if (error) return;
+    availableBtc = Number(data.balance_btc) || 0;
+    document.getElementById('kpiAvail').textContent = availableBtc.toFixed(4);
+    document.getElementById('wdAmt').max = availableBtc;
+  }
+
+  async function loadHistory() {
+    const { data, error } = await sb
+      .from('withdrawals')
+      .select('id, amount_btc, to_address, status, tx_hash, rejection_reason, network, created_at')
+      .order('created_at', { ascending: false });
+    const tbody = document.getElementById('histBody');
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/orders-withdrawals.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      return;
+    }
+    const rows = data || [];
+    const pending = rows.filter(r => r.status === 'pending');
+    const pendingSum = pending.reduce((s, r) => s + Number(r.amount_btc || 0), 0);
+    document.getElementById('kpiPending').textContent = pendingSum.toFixed(4);
+    document.getElementById('kpiPendingSub').textContent = pending.length
+      ? pending.length + ' in flight'
+      : 'nothing pending';
+    document.getElementById('kpiPendingSub').style.color = pending.length ? 'var(--warn)' : 'var(--muted)';
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">No withdrawals yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(h => {
+      const status = h.status === 'approved'
+        ? '<span class="pill pill--ok">Approved</span>'
+        : h.status === 'rejected'
+          ? '<span class="pill pill--off">Rejected</span>'
+          : '<span class="pill pill--warn">Pending</span>';
+      const st = h.status === 'approved' ? 'confirmed' : h.status === 'rejected' ? 'failed' : 'pending';
+      const when = (h.created_at || '').replace('T',' ').slice(0,16);
+      const note = h.rejection_reason
+        ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(h.rejection_reason)}</div>`
+        : '';
+      return `
+        <tr data-st="${st}">
+          <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(when)}</span></td>
+          <td>${escapeHtml(h.network || 'Bitcoin')}</td>
+          <td><span style="font-family:var(--mono);font-size:12px" title="${escapeHtml(h.to_address)}">${escapeHtml(shortAddr(h.to_address))}</span></td>
+          <td><div class="cell-strong">${Number(h.amount_btc).toFixed(5)} BTC</div>${note}</td>
+          <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">—</span></td>
+          <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(h.tx_hash || '')}">${escapeHtml(h.tx_hash ? shortAddr(h.tx_hash) : '—')}</span></td>
+          <td>${status}</td>
+        </tr>`;
+    }).join('');
+    applyHist();
+  }
+
+  function applyHist() {
+    const st = document.querySelector('#histChips .chip.is-active').dataset.st;
+    document.querySelectorAll('#histBody tr').forEach(tr => {
+      tr.style.display = (st === 'all' || tr.dataset.st === st) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('#histChips .chip').forEach(c => c.addEventListener('click', () => {
+    document.querySelectorAll('#histChips .chip').forEach(x => x.classList.remove('is-active'));
+    c.classList.add('is-active');
+    applyHist();
+  }));
+
+  // Form interactions (cosmetic-only fields ignored on submit)
+  function recompute() {
+    const amt = Number(document.getElementById('wdAmt').value) || 0;
+    document.getElementById('wdSendOut').textContent = amt.toFixed(5);
+    document.getElementById('wdFeeOut').textContent  = '0.00000';
+    document.getElementById('wdUsd').textContent     = '—';
+    document.getElementById('wdNet2').textContent    = 'Bitcoin · on-chain';
+    document.getElementById('wdAddrHint').textContent = 'Bech32 (bc1…) or P2SH (3…) address';
+  }
+  document.getElementById('wdAmt').addEventListener('input', recompute);
+  document.getElementById('wdMax').addEventListener('click', () => {
+    document.getElementById('wdAmt').value = availableBtc.toFixed(8);
+    recompute();
   });
-}
-document.querySelectorAll('#histChips .chip').forEach(c => c.addEventListener('click', () => {
-  document.querySelectorAll('#histChips .chip').forEach(x => x.classList.remove('is-active'));
-  c.classList.add('is-active');
-  applyHist();
-}));
+  document.getElementById('wdReset').addEventListener('click', () => {
+    ['wdAmt','wdAddr','wdMemo'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    recompute();
+  });
 
-// Form
-function recompute() {
-  const amt = Number(document.getElementById('wdAmt').value) || 0;
-  const net = document.getElementById('wdNet').value;
-  const fee = net === 'ln' ? 0.000001 : NET_FEE;
-  const send = Math.max(0, amt - fee);
-  document.getElementById('wdSendOut').textContent = send.toFixed(5);
-  document.getElementById('wdFeeOut').textContent  = fee.toFixed(5);
-  document.getElementById('wdUsd').textContent     = '$' + (amt * BTC_USD).toFixed(2);
-  document.getElementById('wdNet2').textContent    = net === 'ln' ? 'Lightning · instant' : 'Bitcoin · on-chain';
-  document.getElementById('wdAddrHint').textContent = net === 'ln' ? 'Lightning invoice (lnbc...)' : 'Bech32 (bc1…) or P2SH (3…) address';
-}
-document.getElementById('wdAmt').addEventListener('input', recompute);
-document.getElementById('wdNet').addEventListener('change', recompute);
-document.getElementById('wdMax').addEventListener('click', () => { document.getElementById('wdAmt').value = AVAILABLE; recompute(); });
-document.getElementById('wdReset').addEventListener('click', () => {
-  ['wdAmt','wdAddr','wdMemo'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('wdNet').value = 'btc';
+  document.getElementById('wdSubmit').addEventListener('click', async () => {
+    const addr = document.getElementById('wdAddr').value.trim();
+    const amt  = Number(document.getElementById('wdAmt').value) || 0;
+    if (!addr) return showBanner('Enter a destination address.', false);
+    if (amt < 0.001) return showBanner('Minimum withdrawal is 0.001 BTC.', false);
+    if (amt > availableBtc) return showBanner('Insufficient balance.', false);
+
+    const btn = document.getElementById('wdSubmit');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    const { error } = await sb.from('withdrawals').insert({
+      user_id:    user.id,
+      asset:      'BTC',
+      network:    'Bitcoin',
+      amount_btc: amt,
+      to_address: addr,
+    });
+    btn.disabled = false; btn.textContent = 'Withdraw →';
+    if (error) return showBanner('Could not submit: ' + error.message, false);
+
+    showBanner(`Requested ${amt.toFixed(5)} BTC withdrawal — pending admin review.`, true);
+    document.getElementById('wdReset').click();
+    await loadHistory();
+  });
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
+  });
+
+  await loadBalance();
+  await loadHistory();
   recompute();
-});
-
-function showBanner(msg, ok) {
-  const b = document.getElementById('wdBanner');
-  b.textContent = msg;
-  b.className = 'banner is-show ' + (ok ? 'banner--ok' : 'banner--err');
-  setTimeout(() => b.classList.remove('is-show'), 4000);
-}
-
-document.getElementById('wdSubmit').addEventListener('click', () => {
-  const addr = document.getElementById('wdAddr').value.trim();
-  const amt  = Number(document.getElementById('wdAmt').value) || 0;
-  if (!addr) return showBanner('Enter a destination address.', false);
-  if (amt < 0.001) return showBanner('Minimum withdrawal is 0.001 BTC.', false);
-  if (amt > AVAILABLE) return showBanner('Insufficient balance.', false);
-  showBanner(`Demo: queued ${amt.toFixed(5)} BTC withdrawal to ${addr.slice(0, 8)}…`, true);
-  document.getElementById('wdReset').click();
-});
-
-document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-toast]');
-  if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
-});
-
-renderHist();
-recompute();
-document.getElementById('gate').remove();
+  document.getElementById('gate').remove();
+})();
 </script>
 </body>
 </html>

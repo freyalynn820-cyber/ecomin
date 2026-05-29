@@ -581,6 +581,14 @@ html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink);
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 12 15"/><polyline points="7 10 12 15 17 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
           Deposits <span class="badge" id="depositsBadge">0</span>
         </button>
+        <button data-section="withdrawals">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 21 12 9"/><polyline points="7 14 12 9 17 14"/><line x1="3" y1="3" x2="21" y2="3"/></svg>
+          Withdrawals <span class="badge" id="withdrawalsBadge">0</span>
+        </button>
+        <button data-section="orders">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Orders <span class="badge" id="ordersBadge">0</span>
+        </button>
         <button data-section="wallets">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 12h4"/><path d="M2 10h20"/></svg>
           Wallets
@@ -1004,6 +1012,81 @@ html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink);
         </div>
       </section>
 
+      <!-- ===== Withdrawals ===== -->
+      <section class="section" data-section="withdrawals">
+        <div class="page-head">
+          <div>
+            <h1>Withdrawals</h1>
+            <p>User cashout requests. Approve to send funds on-chain and debit the user's BTC balance automatically. Reject with a reason if the request is invalid.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips" id="wdFilter">
+              <button class="chip is-active" data-filter="pending">Pending</button>
+              <button class="chip" data-filter="approved">Approved</button>
+              <button class="chip" data-filter="rejected">Rejected</button>
+              <button class="chip" data-filter="all">All</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Network</th>
+                <th>To address</th>
+                <th>Tx hash</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="wdAdminBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Orders ===== -->
+      <section class="section" data-section="orders">
+        <div class="page-head">
+          <div>
+            <h1>Orders</h1>
+            <p>Purchase requests from the store (cloud contracts, ASIC buys, ASIC rentals). Contact the user with payment + delivery instructions, then mark fulfilled.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips" id="ordFilter">
+              <button class="chip is-active" data-filter="pending">Pending</button>
+              <button class="chip" data-filter="fulfilled">Fulfilled</button>
+              <button class="chip" data-filter="cancelled">Cancelled</button>
+              <button class="chip" data-filter="all">All</button>
+            </div>
+            <div class="chips" id="ordTypeFilter" style="margin-left:auto">
+              <button class="chip is-active" data-type="all">All types</button>
+              <button class="chip" data-type="cloud">Cloud</button>
+              <button class="chip" data-type="asic_buy">Buy ASIC</button>
+              <button class="chip" data-type="asic_rent">Rent ASIC</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ordBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- ===== Settings ===== -->
       <section class="section" data-section="settings">
         <div class="page-head">
@@ -1135,7 +1218,7 @@ function denyAccess(title, text, link) {
     overview: 'Overview', users: 'Users', cloud: 'Cloud packages',
     buyAsics: 'Buy ASICs', rentAsics: 'Rent ASICs',
     hashMarket: 'Hashrate marketplace', asicMarket: 'ASIC marketplace',
-    transactions: 'Transactions', deposits: 'Deposits', wallets: 'Wallet addresses', settings: 'Settings',
+    transactions: 'Transactions', deposits: 'Deposits', withdrawals: 'Withdrawals', orders: 'Orders', wallets: 'Wallet addresses', settings: 'Settings',
   };
   function showSection(name) {
     sections.forEach(s => s.classList.toggle('is-active', s.dataset.section === name));
@@ -1682,6 +1765,213 @@ function denyAccess(title, text, link) {
 
   await loadWallets();
   await loadDeposits();
+
+
+  // ============ Withdrawals (admin) ============
+  const wdAdminBody = document.getElementById('wdAdminBody');
+  let wdFilter = 'pending';
+
+  function wdPill(s) {
+    if (s === 'approved') return '<span class="pill pill--ok">Approved</span>';
+    if (s === 'rejected') return '<span class="pill pill--off">Rejected</span>';
+    return '<span class="pill pill--warn">Pending</span>';
+  }
+
+  function wdRow(w, emailMap) {
+    const email = emailMap[w.user_id] || w.user_id.slice(0, 8);
+    const when = (w.created_at || '').replace('T', ' ').slice(0, 16);
+    const note = w.rejection_reason
+      ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(w.rejection_reason)}</div>` : '';
+    const actions = w.status === 'pending'
+      ? `<button class="btn btn--primary btn--sm" data-act="wd-approve">Approve</button>
+         <button class="btn btn--danger btn--sm" data-act="wd-reject">Reject</button>`
+      : `<span style="color:var(--muted);font-size:12px">—</span>`;
+    return `
+      <tr data-id="${w.id}" data-status="${w.status}">
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(when)}</span></td>
+        <td>${escapeHtml(email)}</td>
+        <td><strong>${Number(w.amount_btc).toFixed(8)} BTC</strong>${note}</td>
+        <td>${escapeHtml(w.network || '—')}</td>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(w.to_address)}">${escapeHtml(shortAddr(w.to_address))}</span></td>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(w.tx_hash || '')}">${escapeHtml(w.tx_hash ? shortHash(w.tx_hash) : '—')}</span></td>
+        <td>${wdPill(w.status)}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>`;
+  }
+
+  async function loadWithdrawals() {
+    wdAdminBody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
+    const { data, error } = await sb
+      .from('withdrawals')
+      .select('id, user_id, asset, network, amount_btc, to_address, tx_hash, status, rejection_reason, created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      wdAdminBody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/orders-withdrawals.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      document.getElementById('withdrawalsBadge').textContent = '0';
+      return;
+    }
+    const rows = data || [];
+    const userIds = [...new Set(rows.map(r => r.user_id))];
+    let emailMap = {};
+    if (userIds.length) {
+      const { data: profs } = await sb.from('profiles').select('id, email').in('id', userIds);
+      (profs || []).forEach(p => { emailMap[p.id] = p.email; });
+    }
+    document.getElementById('withdrawalsBadge').textContent = rows.filter(r => r.status === 'pending').length;
+
+    const filtered = wdFilter === 'all' ? rows : rows.filter(r => r.status === wdFilter);
+    wdAdminBody.innerHTML = filtered.length
+      ? filtered.map(w => wdRow(w, emailMap)).join('')
+      : `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No ${wdFilter === 'all' ? '' : wdFilter + ' '}withdrawals.</td></tr>`;
+  }
+
+  document.getElementById('wdFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('#wdFilter .chip').forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    wdFilter = btn.dataset.filter;
+    loadWithdrawals();
+  });
+
+  wdAdminBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    const act = btn.dataset.act;
+
+    if (act === 'wd-approve') {
+      if (!confirm('Approve this withdrawal? The user\'s BTC balance will be debited.')) return;
+      const txh = prompt('Optional: paste the on-chain transaction hash you broadcast (leave blank if not yet sent):', '');
+      if (txh === null) return;
+      btn.disabled = true; btn.textContent = '…';
+      const payload = { status: 'approved' };
+      if (txh.trim()) payload.tx_hash = txh.trim();
+      const { error } = await sb.from('withdrawals').update(payload).eq('id', id);
+      if (error) { alert('Could not approve: ' + error.message); btn.disabled = false; btn.textContent = 'Approve'; return; }
+      await loadWithdrawals();
+    }
+    if (act === 'wd-reject') {
+      const reason = prompt('Reason for rejection (shown to user):', '');
+      if (reason === null) return;
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('withdrawals').update({ status: 'rejected', rejection_reason: reason.trim() || null }).eq('id', id);
+      if (error) { alert('Could not reject: ' + error.message); btn.disabled = false; btn.textContent = 'Reject'; return; }
+      await loadWithdrawals();
+    }
+  });
+
+
+  // ============ Orders (admin) ============
+  const ordBody = document.getElementById('ordBody');
+  let ordFilter = 'pending';
+  let ordTypeFilter = 'all';
+  const PRODUCT_LABELS = { cloud: 'Cloud', asic_buy: 'Buy ASIC', asic_rent: 'Rent ASIC' };
+
+  function ordPill(s) {
+    if (s === 'fulfilled') return '<span class="pill pill--ok">Fulfilled</span>';
+    if (s === 'cancelled') return '<span class="pill pill--off">Cancelled</span>';
+    return '<span class="pill pill--warn">Pending</span>';
+  }
+
+  function ordRow(o, emailMap) {
+    const email = emailMap[o.user_id] || o.user_id.slice(0, 8);
+    const when = (o.created_at || '').replace('T', ' ').slice(0, 16);
+    const note = o.cancellation_reason
+      ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(o.cancellation_reason)}</div>` : '';
+    const meta = [];
+    if (o.term_months) meta.push(o.term_months + ' mo');
+    if (o.units && o.units > 1) meta.push(o.units + 'x');
+    if (o.site) meta.push(o.site);
+    const subtitle = meta.length ? `<div class="cell-sub">${escapeHtml(meta.join(' · '))}</div>` : '';
+    const actions = o.status === 'pending'
+      ? `<button class="btn btn--primary btn--sm" data-act="ord-fulfill">Fulfill</button>
+         <button class="btn btn--danger btn--sm" data-act="ord-cancel">Cancel</button>`
+      : `<span style="color:var(--muted);font-size:12px">—</span>`;
+    return `
+      <tr data-id="${o.id}" data-status="${o.status}" data-type="${o.product_type}">
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(when)}</span></td>
+        <td>${escapeHtml(email)}</td>
+        <td>${escapeHtml(PRODUCT_LABELS[o.product_type] || o.product_type)}</td>
+        <td><div class="cell-strong">${escapeHtml(o.product_name)}</div>${subtitle}${note}</td>
+        <td><strong>$${Number(o.price_usd).toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong></td>
+        <td>${ordPill(o.status)}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>`;
+  }
+
+  async function loadOrders() {
+    ordBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
+    const { data, error } = await sb
+      .from('orders')
+      .select('id, user_id, product_type, product_id, product_name, price_usd, term_months, units, site, status, cancellation_reason, created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      ordBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/orders-withdrawals.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      document.getElementById('ordersBadge').textContent = '0';
+      return;
+    }
+    const rows = data || [];
+    const userIds = [...new Set(rows.map(r => r.user_id))];
+    let emailMap = {};
+    if (userIds.length) {
+      const { data: profs } = await sb.from('profiles').select('id, email').in('id', userIds);
+      (profs || []).forEach(p => { emailMap[p.id] = p.email; });
+    }
+    document.getElementById('ordersBadge').textContent = rows.filter(r => r.status === 'pending').length;
+
+    const filtered = rows
+      .filter(r => ordFilter === 'all' || r.status === ordFilter)
+      .filter(r => ordTypeFilter === 'all' || r.product_type === ordTypeFilter);
+    ordBody.innerHTML = filtered.length
+      ? filtered.map(o => ordRow(o, emailMap)).join('')
+      : `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">No orders match these filters.</td></tr>`;
+  }
+
+  document.getElementById('ordFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('#ordFilter .chip').forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    ordFilter = btn.dataset.filter;
+    loadOrders();
+  });
+  document.getElementById('ordTypeFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('#ordTypeFilter .chip').forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    ordTypeFilter = btn.dataset.type;
+    loadOrders();
+  });
+
+  ordBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    const act = btn.dataset.act;
+
+    if (act === 'ord-fulfill') {
+      if (!confirm('Mark this order as fulfilled? The user will see it as completed.')) return;
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('orders').update({ status: 'fulfilled' }).eq('id', id);
+      if (error) { alert('Could not fulfill: ' + error.message); btn.disabled = false; btn.textContent = 'Fulfill'; return; }
+      await loadOrders();
+    }
+    if (act === 'ord-cancel') {
+      const reason = prompt('Reason for cancellation (shown to user):', '');
+      if (reason === null) return;
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('orders').update({ status: 'cancelled', cancellation_reason: reason.trim() || null }).eq('id', id);
+      if (error) { alert('Could not cancel: ' + error.message); btn.disabled = false; btn.textContent = 'Cancel'; return; }
+      await loadOrders();
+    }
+  });
+
+  await loadWithdrawals();
+  await loadOrders();
 
 })();
 </script>

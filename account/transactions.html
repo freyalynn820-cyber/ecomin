@@ -77,11 +77,8 @@
         <div class="table-tools">
           <div class="chips" id="typeChips">
             <button class="chip is-active" data-type="all">All</button>
-            <button class="chip" data-type="payout">Payouts</button>
             <button class="chip" data-type="deposit">Deposits</button>
             <button class="chip" data-type="withdrawal">Withdrawals</button>
-            <button class="chip" data-type="fee">Hosting fees</button>
-            <button class="chip" data-type="trade">Trades</button>
           </div>
           <div style="display:flex;gap:10px;align-items:center">
             <input class="input" id="search" placeholder="Search by hash or memo…" style="max-width:240px;font-size:12px;padding:7px 10px" />
@@ -100,7 +97,7 @@
               <th>Type</th>
               <th>Memo</th>
               <th>Amount</th>
-              <th>USD</th>
+              <th>Raw amount</th>
               <th>Tx hash</th>
               <th>Status</th>
               <th></th>
@@ -119,85 +116,135 @@
 <script src="../config.js"></script>
 <script src="../store/auth.js"></script>
 <script>
-const txs = [
-  { dt: '2026-04-23 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00128, usd: 90.66, hash: 'a1f3…d92e', status: 'confirmed' },
-  { dt: '2026-04-22 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00131, usd: 92.83, hash: 'b920…7741', status: 'confirmed' },
-  { dt: '2026-04-22 02:14', type: 'fee',        memo: 'Hosting · auto-deduct',         amount: -0.00041, usd: -29.10, hash: 'auto',     status: 'confirmed' },
-  { dt: '2026-04-21 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00126, usd: 89.24, hash: 'c2e1…3a4b', status: 'confirmed' },
-  { dt: '2026-04-20 14:33', type: 'withdrawal', memo: 'To bc1q…r5tk',                  amount: -0.04200, usd: -2974.0, hash: 'd417…11c0', status: 'pending' },
-  { dt: '2026-04-19 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00134, usd: 94.92, hash: 'e2aa…0c11', status: 'confirmed' },
-  { dt: '2026-04-18 22:31', type: 'deposit',    memo: 'Card · USD → BTC',              amount: 0.00500, usd: 354.20, hash: 'fa19…6630', status: 'confirmed' },
-  { dt: '2026-04-17 11:11', type: 'trade',      memo: 'Bought Cloud · Growth contract',amount: -0.00538, usd: -379.0, hash: '8b04…e913', status: 'confirmed' },
-  { dt: '2026-04-15 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00129, usd: 91.45, hash: '7c11…d28a', status: 'confirmed' },
-  { dt: '2026-04-12 02:14', type: 'fee',        memo: 'Hosting · auto-deduct',         amount: -0.00041, usd: -29.10, hash: 'auto',     status: 'confirmed' },
-  { dt: '2026-04-11 18:02', type: 'trade',      memo: 'Sold listing L-9301 (escrow)',  amount: 0.04200, usd: 2974.0, hash: '6f23…b4c8', status: 'confirmed' },
-  { dt: '2026-04-08 09:01', type: 'payout',     memo: 'Daily reward · 4 rigs',         amount: 0.00118, usd: 83.61, hash: '4a09…2e90', status: 'confirmed' },
-];
+(async () => {
+  const sb = window.getSupabase ? window.getSupabase() : null;
+  if (!sb) { document.getElementById('gate').remove(); return; }
 
-function statusPill(s) {
-  return ({
-    confirmed: '<span class="pill pill--ok">Confirmed</span>',
-    pending:   '<span class="pill pill--warn">Pending</span>',
-    failed:    '<span class="pill pill--off">Failed</span>',
-  })[s] || `<span class="pill pill--info">${s}</span>`;
-}
-function typePill(t) {
-  return ({
-    payout:     '<span class="pill pill--ok">Payout</span>',
-    deposit:    '<span class="pill pill--info">Deposit</span>',
-    withdrawal: '<span class="pill pill--warn">Withdrawal</span>',
-    fee:        '<span class="pill pill--off">Fee</span>',
-    trade:      '<span class="pill pill--info">Trade</span>',
-  })[t] || `<span class="pill pill--info">${t}</span>`;
-}
-function fmtBtc(n) { const sign = n >= 0 ? '+' : '−'; return `<span style="color:${n >= 0 ? 'var(--green)' : 'var(--warn)'}">${sign}${Math.abs(n).toFixed(5)}</span> BTC`; }
-function fmtUsd(n) { const sign = n >= 0 ? '+' : '−'; return `<span style="color:var(--muted);font-family:var(--mono);font-size:12px">${sign}$${Math.abs(n).toFixed(2)}</span>`; }
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+  function shortHash(s) { return !s ? '—' : (s.length <= 16 ? s : s.slice(0,8) + '…' + s.slice(-4)); }
 
-function row(t) {
-  return `
-    <tr data-type="${t.type}" data-search="${(t.memo + ' ' + t.hash).toLowerCase()}">
-      <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${t.dt}</span></td>
-      <td>${typePill(t.type)}</td>
-      <td>${t.memo}</td>
-      <td><div class="cell-strong">${fmtBtc(t.amount)}</div></td>
-      <td>${fmtUsd(t.usd)}</td>
-      <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${t.hash}</span></td>
-      <td>${statusPill(t.status)}</td>
-      <td><div class="row-actions"><button class="btn btn--ghost btn--sm" data-toast="Demo: open transaction details">View</button></div></td>
-    </tr>
-  `;
-}
+  function statusPillFor(type, status) {
+    // deposits: pending|confirmed|rejected; withdrawals: pending|approved|rejected
+    if (status === 'confirmed' || status === 'approved') return '<span class="pill pill--ok">Confirmed</span>';
+    if (status === 'rejected') return '<span class="pill pill--off">Rejected</span>';
+    return '<span class="pill pill--warn">Pending</span>';
+  }
+  function typePill(t) {
+    return ({
+      deposit:    '<span class="pill pill--info">Deposit</span>',
+      withdrawal: '<span class="pill pill--warn">Withdrawal</span>',
+    })[t] || `<span class="pill pill--info">${t}</span>`;
+  }
+  function fmtBtc(n) {
+    const sign = n >= 0 ? '+' : '−';
+    const color = n >= 0 ? 'var(--green)' : 'var(--warn)';
+    return `<span style="color:${color}">${sign}${Math.abs(n).toFixed(5)}</span> BTC`;
+  }
 
-function render() {
-  document.getElementById('txBody').innerHTML = txs.map(row).join('');
-  apply();
-}
+  async function load() {
+    const tbody = document.getElementById('txBody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
 
-function apply() {
-  const type = document.querySelector('#typeChips .chip.is-active').dataset.type;
-  const term = document.getElementById('search').value.toLowerCase().trim();
-  document.querySelectorAll('#txBody tr').forEach(tr => {
-    const matchType = type === 'all' || tr.dataset.type === type;
-    const matchTerm = !term || tr.dataset.search.includes(term);
-    tr.style.display = (matchType && matchTerm) ? '' : 'none';
+    const [depRes, wdRes] = await Promise.all([
+      sb.from('deposits').select('id, asset, amount, amount_btc, status, tx_hash, created_at').order('created_at', { ascending: false }),
+      sb.from('withdrawals').select('id, amount_btc, status, tx_hash, to_address, created_at').order('created_at', { ascending: false }),
+    ]);
+
+    if (depRes.error || wdRes.error) {
+      const msg = (depRes.error || wdRes.error).message;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(msg)}<br><span style="color:var(--muted);font-size:12px">Make sure <code>db/deposits.sql</code> and <code>db/orders-withdrawals.sql</code> have been run.</span></td></tr>`;
+      return;
+    }
+
+    const deposits = (depRes.data || []).map(d => ({
+      type:   'deposit',
+      dt:     d.created_at,
+      memo:   `Deposit · ${d.asset.replace('_',' · ')}`,
+      amount: Number(d.amount_btc || 0),  // 0 until confirmed
+      raw:    Number(d.amount || 0),
+      unit:   d.asset.startsWith('USDT') ? 'USDT' : d.asset,
+      hash:   d.tx_hash,
+      status: d.status,
+    }));
+    const withdrawals = (wdRes.data || []).map(w => ({
+      type:   'withdrawal',
+      dt:     w.created_at,
+      memo:   `Withdrawal to ${(w.to_address || '').slice(0,10)}…`,
+      amount: -Number(w.amount_btc || 0),
+      raw:    Number(w.amount_btc || 0),
+      unit:   'BTC',
+      hash:   w.tx_hash,
+      status: w.status,
+    }));
+
+    const all = [...deposits, ...withdrawals].sort((a, b) => (b.dt || '').localeCompare(a.dt || ''));
+
+    // Header KPIs
+    const since30 = new Date(Date.now() - 30 * 86400 * 1000).toISOString();
+    const net30 = all
+      .filter(r => r.dt >= since30 && (r.status === 'confirmed' || r.status === 'approved'))
+      .reduce((s, r) => s + r.amount, 0);
+    const pendingCount = all.filter(r => r.status === 'pending').length;
+    const kpis = document.querySelectorAll('.mkpi');
+    if (kpis[0]) kpis[0].querySelector('.mkpi__v').innerHTML = `${net30 >= 0 ? '+' : '−'}${Math.abs(net30).toFixed(4)} <small>BTC</small>`;
+    if (kpis[1]) { kpis[1].querySelector('.mkpi__l').textContent = 'Deposits'; kpis[1].querySelector('.mkpi__v').innerHTML = `${deposits.length} <small>txs</small>`; kpis[1].querySelector('.mkpi__sub').textContent = ''; }
+    if (kpis[2]) { kpis[2].querySelector('.mkpi__l').textContent = 'Withdrawals'; kpis[2].querySelector('.mkpi__v').innerHTML = `${withdrawals.length} <small>txs</small>`; kpis[2].querySelector('.mkpi__sub').textContent = ''; }
+    if (kpis[3]) { kpis[3].querySelector('.mkpi__v').textContent = pendingCount; kpis[3].querySelector('.mkpi__sub').textContent = pendingCount ? 'awaits review' : 'all settled'; kpis[3].querySelector('.mkpi__sub').style.color = pendingCount ? 'var(--warn)' : 'var(--muted)'; }
+
+    if (!all.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No transactions yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = all.map(t => {
+      const dt = (t.dt || '').replace('T',' ').slice(0,16);
+      const search = (t.memo + ' ' + (t.hash || '')).toLowerCase();
+      const amtCell = t.status === 'pending' && t.type === 'deposit'
+        ? `<span style="color:var(--muted)">pending review</span>`
+        : `<div class="cell-strong">${fmtBtc(t.amount)}</div>`;
+      const rawCell = `<span style="color:var(--muted);font-family:var(--mono);font-size:12px">${Number(t.raw).toLocaleString(undefined, { maximumFractionDigits: 8 })} ${escapeHtml(t.unit)}</span>`;
+      return `
+        <tr data-type="${t.type}" data-search="${escapeHtml(search)}">
+          <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(dt)}</span></td>
+          <td>${typePill(t.type)}</td>
+          <td>${escapeHtml(t.memo)}</td>
+          <td>${amtCell}</td>
+          <td>${rawCell}</td>
+          <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(t.hash || '')}">${escapeHtml(shortHash(t.hash))}</span></td>
+          <td>${statusPillFor(t.type, t.status)}</td>
+          <td></td>
+        </tr>`;
+    }).join('');
+    apply();
+  }
+
+  function apply() {
+    const type = document.querySelector('#typeChips .chip.is-active').dataset.type;
+    const term = document.getElementById('search').value.toLowerCase().trim();
+    document.querySelectorAll('#txBody tr').forEach(tr => {
+      const matchType = type === 'all' || tr.dataset.type === type;
+      const matchTerm = !term || tr.dataset.search.includes(term);
+      tr.style.display = (matchType && matchTerm) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('#typeChips .chip').forEach(c => c.addEventListener('click', () => {
+    document.querySelectorAll('#typeChips .chip').forEach(x => x.classList.remove('is-active'));
+    c.classList.add('is-active');
+    apply();
+  }));
+  document.getElementById('search').addEventListener('input', apply);
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-toast]');
+    if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
   });
-}
 
-document.querySelectorAll('#typeChips .chip').forEach(c => c.addEventListener('click', () => {
-  document.querySelectorAll('#typeChips .chip').forEach(x => x.classList.remove('is-active'));
-  c.classList.add('is-active');
-  apply();
-}));
-document.getElementById('search').addEventListener('input', apply);
-document.getElementById('range').addEventListener('change', apply);
-
-document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-toast]');
-  if (t && window.ecoToast) window.ecoToast(t.dataset.toast);
-});
-
-render();
-document.getElementById('gate').remove();
+  await load();
+  document.getElementById('gate').remove();
+})();
 </script>
 </body>
 </html>
