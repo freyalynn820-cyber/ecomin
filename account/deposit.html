@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Deposit · Core Hash</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="account.css" />
+<style>
+  .dep-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; }
+  @media (max-width: 980px) { .dep-grid { grid-template-columns: 1fr; } }
+
+  .asset-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 22px 18px; }
+  .asset-chips .chip { cursor: pointer; }
+
+  .wallet-card { padding: 22px; }
+  .wallet-card__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .wallet-card__title { font-size: 15px; font-weight: 600; margin: 0; }
+  .wallet-card__net { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+  .addr-wrap {
+    display: flex; gap: 8px; align-items: center;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; background: var(--bg-alt);
+  }
+  .addr-wrap code {
+    flex: 1; font-family: var(--mono); font-size: 12.5px;
+    color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .copy-btn { white-space: nowrap; }
+
+  .qr-wrap { display: flex; justify-content: center; padding: 18px 0 6px; }
+  .qr-wrap img { width: 180px; height: 180px; border: 1px solid var(--line); border-radius: 10px; padding: 6px; background: #fff; }
+
+  .warn-box {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: #fff8eb;
+    border: 1px solid #f3dca6;
+    border-radius: 9px;
+    font-size: 12.5px;
+    color: #7a5a0d;
+    line-height: 1.45;
+  }
+
+  .empty-state {
+    padding: 22px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .pill--pending { background: #fff3df; color: #8a5a16; border-color: #f3dca6; }
+  .pill--confirmed { background: #e8f6ef; color: var(--green); border-color: #b8e0cb; }
+  .pill--rejected { background: #fdecec; color: var(--danger); border-color: #f5c6c2; }
+
+  .copy-ok { color: var(--green); font-size: 12px; margin-left: 8px; opacity: 0; transition: opacity .2s; }
+  .copy-ok.is-show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Core Hash</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Overview</a>
+        <a href="../store/buy-cloud.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>BTC Mining Store</a>
+        <a href="../marketplace/hashrate.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>Marketplace</a>
+        <a href="referrals.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Referrals</a>
+        <a href="rewards.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Core Hash Rewards</a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="settings.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+        <a href="deposit.html" class="is-active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 12 15"/><polyline points="7 10 12 15 17 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Deposit</a>
+        <a href="transactions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>Transactions</a>
+        <a href="withdrawals.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Withdrawals</a>
+        <a href="../admin/" id="adminLink" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin</a>
+        <a href="#" id="logoutLink"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><a href="../dashboard.html">Dashboard</a> · <strong>Deposit</strong></div>
+      <div class="topbar__right">
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-head">
+        <div>
+          <h1>Deposit funds</h1>
+          <p>Send crypto to the address below, then enter the transaction hash. We'll credit your account in BTC once the transfer is confirmed on chain.</p>
+        </div>
+      </div>
+
+      <div class="dep-grid">
+
+        <!-- LEFT: pick asset + show wallet + submit -->
+        <div>
+          <div class="section-card">
+            <div class="section-card__head">
+              <div>
+                <h3>1 · Pick an asset</h3>
+                <p>Choose the network you'll send from.</p>
+              </div>
+            </div>
+            <div class="asset-chips" id="assetChips">
+              <button class="chip is-active" data-asset="BTC">BTC</button>
+              <button class="chip" data-asset="USDT_TRC20">USDT · TRC20</button>
+              <button class="chip" data-asset="USDT_ERC20">USDT · ERC20</button>
+              <button class="chip" data-asset="ETH">ETH</button>
+            </div>
+
+            <div id="walletCard" class="wallet-card">
+              <div class="empty-state">Loading wallet…</div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card__head">
+              <div>
+                <h3>2 · Tell us about your transfer</h3>
+                <p>We use this to find your deposit on chain.</p>
+              </div>
+            </div>
+            <div id="banner" class="banner" role="alert"></div>
+            <form id="depositForm" autocomplete="off">
+              <div class="form-row">
+                <div class="form-row__l"><strong>Amount sent</strong><span>Exact amount you transferred.</span></div>
+                <div class="form-row__r" style="gap:6px">
+                  <input id="amount" class="input" type="number" step="any" min="0" placeholder="0.00" required style="max-width:200px" />
+                  <span id="amountUnit" style="font-family:var(--mono);font-size:13px;color:var(--muted)">BTC</span>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-row__l"><strong>Transaction hash</strong><span>From your wallet or block explorer.</span></div>
+                <div class="form-row__r">
+                  <input id="txHash" class="input input--mono" type="text" placeholder="e.g. 9b2c…f0a1" required minlength="10" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-row__l"></div>
+                <div class="form-row__r">
+                  <button id="submitBtn" class="btn btn--primary" type="submit">Submit deposit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT: user's own deposits -->
+        <div>
+          <div class="section-card">
+            <div class="section-card__head">
+              <div>
+                <h3>Your deposits</h3>
+                <p>Pending entries are credited once an admin confirms them on chain.</p>
+              </div>
+            </div>
+            <div class="table-wrap" style="border:none;border-radius:0">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>When</th>
+                    <th>Asset</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="depositsBody">
+                  <tr><td colspan="4" class="empty-state">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+(async () => {
+  const sb = window.getSupabase ? window.getSupabase() : null;
+  if (!sb) return;
+  // store/auth.js handles session-gate + reveal of #app.
+
+  const ASSET_META = {
+    BTC:        { unit: 'BTC',  name: 'Bitcoin',          network: 'Bitcoin' },
+    ETH:        { unit: 'ETH',  name: 'Ethereum',         network: 'Ethereum (ERC20)' },
+    USDT_ERC20: { unit: 'USDT', name: 'Tether USD',       network: 'Ethereum (ERC20)' },
+    USDT_TRC20: { unit: 'USDT', name: 'Tether USD',       network: 'Tron (TRC20)' },
+  };
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  const banner = document.getElementById('banner');
+  function showError(msg) { banner.textContent = msg; banner.classList.remove('banner--ok'); banner.classList.add('banner--err','is-show'); }
+  function showOk(msg)    { banner.textContent = msg; banner.classList.remove('banner--err'); banner.classList.add('banner--ok','is-show'); }
+  function clearBanner()  { banner.classList.remove('is-show'); banner.textContent = ''; }
+
+  const assetChips = document.getElementById('assetChips');
+  const walletCard = document.getElementById('walletCard');
+  const amountUnit = document.getElementById('amountUnit');
+  let walletsByAsset = {};      // asset -> active wallet (first one)
+  let currentAsset = 'BTC';
+
+  function renderWalletCard() {
+    const meta = ASSET_META[currentAsset];
+    amountUnit.textContent = meta.unit;
+    const w = walletsByAsset[currentAsset];
+    if (!w) {
+      walletCard.innerHTML = `
+        <div class="empty-state">
+          No ${escapeHtml(meta.name)} address has been configured yet.<br>
+          <span style="color:var(--muted);font-size:12px">Please check back shortly or contact <a href="mailto:support@corehash.cc">support@corehash.cc</a>.</span>
+        </div>`;
+      return;
+    }
+    const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=' + encodeURIComponent(w.address);
+    walletCard.innerHTML = `
+      <div class="wallet-card__head">
+        <h4 class="wallet-card__title">Send ${escapeHtml(meta.name)} to this address</h4>
+        <span class="wallet-card__net">${escapeHtml(w.network || meta.network)}</span>
+      </div>
+      <div class="addr-wrap">
+        <code id="depAddress">${escapeHtml(w.address)}</code>
+        <button type="button" class="btn btn--ghost btn--sm copy-btn" id="copyAddr">Copy</button>
+        <span class="copy-ok" id="copyOk">copied</span>
+      </div>
+      <div class="qr-wrap"><img alt="Address QR" src="${qrUrl}"></div>
+      <div class="warn-box">
+        Only send <strong>${escapeHtml(meta.unit)}</strong> on the <strong>${escapeHtml(w.network || meta.network)}</strong> network to this address. Sending another asset or using the wrong network will result in lost funds.
+      </div>
+    `;
+    document.getElementById('copyAddr').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(w.address);
+        const ok = document.getElementById('copyOk');
+        ok.classList.add('is-show');
+        setTimeout(() => ok.classList.remove('is-show'), 1400);
+      } catch (_) { /* clipboard not available */ }
+    });
+  }
+
+  async function loadWallets() {
+    const { data, error } = await sb
+      .from('wallet_addresses')
+      .select('id, asset, network, address, label, is_active')
+      .eq('is_active', true)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      walletCard.innerHTML = `<div class="empty-state" style="color:var(--danger)">Could not load wallets: ${escapeHtml(error.message)}</div>`;
+      return;
+    }
+    walletsByAsset = {};
+    (data || []).forEach(w => {
+      if (!walletsByAsset[w.asset]) walletsByAsset[w.asset] = w;
+    });
+    renderWalletCard();
+  }
+
+  assetChips.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    assetChips.querySelectorAll('.chip').forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    currentAsset = btn.dataset.asset;
+    renderWalletCard();
+  });
+
+  function statusPill(s) {
+    if (s === 'confirmed') return '<span class="pill pill--confirmed">Confirmed</span>';
+    if (s === 'rejected')  return '<span class="pill pill--rejected">Rejected</span>';
+    return '<span class="pill pill--pending">Pending</span>';
+  }
+
+  async function loadDeposits() {
+    const tbody = document.getElementById('depositsBody');
+    const { data, error } = await sb
+      .from('deposits')
+      .select('id, asset, amount, amount_btc, status, created_at, rejection_reason')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="color:var(--danger)">${escapeHtml(error.message)}</td></tr>`;
+      return;
+    }
+    const rows = data || [];
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No deposits yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(d => {
+      const meta = ASSET_META[d.asset] || { unit: d.asset };
+      const when = (d.created_at || '').replace('T',' ').slice(0,16);
+      const amt = Number(d.amount).toLocaleString(undefined, { maximumFractionDigits: 8 }) + ' ' + meta.unit;
+      const credited = d.status === 'confirmed' && d.amount_btc
+        ? `<div class="cell-sub" style="color:var(--green)">+${Number(d.amount_btc).toFixed(8)} BTC credited</div>`
+        : (d.status === 'rejected' && d.rejection_reason
+            ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(d.rejection_reason)}</div>`
+            : '');
+      return `<tr>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${escapeHtml(when)}</span></td>
+        <td>${escapeHtml(d.asset.replace('_',' · '))}</td>
+        <td>${escapeHtml(amt)}${credited}</td>
+        <td>${statusPill(d.status)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('depositForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearBanner();
+
+    const amount = parseFloat(document.getElementById('amount').value);
+    const txHash = document.getElementById('txHash').value.trim();
+    const wallet = walletsByAsset[currentAsset];
+
+    if (!wallet) { showError('No address available for this asset right now. Please pick another.'); return; }
+    if (!isFinite(amount) || amount <= 0) { showError('Enter the amount you sent.'); return; }
+    if (txHash.length < 10) { showError('Enter the transaction hash from your wallet or block explorer.'); return; }
+
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { showError('Your session expired. Please sign in again.'); return; }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true; submitBtn.textContent = 'Submitting…';
+
+    const { error } = await sb.from('deposits').insert({
+      user_id:    user.id,
+      asset:      currentAsset,
+      network:    wallet.network || ASSET_META[currentAsset].network,
+      amount,
+      to_address: wallet.address,
+      tx_hash:    txHash,
+    });
+
+    submitBtn.disabled = false; submitBtn.textContent = 'Submit deposit';
+
+    if (error) {
+      showError('Could not submit: ' + error.message);
+      return;
+    }
+    document.getElementById('depositForm').reset();
+    showOk('Deposit submitted. We\'ll credit your balance once it\'s confirmed.');
+    await loadDeposits();
+  });
+
+  await loadWallets();
+  await loadDeposits();
+})();
+</script>
+</body>
+</html>

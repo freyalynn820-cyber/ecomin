@@ -577,6 +577,14 @@ html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink);
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>
           Transactions
         </button>
+        <button data-section="deposits">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 12 15"/><polyline points="7 10 12 15 17 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
+          Deposits <span class="badge" id="depositsBadge">0</span>
+        </button>
+        <button data-section="wallets">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 12h4"/><path d="M2 10h20"/></svg>
+          Wallets
+        </button>
         <button data-section="settings">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Settings
@@ -903,6 +911,99 @@ html, body { margin: 0; padding: 0; font-family: var(--sans); color: var(--ink);
         </div>
       </section>
 
+      <!-- ===== Deposits ===== -->
+      <section class="section" data-section="deposits">
+        <div class="page-head">
+          <div>
+            <h1>Deposits</h1>
+            <p>User-submitted crypto deposits. Verify the transaction on-chain, then approve with the BTC amount to credit.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="chips" id="depFilter">
+              <button class="chip is-active" data-filter="pending">Pending</button>
+              <button class="chip" data-filter="confirmed">Confirmed</button>
+              <button class="chip" data-filter="rejected">Rejected</button>
+              <button class="chip" data-filter="all">All</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>User</th>
+                <th>Asset</th>
+                <th>Amount sent</th>
+                <th>To address</th>
+                <th>Tx hash</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="depBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Wallets ===== -->
+      <section class="section" data-section="wallets">
+        <div class="page-head">
+          <div>
+            <h1>Wallet addresses</h1>
+            <p>The deposit addresses shown to users. Add at least one per asset. Disable an address to stop showing it without deleting history.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card__head"><div><h3 class="card__title">Add wallet address</h3></div></div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Asset</strong><span>What the user will send.</span></div>
+            <div class="form-row__r">
+              <select class="input" id="walAsset" style="max-width:220px">
+                <option value="BTC">BTC · Bitcoin</option>
+                <option value="USDT_TRC20">USDT · Tron (TRC20)</option>
+                <option value="USDT_ERC20">USDT · Ethereum (ERC20)</option>
+                <option value="ETH">ETH · Ethereum</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Network</strong><span>Shown to the user so they pick the right chain.</span></div>
+            <div class="form-row__r"><input class="input" id="walNetwork" placeholder="e.g. Bitcoin, Tron (TRC20)" style="max-width:280px" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Address</strong><span>The receiving wallet address.</span></div>
+            <div class="form-row__r"><input class="input input--mono" id="walAddress" placeholder="bc1q… or 0x… or T…" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"><strong>Label</strong><span>Optional internal note (e.g. "main treasury").</span></div>
+            <div class="form-row__r"><input class="input" id="walLabel" placeholder="optional" style="max-width:280px" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-row__l"></div>
+            <div class="form-row__r"><button class="btn btn--primary" id="walAdd">Add address</button><span id="walMsg" style="font-size:12px;color:var(--muted)"></span></div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Network</th>
+                <th>Address</th>
+                <th>Label</th>
+                <th>Status</th>
+                <th>Added</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="walBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- ===== Settings ===== -->
       <section class="section" data-section="settings">
         <div class="page-head">
@@ -1034,7 +1135,7 @@ function denyAccess(title, text, link) {
     overview: 'Overview', users: 'Users', cloud: 'Cloud packages',
     buyAsics: 'Buy ASICs', rentAsics: 'Rent ASICs',
     hashMarket: 'Hashrate marketplace', asicMarket: 'ASIC marketplace',
-    transactions: 'Transactions', settings: 'Settings',
+    transactions: 'Transactions', deposits: 'Deposits', wallets: 'Wallet addresses', settings: 'Settings',
   };
   function showSection(name) {
     sections.forEach(s => s.classList.toggle('is-active', s.dataset.section === name));
@@ -1373,6 +1474,214 @@ function denyAccess(title, text, link) {
       <span class="feed-time">${f.time}</span>
     </div>
   `).join('');
+
+
+  // ============ Wallet addresses ============
+  const ASSET_LABEL = {
+    BTC: 'BTC', ETH: 'ETH',
+    USDT_ERC20: 'USDT · ERC20', USDT_TRC20: 'USDT · TRC20',
+  };
+  const NET_DEFAULT = {
+    BTC: 'Bitcoin', ETH: 'Ethereum',
+    USDT_ERC20: 'Ethereum (ERC20)', USDT_TRC20: 'Tron (TRC20)',
+  };
+
+  const walBody = document.getElementById('walBody');
+  const walMsg  = document.getElementById('walMsg');
+
+  function walRow(w) {
+    const status = w.is_active
+      ? '<span class="pill pill--ok">Active</span>'
+      : '<span class="pill pill--mute">Disabled</span>';
+    const added = (w.created_at || '').slice(0, 10);
+    return `
+      <tr data-id="${w.id}">
+        <td><strong>${escapeHtml(ASSET_LABEL[w.asset] || w.asset)}</strong></td>
+        <td>${escapeHtml(w.network || '')}</td>
+        <td><span style="font-family:var(--mono);font-size:12px">${escapeHtml(w.address)}</span></td>
+        <td>${escapeHtml(w.label || '')}</td>
+        <td>${status}</td>
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(added)}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn btn--ghost btn--sm" data-act="${w.is_active ? 'disable' : 'enable'}">${w.is_active ? 'Disable' : 'Enable'}</button>
+            <button class="btn btn--danger btn--sm" data-act="delete">Delete</button>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  async function loadWallets() {
+    walBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
+    const { data, error } = await sb
+      .from('wallet_addresses')
+      .select('id, asset, network, address, label, is_active, created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      walBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/deposits.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      return;
+    }
+    walBody.innerHTML = (data && data.length)
+      ? data.map(walRow).join('')
+      : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">No wallet addresses yet — add one above.</td></tr>';
+  }
+
+  document.getElementById('walAsset').addEventListener('change', (e) => {
+    document.getElementById('walNetwork').value = NET_DEFAULT[e.target.value] || '';
+  });
+  document.getElementById('walNetwork').value = NET_DEFAULT['BTC'];
+
+  document.getElementById('walAdd').addEventListener('click', async () => {
+    walMsg.textContent = '';
+    const asset   = document.getElementById('walAsset').value;
+    const network = document.getElementById('walNetwork').value.trim();
+    const address = document.getElementById('walAddress').value.trim();
+    const label   = document.getElementById('walLabel').value.trim();
+    if (!network || !address) { walMsg.style.color = 'var(--danger)'; walMsg.textContent = 'Network and address are required.'; return; }
+    const btn = document.getElementById('walAdd');
+    btn.disabled = true; btn.textContent = 'Adding…';
+    const { error } = await sb.from('wallet_addresses').insert({ asset, network, address, label: label || null });
+    btn.disabled = false; btn.textContent = 'Add address';
+    if (error) { walMsg.style.color = 'var(--danger)'; walMsg.textContent = error.message; return; }
+    walMsg.style.color = 'var(--green)'; walMsg.textContent = 'Added.';
+    document.getElementById('walAddress').value = '';
+    document.getElementById('walLabel').value = '';
+    await loadWallets();
+  });
+
+  walBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const id = btn.closest('tr').dataset.id;
+    const act = btn.dataset.act;
+    btn.disabled = true;
+    if (act === 'enable' || act === 'disable') {
+      const { error } = await sb.from('wallet_addresses').update({ is_active: act === 'enable', updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) alert(error.message);
+    } else if (act === 'delete') {
+      if (!confirm('Delete this wallet address? Existing deposit history is kept.')) { btn.disabled = false; return; }
+      const { error } = await sb.from('wallet_addresses').delete().eq('id', id);
+      if (error) alert(error.message);
+    }
+    await loadWallets();
+  });
+
+
+  // ============ Deposits ============
+  const depBody = document.getElementById('depBody');
+  let depFilter = 'pending';
+
+  function shortHash(s) {
+    if (!s) return '';
+    return s.length <= 16 ? s : s.slice(0, 8) + '…' + s.slice(-6);
+  }
+  function shortAddr(s) {
+    if (!s) return '';
+    return s.length <= 18 ? s : s.slice(0, 8) + '…' + s.slice(-6);
+  }
+
+  function depPill(status) {
+    if (status === 'confirmed') return '<span class="pill pill--ok">Confirmed</span>';
+    if (status === 'rejected')  return '<span class="pill pill--off">Rejected</span>';
+    return '<span class="pill pill--warn">Pending</span>';
+  }
+
+  function depRow(d, emailMap) {
+    const email = emailMap[d.user_id] || d.user_id.slice(0, 8);
+    const when = (d.created_at || '').replace('T', ' ').slice(0, 16);
+    const amt  = Number(d.amount).toLocaleString(undefined, { maximumFractionDigits: 8 });
+    const unit = (d.asset || '').startsWith('USDT') ? 'USDT' : d.asset;
+    const credited = d.amount_btc ? `<div class="cell-sub" style="color:var(--green)">+${Number(d.amount_btc).toFixed(8)} BTC</div>` : '';
+    const reasoned = d.rejection_reason ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(d.rejection_reason)}</div>` : '';
+    const actions = d.status === 'pending'
+      ? `<button class="btn btn--primary btn--sm" data-act="approve">Approve</button>
+         <button class="btn btn--danger btn--sm" data-act="reject">Reject</button>`
+      : `<span style="color:var(--muted);font-size:12px">—</span>`;
+    return `
+      <tr data-id="${d.id}" data-status="${d.status}" data-user="${d.user_id}">
+        <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(when)}</span></td>
+        <td>${escapeHtml(email)}</td>
+        <td>${escapeHtml(ASSET_LABEL[d.asset] || d.asset)}</td>
+        <td><strong>${escapeHtml(amt)} ${escapeHtml(unit)}</strong>${credited}${reasoned}</td>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${escapeHtml(shortAddr(d.to_address))}</span></td>
+        <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(d.tx_hash)}">${escapeHtml(shortHash(d.tx_hash))}</span></td>
+        <td>${depPill(d.status)}</td>
+        <td><div class="row-actions">${actions}</div></td>
+      </tr>`;
+  }
+
+  async function loadDeposits() {
+    depBody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
+    const { data, error } = await sb
+      .from('deposits')
+      .select('id, user_id, asset, network, amount, amount_btc, to_address, tx_hash, status, rejection_reason, created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      depBody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/deposits.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      document.getElementById('depositsBadge').textContent = '0';
+      return;
+    }
+    const rows = data || [];
+    const userIds = [...new Set(rows.map(r => r.user_id))];
+    let emailMap = {};
+    if (userIds.length) {
+      const { data: profs } = await sb.from('profiles').select('id, email').in('id', userIds);
+      (profs || []).forEach(p => { emailMap[p.id] = p.email; });
+    }
+    const pendingCount = rows.filter(r => r.status === 'pending').length;
+    document.getElementById('depositsBadge').textContent = pendingCount;
+
+    const filtered = depFilter === 'all' ? rows : rows.filter(r => r.status === depFilter);
+    depBody.innerHTML = filtered.length
+      ? filtered.map(d => depRow(d, emailMap)).join('')
+      : `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No ${depFilter === 'all' ? '' : depFilter + ' '}deposits.</td></tr>`;
+  }
+
+  document.getElementById('depFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('#depFilter .chip').forEach(c => c.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    depFilter = btn.dataset.filter;
+    loadDeposits();
+  });
+
+  depBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    const act = btn.dataset.act;
+
+    if (act === 'approve') {
+      const raw = prompt('How much BTC should be credited to the user for this deposit?\n\n(Verify the transaction on a block explorer first, then enter the BTC equivalent to credit.)', '');
+      if (raw === null) return;
+      const amount_btc = parseFloat(raw);
+      if (!isFinite(amount_btc) || amount_btc <= 0) { alert('Enter a positive BTC amount.'); return; }
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('deposits').update({
+        status: 'confirmed',
+        amount_btc,
+      }).eq('id', id);
+      if (error) { alert('Could not approve: ' + error.message); btn.disabled = false; btn.textContent = 'Approve'; return; }
+      await loadDeposits();
+    }
+
+    if (act === 'reject') {
+      const reason = prompt('Reason for rejection (shown to the user):', '');
+      if (reason === null) return;
+      btn.disabled = true; btn.textContent = '…';
+      const { error } = await sb.from('deposits').update({
+        status: 'rejected',
+        rejection_reason: reason.trim() || null,
+      }).eq('id', id);
+      if (error) { alert('Could not reject: ' + error.message); btn.disabled = false; btn.textContent = 'Reject'; return; }
+      await loadDeposits();
+    }
+  });
+
+  await loadWallets();
+  await loadDeposits();
 
 })();
 </script>
