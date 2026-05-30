@@ -243,12 +243,16 @@ document.querySelectorAll('#termChips .chip').forEach(c => c.addEventListener('c
 }));
 document.getElementById('sort').addEventListener('change', render);
 
-async function placeOrder(payload, label) {
+async function placeOrder(payload) {
   const sb = window.getSupabase ? window.getSupabase() : null;
   if (!sb) return;
   const { data: { user } } = await sb.auth.getUser();
   if (!user) { window.location.href = '../login.html'; return; }
-  const { error } = await sb.from('orders').insert({ user_id: user.id, ...payload });
+  const { data, error } = await sb
+    .from('orders')
+    .insert({ user_id: user.id, ...payload })
+    .select('id')
+    .single();
   if (error) {
     const msg = /relation .* does not exist|schema cache/.test(error.message)
       ? 'Orders table not set up yet — run db/orders-withdrawals.sql in Supabase.'
@@ -256,7 +260,7 @@ async function placeOrder(payload, label) {
     if (window.ecoToast) window.ecoToast(msg);
     return;
   }
-  if (window.ecoToast) window.ecoToast(`Order placed: ${label}. Pending review.`);
+  window.location.href = '../account/deposit.html?order=' + encodeURIComponent(data.id);
 }
 
 document.addEventListener('click', (e) => {
@@ -264,7 +268,7 @@ document.addEventListener('click', (e) => {
   if (!btn) return;
   const c = contracts.find(x => x.id === btn.dataset.buy);
   if (!c) return;
-  if (!confirm(`Place order for ${c.name} contract — $${c.price.toLocaleString()} for ${fmtTerm(c.term)}?\n\nAn admin will contact you with payment instructions.`)) return;
+  if (!confirm(`Continue to payment for the ${c.name} contract — $${c.price.toLocaleString()} for ${fmtTerm(c.term)}?\n\nYou'll see a wallet address to send crypto to on the next page.`)) return;
   placeOrder({
     product_type: 'cloud',
     product_id:   c.id,
@@ -272,7 +276,7 @@ document.addEventListener('click', (e) => {
     price_usd:    c.price,
     term_months:  c.term,
     units:        1,
-  }, c.name + ' · $' + c.price);
+  });
 });
 
 render();

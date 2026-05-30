@@ -110,8 +110,23 @@
     <div class="content">
       <div class="page-head">
         <div>
-          <h1>Deposit funds</h1>
-          <p>Send crypto to the address below, then enter the transaction hash. We'll credit your account in BTC once the transfer is confirmed on chain.</p>
+          <h1 id="pageTitle">Deposit funds</h1>
+          <p id="pageLead">Send crypto to the address below, then enter the transaction hash. We'll credit your account in BTC once the transfer is confirmed on chain.</p>
+        </div>
+      </div>
+
+      <div id="orderBanner" class="section-card" style="display:none;border-color:#cfe0ff;background:linear-gradient(180deg,#eff5ff,#fff)">
+        <div style="padding:18px 22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+          <div style="flex:1;min-width:220px">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--primary);font-family:var(--mono);margin-bottom:4px">Paying for order</div>
+            <div style="font-size:16px;font-weight:600" id="orderProduct">—</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:2px" id="orderMeta">&nbsp;</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono);margin-bottom:4px">Amount due</div>
+            <div style="font-size:24px;font-weight:600;color:var(--primary)" id="orderPrice">$0</div>
+            <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">USD · pay equivalent in selected crypto</div>
+          </div>
         </div>
       </div>
 
@@ -210,6 +225,10 @@
   const sb = window.getSupabase ? window.getSupabase() : null;
   if (!sb) return;
   // store/auth.js handles session-gate + reveal of #app.
+
+  const params = new URLSearchParams(window.location.search);
+  const orderIdParam = params.get('order');
+  let orderContext = null; // populated by loadOrderContext if ?order=… present
 
   const ASSET_META = {
     BTC:        { unit: 'BTC',  name: 'Bitcoin',          network: 'Bitcoin' },
@@ -358,14 +377,16 @@
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true; submitBtn.textContent = 'Submitting…';
 
-    const { error } = await sb.from('deposits').insert({
+    const insertPayload = {
       user_id:    user.id,
       asset:      currentAsset,
       network:    wallet.network || ASSET_META[currentAsset].network,
       amount,
       to_address: wallet.address,
       tx_hash:    txHash,
-    });
+    };
+    if (orderContext && orderContext.id) insertPayload.order_id = orderContext.id;
+    const { error } = await sb.from('deposits').insert(insertPayload);
 
     submitBtn.disabled = false; submitBtn.textContent = 'Submit deposit';
 
@@ -378,6 +399,38 @@
     await loadDeposits();
   });
 
+  async function loadOrderContext() {
+    if (!orderIdParam) return;
+    const { data, error } = await sb
+      .from('orders')
+      .select('id, product_type, product_name, price_usd, term_months, units, site, status')
+      .eq('id', orderIdParam)
+      .single();
+    if (error || !data) return;
+    orderContext = data;
+
+    const TYPE_LABEL = { cloud: 'Cloud contract', asic_buy: 'ASIC purchase', asic_rent: 'ASIC rental' };
+    document.getElementById('pageTitle').textContent = 'Pay for your order';
+    document.getElementById('pageLead').textContent  = 'Send the equivalent amount in your chosen crypto to the address below, then paste the transaction hash. An admin will mark the order as fulfilled once the payment is verified on chain.';
+    document.getElementById('orderProduct').textContent = data.product_name;
+    document.getElementById('orderPrice').textContent   = '$' + Number(data.price_usd).toLocaleString(undefined, { maximumFractionDigits: 2 });
+    const metaBits = [];
+    metaBits.push(TYPE_LABEL[data.product_type] || data.product_type);
+    if (data.term_months) metaBits.push(data.term_months + '-month term');
+    if (data.units && data.units > 1) metaBits.push(data.units + ' units');
+    if (data.site) metaBits.push(data.site);
+    if (data.status && data.status !== 'pending') metaBits.push('status: ' + data.status);
+    document.getElementById('orderMeta').textContent = metaBits.join(' · ');
+    document.getElementById('orderBanner').style.display = '';
+
+    if (data.status === 'fulfilled') {
+      showOk('This order has already been fulfilled.');
+    } else if (data.status === 'cancelled') {
+      showError('This order was cancelled. Place a new one from the store.');
+    }
+  }
+
+  await loadOrderContext();
   await loadWallets();
   await loadDeposits();
 })();

@@ -123,12 +123,15 @@ There's one number per user that everything else credits or debits: **`profiles.
    - Stamps `processed_at` / `processed_by`.
    - Flips status to `approved`.
 
-### Buying / renting (creates an order, no money moves)
-1. User clicks **Buy** or **Rent** on a store page. A confirm dialog shows the price.
+### Buying / renting (order → on-chain payment → fulfillment)
+1. User clicks **Buy** or **Rent** on a store page. A confirm dialog summarises the price.
 2. A row goes into `orders` with status `pending`, capturing what they picked (cloud contract / ASIC model / hosted rental + site).
-3. Admin opens **Admin → Orders**, contacts the user **outside the app** to settle payment + shipping/hosting details, and clicks **Fulfill** (or **Cancel** with a reason).
+3. The user is redirected to **/account/deposit.html?order=&lt;id&gt;**. The page recognises the order, shows a "Paying for: X · $Y" banner above the form, and the user picks a crypto, sees the wallet address, sends, and pastes the tx hash.
+4. The deposit row is linked to the order via `deposits.order_id`. Both rows are now in admin's queue, visibly tied together.
+5. Admin opens **Admin → Deposits** → sees the row with a "for order: X · $Y" tag → verifies on chain → **Approve** (enters BTC amount to credit, which optionally tops up the user's balance).
+6. Admin opens **Admin → Orders** → **Fulfill** the linked order once they're satisfied the payment is settled. (Or **Cancel** with a reason — the deposit stays as-is, admin can refund offline.)
 
-> **Note:** because there's no payment integration yet, orders are intent-to-purchase records, not auto-processed checkouts. Admin handles the actual logistics.
+> **Note:** there's still no automatic payment processor — admin verifies each transaction on a block explorer. But the user no longer needs to be contacted by email to know what to pay; the flow is fully self-service up to the verification step.
 
 ---
 

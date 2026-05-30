@@ -260,12 +260,16 @@ document.querySelectorAll('#siteChips .chip').forEach(c => c.addEventListener('c
 document.getElementById('sort').addEventListener('change', render);
 document.getElementById('availOnly').addEventListener('change', render);
 
-async function placeOrder(payload, label) {
+async function placeOrder(payload) {
   const sb = window.getSupabase ? window.getSupabase() : null;
   if (!sb) return;
   const { data: { user } } = await sb.auth.getUser();
   if (!user) { window.location.href = '../login.html'; return; }
-  const { error } = await sb.from('orders').insert({ user_id: user.id, ...payload });
+  const { data, error } = await sb
+    .from('orders')
+    .insert({ user_id: user.id, ...payload })
+    .select('id')
+    .single();
   if (error) {
     const msg = /relation .* does not exist|schema cache/.test(error.message)
       ? 'Orders table not set up yet — run db/orders-withdrawals.sql in Supabase.'
@@ -273,7 +277,7 @@ async function placeOrder(payload, label) {
     if (window.ecoToast) window.ecoToast(msg);
     return;
   }
-  if (window.ecoToast) window.ecoToast(`Rental requested: ${label}. Pending review.`);
+  window.location.href = '../account/deposit.html?order=' + encodeURIComponent(data.id);
 }
 
 document.addEventListener('click', (e) => {
@@ -282,7 +286,7 @@ document.addEventListener('click', (e) => {
     const r = rentals.find(x => x.id === rent.dataset.rent);
     if (!r) return;
     const minTotal = r.daily * r.minTerm;
-    if (!confirm(`Reserve 1 × ${r.model} at ${r.site}?\n\nDaily rate: $${r.daily.toFixed(2)}\nMinimum term: ${r.minTerm} days (~$${minTotal.toFixed(0)})\n\nAn admin will contact you with payment instructions.`)) return;
+    if (!confirm(`Reserve 1 × ${r.model} at ${r.site}?\n\nDaily rate: $${r.daily.toFixed(2)}\nMinimum term: ${r.minTerm} days (~$${minTotal.toFixed(0)})\n\nYou'll see a wallet address to send crypto to on the next page.`)) return;
     placeOrder({
       product_type: 'asic_rent',
       product_id:   r.id,
@@ -290,7 +294,7 @@ document.addEventListener('click', (e) => {
       price_usd:    minTotal,
       units:        1,
       site:         r.site,
-    }, r.model);
+    });
     return;
   }
   const notify = e.target.closest('button[data-notify]');

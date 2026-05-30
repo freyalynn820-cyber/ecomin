@@ -1669,23 +1669,27 @@ function denyAccess(title, text, link) {
     return '<span class="pill pill--warn">Pending</span>';
   }
 
-  function depRow(d, emailMap) {
+  function depRow(d, emailMap, orderMap) {
     const email = emailMap[d.user_id] || d.user_id.slice(0, 8);
     const when = (d.created_at || '').replace('T', ' ').slice(0, 16);
     const amt  = Number(d.amount).toLocaleString(undefined, { maximumFractionDigits: 8 });
     const unit = (d.asset || '').startsWith('USDT') ? 'USDT' : d.asset;
     const credited = d.amount_btc ? `<div class="cell-sub" style="color:var(--green)">+${Number(d.amount_btc).toFixed(8)} BTC</div>` : '';
     const reasoned = d.rejection_reason ? `<div class="cell-sub" style="color:var(--danger)">${escapeHtml(d.rejection_reason)}</div>` : '';
+    const ord = d.order_id ? orderMap[d.order_id] : null;
+    const orderTag = ord
+      ? `<div class="cell-sub" style="color:var(--primary)">for order: ${escapeHtml(ord.product_name)} · $${Number(ord.price_usd).toLocaleString(undefined,{maximumFractionDigits:2})}</div>`
+      : '';
     const actions = d.status === 'pending'
       ? `<button class="btn btn--primary btn--sm" data-act="approve">Approve</button>
          <button class="btn btn--danger btn--sm" data-act="reject">Reject</button>`
       : `<span style="color:var(--muted);font-size:12px">—</span>`;
     return `
-      <tr data-id="${d.id}" data-status="${d.status}" data-user="${d.user_id}">
+      <tr data-id="${d.id}" data-status="${d.status}" data-user="${d.user_id}" data-order="${d.order_id || ''}">
         <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(when)}</span></td>
         <td>${escapeHtml(email)}</td>
         <td>${escapeHtml(ASSET_LABEL[d.asset] || d.asset)}</td>
-        <td><strong>${escapeHtml(amt)} ${escapeHtml(unit)}</strong>${credited}${reasoned}</td>
+        <td><strong>${escapeHtml(amt)} ${escapeHtml(unit)}</strong>${credited}${reasoned}${orderTag}</td>
         <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${escapeHtml(shortAddr(d.to_address))}</span></td>
         <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" title="${escapeHtml(d.tx_hash)}">${escapeHtml(shortHash(d.tx_hash))}</span></td>
         <td>${depPill(d.status)}</td>
@@ -1697,10 +1701,10 @@ function denyAccess(title, text, link) {
     depBody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>';
     const { data, error } = await sb
       .from('deposits')
-      .select('id, user_id, asset, network, amount, amount_btc, to_address, tx_hash, status, rejection_reason, created_at')
+      .select('id, user_id, asset, network, amount, amount_btc, to_address, tx_hash, status, rejection_reason, order_id, created_at')
       .order('created_at', { ascending: false });
     if (error) {
-      depBody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/deposits.sql</code> in Supabase SQL Editor.</span></td></tr>`;
+      depBody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--danger);padding:24px">${escapeHtml(error.message)}<br><span style="color:var(--muted);font-size:12px">Run <code>db/deposits.sql</code> and <code>db/orders-deposits-link.sql</code> in Supabase SQL Editor.</span></td></tr>`;
       document.getElementById('depositsBadge').textContent = '0';
       return;
     }
@@ -1711,12 +1715,18 @@ function denyAccess(title, text, link) {
       const { data: profs } = await sb.from('profiles').select('id, email').in('id', userIds);
       (profs || []).forEach(p => { emailMap[p.id] = p.email; });
     }
+    const orderIds = [...new Set(rows.map(r => r.order_id).filter(Boolean))];
+    let orderMap = {};
+    if (orderIds.length) {
+      const { data: ords } = await sb.from('orders').select('id, product_name, price_usd, product_type').in('id', orderIds);
+      (ords || []).forEach(o => { orderMap[o.id] = o; });
+    }
     const pendingCount = rows.filter(r => r.status === 'pending').length;
     document.getElementById('depositsBadge').textContent = pendingCount;
 
     const filtered = depFilter === 'all' ? rows : rows.filter(r => r.status === depFilter);
     depBody.innerHTML = filtered.length
-      ? filtered.map(d => depRow(d, emailMap)).join('')
+      ? filtered.map(d => depRow(d, emailMap, orderMap)).join('')
       : `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No ${depFilter === 'all' ? '' : depFilter + ' '}deposits.</td></tr>`;
   }
 
