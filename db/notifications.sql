@@ -8,28 +8,21 @@
 --
 -- BEFORE running this file:
 --   1. Deploy supabase/functions/notify-admin/index.ts
---   2. Edit the two SET LOCAL lines at the top of step 1 below to use
---      your project's function URL and the same WEBHOOK_SECRET you set
---      on the Edge Function.
+--   2. Edit the two constants inside notify_admin() in step 1 below
+--      (fn_url + secret) to match your project + WEBHOOK_SECRET.
 --   3. Make sure the `pg_net` extension is enabled (Database →
 --      Extensions → search "pg_net" → Enable).
 -- ============================================================
 
--- ---------- 1. Configure URL + secret as session GUCs ----------
--- Stored at the database role level so triggers can read them.
--- REPLACE the two values below before running this file.
-
-alter database postgres set "app.notify_function_url" = 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/notify-admin';
-alter database postgres set "app.notify_webhook_secret" = 'CHANGE-ME-TO-A-LONG-RANDOM-STRING';
-
--- (If you can't run ALTER DATABASE because of permissions, you can
--- instead embed both values directly into the notify_admin() body
--- below. Search for `current_setting` and replace.)
-
-
--- ---------- 2. notify_admin(event, subject, lines[]) ----------
+-- ---------- 1. notify_admin(event, subject, lines[]) ----------
 -- Single entry point all triggers call. Fire-and-forget; failures are
 -- swallowed so a bad SMTP run doesn't break the parent INSERT.
+--
+-- ⚠️ Before running this file, replace the two literals below:
+--   - FN_URL: the URL of your deployed Edge Function
+--     ('https://<your-project-ref>.supabase.co/functions/v1/notify-admin')
+--   - SECRET: the same random string you set as WEBHOOK_SECRET on the
+--     Edge Function (e.g. `supabase secrets set WEBHOOK_SECRET=…`)
 create or replace function public.notify_admin(
   event text,
   subject text,
@@ -38,17 +31,11 @@ create or replace function public.notify_admin(
 language plpgsql security definer set search_path = public
 as $$
 declare
-  fn_url text;
-  secret text;
+  fn_url constant text := 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/notify-admin';
+  secret constant text := 'CHANGE-ME-TO-A-LONG-RANDOM-STRING';
 begin
-  begin
-    fn_url := current_setting('app.notify_function_url', true);
-    secret := current_setting('app.notify_webhook_secret', true);
-  exception when others then
-    return;
-  end;
-
-  if fn_url is null or fn_url = '' or secret is null or secret = '' then
+  if fn_url like 'https://YOUR-PROJECT-REF%' or secret = 'CHANGE-ME-TO-A-LONG-RANDOM-STRING' then
+    -- Not configured yet — silently skip so signups don't fail.
     return;
   end if;
 
@@ -71,9 +58,9 @@ end;
 $$;
 
 
--- ---------- 3. Triggers per event ----------
+-- ---------- 2. Triggers per event ----------
 
--- 3a) New user signup ------------------------------------------------
+-- 2a) New user signup ------------------------------------------------
 create or replace function public.notify_on_signup()
 returns trigger
 language plpgsql security definer set search_path = public
@@ -99,7 +86,7 @@ create trigger notify_on_user_signup
   for each row execute function public.notify_on_signup();
 
 
--- 3b) New deposit ----------------------------------------------------
+-- 2b) New deposit ----------------------------------------------------
 create or replace function public.notify_on_deposit()
 returns trigger
 language plpgsql security definer set search_path = public
@@ -132,7 +119,7 @@ create trigger notify_on_deposit_insert
   for each row execute function public.notify_on_deposit();
 
 
--- 3c) New withdrawal -------------------------------------------------
+-- 2c) New withdrawal -------------------------------------------------
 create or replace function public.notify_on_withdrawal()
 returns trigger
 language plpgsql security definer set search_path = public
@@ -163,7 +150,7 @@ create trigger notify_on_withdrawal_insert
   for each row execute function public.notify_on_withdrawal();
 
 
--- 3d) New order ------------------------------------------------------
+-- 2d) New order ------------------------------------------------------
 create or replace function public.notify_on_order()
 returns trigger
 language plpgsql security definer set search_path = public
@@ -195,7 +182,7 @@ create trigger notify_on_order_insert
   for each row execute function public.notify_on_order();
 
 
--- 3e) New chat message from a user ----------------------------------
+-- 2e) New chat message from a user ----------------------------------
 create or replace function public.notify_on_chat()
 returns trigger
 language plpgsql security definer set search_path = public
