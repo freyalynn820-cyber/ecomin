@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mining Vault · Core Hash</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../store/store.css" />
+<link rel="stylesheet" href="account.css" />
+<style>
+  /* ============ Vault hero ============ */
+  .vhero {
+    background: linear-gradient(160deg, #0b2d4f 0%, #0e3a6a 60%, #1256E3 130%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vhero::before {
+    content: '';
+    position: absolute;
+    right: -120px; top: -120px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .vhero__pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(107,209,164,.18); color: var(--leaf);
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 11px; font-family: var(--mono); letter-spacing: .5px; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .vhero__apy {
+    font-size: 64px; font-weight: 600; letter-spacing: -2px; line-height: 1; margin-bottom: 6px;
+  }
+  .vhero__apy small { font-size: 22px; font-weight: 500; opacity: .85; }
+  .vhero__lede { font-size: 15px; opacity: .85; max-width: 480px; line-height: 1.5; }
+
+  /* ============ How it works ============ */
+  .how {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 880px) { .how { grid-template-columns: 1fr; } }
+  .how__step {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .how__num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 999px;
+    background: var(--primary-soft); color: var(--primary);
+    font-weight: 700; font-size: 13px; font-family: var(--mono);
+    margin-bottom: 10px;
+  }
+  .how__h { font-weight: 600; margin: 0 0 4px; font-size: 14px; }
+  .how__p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ============ Open-vault form ============ */
+  .open-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  @media (max-width: 760px) { .open-form { grid-template-columns: 1fr; } }
+  .open-form__l { padding: 22px; border-right: 1px solid var(--line); }
+  .open-form__r {
+    background: var(--bg-alt);
+    padding: 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: 12px;
+  }
+  @media (max-width: 760px) { .open-form__l { border-right: none; border-bottom: 1px solid var(--line); } }
+  .open-form__title { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .open-form__hint { margin: 0 0 14px; font-size: 12px; color: var(--muted); }
+  .open-form__amt-wrap { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .open-form__amt-wrap input { font-family: var(--mono); }
+  .open-form__avail { font-size: 12px; color: var(--muted); }
+  .open-form__row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+  .open-form__row strong { font-size: 16px; }
+
+  /* ============ Vault list ============ */
+  .vlist { display: grid; gap: 12px; }
+  .vrow {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
+    gap: 18px;
+    align-items: center;
+  }
+  @media (max-width: 880px) { .vrow { grid-template-columns: 1fr 1fr; } }
+  .vrow__l-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; font-family: var(--mono); margin-bottom: 3px; }
+  .vrow__v   { font-size: 15px; font-weight: 600; font-family: var(--mono); }
+  .vrow__v-acc { color: var(--green); }
+
+  .pill--active   { background: rgba(107,209,164,.16); color: var(--green); border-color: rgba(107,209,164,.3); }
+  .pill--closed   { background: var(--bg-alt); color: var(--muted); border-color: var(--line); }
+</style>
+</head>
+<body>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="side">
+    <a href="../index.html" class="side__logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><rect x="1" y="1" width="24" height="24" rx="6" fill="#1256E3"/><path d="M8 13.2 L11.5 17 L18.5 8.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Core Hash</span>
+    </a>
+
+    <div class="side__group">
+      <nav class="side__nav">
+        <a href="../dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Overview</a>
+        <a href="../store/buy-cloud.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>BTC Mining Store</a>
+        <a href="vault.html" class="is-active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 11 12 4 21 11"/><path d="M5 11v9h14v-9"/><line x1="9" y1="14" x2="9" y2="20"/><line x1="15" y1="14" x2="15" y2="20"/><line x1="12" y1="14" x2="12" y2="20"/></svg>Mining Vault</a>
+        <a href="../marketplace/hashrate.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M5 9v11a1 1 0 001 1h12a1 1 0 001-1V9"/><path d="M9 21V12h6v9"/></svg>Marketplace</a>
+        <a href="referrals.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Referrals</a>
+        <a href="rewards.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Core Hash Rewards</a>
+      </nav>
+    </div>
+
+    <div class="side__group">
+      <div class="side__group-title">Account</div>
+      <nav class="side__nav">
+        <a href="settings.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+        <a href="deposit.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 3 12 15"/><polyline points="7 10 12 15 17 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Deposit</a>
+        <a href="transactions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><polyline points="6 8 3 12 6 16"/><polyline points="18 16 21 12 18 8"/></svg>Transactions</a>
+        <a href="withdrawals.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Withdrawals</a>
+        <a href="../admin/" id="adminLink" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Admin</a>
+        <a href="#" id="logoutLink"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
+      </nav>
+    </div>
+
+    <div class="side__foot"><span>v1.4.2</span><span><span class="ok">●</span> all systems</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><a href="../dashboard.html">Dashboard</a> · <strong>Mining Vault</strong></div>
+      <div class="topbar__right">
+        <span class="user">
+          <span class="avatar" id="userAvatar">U</span>
+          <span class="user__name" id="userEmail">user</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Hero -->
+      <div class="vhero">
+        <div class="vhero__pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Earn while you wait
+        </div>
+        <div class="vhero__apy">8.3<small>% APY</small></div>
+        <div class="vhero__lede">Lock part of your BTC balance in a vault and earn interest — paid in BTC. Close anytime to take your principal and earnings back to your balance.</div>
+      </div>
+
+      <!-- How it works -->
+      <div class="how">
+        <div class="how__step">
+          <div class="how__num">1</div>
+          <h4 class="how__h">Open a vault</h4>
+          <p class="how__p">Choose how much BTC to lock from your balance (minimum 0.001 BTC). The amount moves from your balance into the vault.</p>
+        </div>
+        <div class="how__step">
+          <div class="how__num">2</div>
+          <h4 class="how__h">Watch it earn</h4>
+          <p class="how__p">Your vault accrues at 8.3% APY, ticking up every second. The longer it's open, the more it earns. There's no lock period.</p>
+        </div>
+        <div class="how__step">
+          <div class="how__num">3</div>
+          <h4 class="how__h">Close any time</h4>
+          <p class="how__p">Click <strong>Close</strong> to return the principal plus everything it earned back to your BTC balance instantly.</p>
+        </div>
+      </div>
+
+      <!-- Open new vault -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Open a new vault</h3>
+            <p>Move BTC from your balance into a fresh vault.</p>
+          </div>
+        </div>
+        <div id="banner" class="banner" role="alert"></div>
+        <div class="open-form">
+          <div class="open-form__l">
+            <p class="open-form__title">How much BTC?</p>
+            <p class="open-form__hint">Minimum 0.001 BTC. You can open as many vaults as you like.</p>
+            <div class="open-form__amt-wrap">
+              <input id="vAmt" class="input input--mono" type="number" step="any" min="0.001" placeholder="0.00000000" style="max-width:none;flex:1" />
+              <button class="btn btn--ghost btn--sm" id="vMax">Max</button>
+            </div>
+            <div class="open-form__avail">Available balance: <strong id="vAvail">0.00000000</strong> BTC</div>
+          </div>
+          <div class="open-form__r">
+            <div>
+              <div class="open-form__row" style="margin-bottom:10px"><span style="color:var(--muted)">Locking now</span><strong><span id="vSummaryAmt">0.00000000</span> BTC</strong></div>
+              <div class="open-form__row" style="margin-bottom:10px"><span style="color:var(--muted)">After 30 days (est.)</span><strong style="color:var(--green)"><span id="vSummary30">0.00000000</span> BTC</strong></div>
+              <div class="open-form__row"><span style="color:var(--muted)">After 1 year (est.)</span><strong style="color:var(--green)"><span id="vSummary365">0.00000000</span> BTC</strong></div>
+            </div>
+            <button id="vOpen" class="btn btn--primary btn--full btn--lg">Open vault →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active vaults -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Active vaults</h3>
+            <p>Your live positions. Earnings update every second.</p>
+          </div>
+        </div>
+        <div style="padding:0 22px 22px" id="activeWrap">
+          <div id="activeEmpty" style="color:var(--muted);font-size:13px;text-align:center;padding:24px">No active vaults yet — open one above.</div>
+          <div class="vlist" id="activeList"></div>
+        </div>
+      </div>
+
+      <!-- Closed vaults history -->
+      <div class="section-card">
+        <div class="section-card__head">
+          <div>
+            <h3>Closed vaults</h3>
+            <p>Vaults you've already closed. Payout was credited to your BTC balance.</p>
+          </div>
+        </div>
+        <div class="table-wrap" style="border:none;border-radius:0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Opened</th>
+                <th>Closed</th>
+                <th>Principal</th>
+                <th>Payout</th>
+                <th>Earned</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="gate" id="gate"><div class="gate__msg">Checking session…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../store/auth.js"></script>
+<script>
+(async () => {
+  const sb = window.getSupabase ? window.getSupabase() : null;
+  if (!sb) { const g = document.getElementById('gate'); if (g) g.remove(); return; }
+
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) { const g = document.getElementById('gate'); if (g) g.remove(); return; }
+
+  const APY      = 0.083;
+  const YEAR_MS  = 365.25 * 86400 * 1000;
+  let availableBtc = 0;
+  let tickHandle   = null;
+  let activeVaults = [];
+
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+  function fmtBtc(n, dp) { return Number(n).toFixed(dp == null ? 8 : dp); }
+  function showError(msg) { const b = document.getElementById('banner'); b.textContent = msg; b.className = 'banner is-show banner--err'; setTimeout(() => b.classList.remove('is-show'), 5000); }
+  function showOk(msg)    { const b = document.getElementById('banner'); b.textContent = msg; b.className = 'banner is-show banner--ok'; setTimeout(() => b.classList.remove('is-show'), 5000); }
+
+  function computeValue(principal, startedAt, now) {
+    const elapsedYears = Math.max(0, (now - new Date(startedAt).getTime()) / YEAR_MS);
+    return Number(principal) * (1 + APY * elapsedYears);
+  }
+
+  async function loadBalance() {
+    const { data, error } = await sb.from('profiles').select('balance_btc').eq('id', user.id).single();
+    if (error) return;
+    availableBtc = Number(data.balance_btc) || 0;
+    document.getElementById('vAvail').textContent = fmtBtc(availableBtc);
+    const amtIn = document.getElementById('vAmt');
+    if (amtIn) amtIn.max = availableBtc;
+    refreshSummary();
+  }
+
+  function refreshSummary() {
+    const amt = Number(document.getElementById('vAmt').value) || 0;
+    document.getElementById('vSummaryAmt').textContent = fmtBtc(amt);
+    document.getElementById('vSummary30').textContent  = fmtBtc(amt * (1 + APY * 30 / 365.25));
+    document.getElementById('vSummary365').textContent = fmtBtc(amt * (1 + APY));
+  }
+
+  async function loadVaults() {
+    const { data, error } = await sb
+      .from('vaults')
+      .select('id, principal_btc, apy, status, started_at, closed_at, payout_btc')
+      .order('created_at', { ascending: false });
+
+    const activeList   = document.getElementById('activeList');
+    const activeEmpty  = document.getElementById('activeEmpty');
+    const historyBody  = document.getElementById('historyBody');
+
+    if (error) {
+      activeEmpty.style.color = 'var(--danger)';
+      activeEmpty.innerHTML = escapeHtml(error.message) + '<br><span style="color:var(--muted);font-size:12px">Run <code>db/vaults.sql</code> in Supabase SQL Editor.</span>';
+      activeEmpty.style.display = '';
+      activeList.innerHTML = '';
+      historyBody.innerHTML = '';
+      return;
+    }
+
+    const rows = data || [];
+    activeVaults = rows.filter(v => v.status === 'active');
+    const closed = rows.filter(v => v.status === 'closed');
+
+    if (activeVaults.length === 0) {
+      activeEmpty.style.display = '';
+      activeList.innerHTML = '';
+    } else {
+      activeEmpty.style.display = 'none';
+      activeList.innerHTML = activeVaults.map(renderActive).join('');
+      attachCloseHandlers();
+    }
+
+    if (closed.length === 0) {
+      historyBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No closed vaults yet.</td></tr>';
+    } else {
+      historyBody.innerHTML = closed.map(v => {
+        const opened = (v.started_at || '').replace('T', ' ').slice(0, 16);
+        const closedAt = (v.closed_at || '').replace('T', ' ').slice(0, 16);
+        const earned = Number(v.payout_btc || 0) - Number(v.principal_btc || 0);
+        return `<tr>
+          <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(opened)}</span></td>
+          <td><span style="color:var(--muted);font-family:var(--mono);font-size:12px">${escapeHtml(closedAt)}</span></td>
+          <td><span style="font-family:var(--mono)">${fmtBtc(v.principal_btc)}</span> BTC</td>
+          <td><span style="font-family:var(--mono)">${fmtBtc(v.payout_btc)}</span> BTC</td>
+          <td><span style="color:var(--green);font-family:var(--mono)">+${fmtBtc(earned)}</span> BTC</td>
+        </tr>`;
+      }).join('');
+    }
+
+    if (tickHandle) clearInterval(tickHandle);
+    if (activeVaults.length) tickHandle = setInterval(tick, 1000);
+  }
+
+  function renderActive(v) {
+    const now = Date.now();
+    const value = computeValue(v.principal_btc, v.started_at, now);
+    const earned = value - Number(v.principal_btc);
+    const opened = (v.started_at || '').replace('T', ' ').slice(0, 16);
+    return `
+      <div class="vrow" data-id="${v.id}" data-principal="${v.principal_btc}" data-started="${v.started_at}">
+        <div>
+          <div class="vrow__l-l">Opened</div>
+          <div style="font-size:13px;color:var(--ink);font-family:var(--mono)">${escapeHtml(opened)}</div>
+          <span class="pill pill--active" style="margin-top:6px;display:inline-block">Active · ${(v.apy * 100).toFixed(1)}% APY</span>
+        </div>
+        <div>
+          <div class="vrow__l-l">Principal</div>
+          <div class="vrow__v">${fmtBtc(v.principal_btc)} <small style="color:var(--muted);font-weight:400">BTC</small></div>
+        </div>
+        <div>
+          <div class="vrow__l-l">Current value</div>
+          <div class="vrow__v" data-role="value">${fmtBtc(value)} <small style="color:var(--muted);font-weight:400">BTC</small></div>
+        </div>
+        <div>
+          <div class="vrow__l-l">Earned</div>
+          <div class="vrow__v vrow__v-acc" data-role="earned">+${fmtBtc(earned)} <small style="color:var(--muted);font-weight:400">BTC</small></div>
+        </div>
+        <div>
+          <button class="btn btn--ghost btn--sm" data-act="close">Close</button>
+        </div>
+      </div>`;
+  }
+
+  function tick() {
+    const now = Date.now();
+    document.querySelectorAll('.vrow').forEach(el => {
+      const principal = Number(el.dataset.principal);
+      const startedAt = el.dataset.started;
+      const value = computeValue(principal, startedAt, now);
+      const earned = value - principal;
+      const vEl = el.querySelector('[data-role="value"]');
+      const eEl = el.querySelector('[data-role="earned"]');
+      if (vEl) vEl.innerHTML = fmtBtc(value) + ' <small style="color:var(--muted);font-weight:400">BTC</small>';
+      if (eEl) eEl.innerHTML = '+' + fmtBtc(earned) + ' <small style="color:var(--muted);font-weight:400">BTC</small>';
+    });
+  }
+
+  function attachCloseHandlers() {
+    document.querySelectorAll('.vrow button[data-act="close"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const row = btn.closest('.vrow');
+        const id = row.dataset.id;
+        const principal = Number(row.dataset.principal);
+        const startedAt = row.dataset.started;
+        const value = computeValue(principal, startedAt, Date.now());
+        if (!confirm(`Close this vault and credit ${fmtBtc(value)} BTC back to your balance?`)) return;
+
+        btn.disabled = true; btn.textContent = 'Closing…';
+        const { error } = await sb
+          .from('vaults')
+          .update({ status: 'closed' })
+          .eq('id', id)
+          .eq('status', 'active');
+        if (error) {
+          showError('Could not close: ' + error.message);
+          btn.disabled = false; btn.textContent = 'Close';
+          return;
+        }
+        showOk('Vault closed — payout credited to your balance.');
+        await loadBalance();
+        await loadVaults();
+      });
+    });
+  }
+
+  document.getElementById('vAmt').addEventListener('input', refreshSummary);
+  document.getElementById('vMax').addEventListener('click', () => {
+    document.getElementById('vAmt').value = fmtBtc(availableBtc);
+    refreshSummary();
+  });
+
+  document.getElementById('vOpen').addEventListener('click', async () => {
+    const amt = Number(document.getElementById('vAmt').value) || 0;
+    if (amt < 0.001) return showError('Minimum to open a vault is 0.001 BTC.');
+    if (amt > availableBtc) return showError('You only have ' + fmtBtc(availableBtc) + ' BTC available.');
+
+    const btn = document.getElementById('vOpen');
+    btn.disabled = true; btn.textContent = 'Opening…';
+    const { error } = await sb.from('vaults').insert({
+      user_id: user.id,
+      principal_btc: amt,
+      apy: APY,
+    });
+    btn.disabled = false; btn.textContent = 'Open vault →';
+    if (error) {
+      if (/relation .* does not exist|schema cache/.test(error.message)) {
+        showError('Vaults table not set up yet — run db/vaults.sql in Supabase.');
+      } else if (/insufficient balance/i.test(error.message)) {
+        showError('You don\'t have enough balance for that.');
+      } else {
+        showError('Could not open: ' + error.message);
+      }
+      return;
+    }
+    showOk('Vault opened — earnings start now.');
+    document.getElementById('vAmt').value = '';
+    refreshSummary();
+    await loadBalance();
+    await loadVaults();
+  });
+
+  await loadBalance();
+  await loadVaults();
+  const g = document.getElementById('gate'); if (g) g.remove();
+})();
+</script>
+</body>
+</html>
