@@ -286,7 +286,7 @@ document.addEventListener('click', (e) => {
     const r = rentals.find(x => x.id === rent.dataset.rent);
     if (!r) return;
     const minTotal = r.daily * r.minTerm;
-    if (!confirm(`Reserve 1 × ${r.model} at ${r.site}?\n\nDaily rate: $${r.daily.toFixed(2)}\nMinimum term: ${r.minTerm} days (~$${minTotal.toFixed(0)})\n\nYou'll see a wallet address to send crypto to on the next page.`)) return;
+    rent.disabled = true; rent.textContent = 'Loading…';
     placeOrder({
       product_type: 'asic_rent',
       product_id:   r.id,

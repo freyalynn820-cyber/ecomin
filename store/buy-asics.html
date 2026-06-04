@@ -268,7 +268,7 @@ document.addEventListener('click', (e) => {
   if (buy) {
     const r = asics.find(x => x.id === buy.dataset.buy);
     if (!r) return;
-    if (!confirm(`Continue to payment for ${r.name} — $${r.price.toLocaleString()}?\n\nYou'll see a wallet address to send crypto to on the next page.`)) return;
+    buy.disabled = true; buy.textContent = 'Loading…';
     placeOrder({
       product_type: 'asic_buy',
       product_id:   r.id,

@@ -268,7 +268,7 @@ document.addEventListener('click', (e) => {
   if (!btn) return;
   const c = contracts.find(x => x.id === btn.dataset.buy);
   if (!c) return;
-  if (!confirm(`Continue to payment for the ${c.name} contract — $${c.price.toLocaleString()} for ${fmtTerm(c.term)}?\n\nYou'll see a wallet address to send crypto to on the next page.`)) return;
+  btn.disabled = true; btn.textContent = 'Loading…';
   placeOrder({
     product_type: 'cloud',
     product_id:   c.id,
