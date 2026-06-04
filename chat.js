@@ -1,9 +1,21 @@
 // ============================================================
 // Core Hash · Floating support-chat widget
-// Drop-in <script src="/chat.js"></script> on any user page. Renders
-// a bottom-right bubble that opens a one-on-one thread with support.
-// Admin replies arrive in real time via the Supabase Realtime channel
-// for public.chat_messages (filtered on user_id).
+//
+// Drop-in <script src="/chat.js"></script> on ANY page (marketing,
+// auth, or signed-in app). Two operating modes:
+//
+//   1. AUTHENTICATED — when a Supabase session exists, the widget
+//      reads/writes chat_messages keyed on user_id = auth.uid().
+//
+//   2. ANONYMOUS — when there's no session (marketing/landing
+//      visitors), the widget generates a visitor UUID in
+//      localStorage and uses visitor_id + visitor_name +
+//      visitor_email columns to track the thread. The visitor is
+//      asked for name + email the first time they open the panel.
+//
+// Realtime: subscribes to INSERTs on public.chat_messages filtered
+// by the appropriate column so admin replies arrive without a
+// refresh.
 // ============================================================
 (async () => {
   if (window.__chxLoaded) return;
@@ -11,11 +23,6 @@
 
   const sb = window.getSupabase ? window.getSupabase() : null;
   if (!sb) return;
-
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) return;
-  // Note: admins also see the bubble on user pages (useful for testing).
-  // The dedicated admin panel lives at /admin/ → Chat.
 
   // ----- inject CSS -----
   const css = `
@@ -63,6 +70,7 @@
       font-size: 18px; line-height: 1; padding: 0;
     }
     .chx-close:hover { background: rgba(255,255,255,.28); }
+    .chx-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
     .chx-msgs {
       flex: 1; overflow-y: auto; padding: 16px;
       background: #f5f8fc;
@@ -101,6 +109,23 @@
       font-family: inherit;
     }
     .chx-form button:disabled { opacity: .5; cursor: not-allowed; }
+    .chx-capture {
+      padding: 20px 18px; background: #fff;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .chx-capture h4 { margin: 0 0 4px; font-size: 15px; color: #0b2d4f; }
+    .chx-capture p  { margin: 0 0 8px; font-size: 12px; color: #6b7a8e; line-height: 1.5; }
+    .chx-capture input {
+      padding: 10px 12px; border: 1px solid #e5ebf2; border-radius: 9px;
+      font-size: 13px; font-family: inherit; color: #0b2d4f; outline: none;
+    }
+    .chx-capture input:focus { border-color: #1256E3; box-shadow: 0 0 0 3px rgba(18,86,227,.12); }
+    .chx-capture button {
+      background: #1256E3; color: #fff; border: none; cursor: pointer;
+      padding: 10px 14px; border-radius: 9px; font-weight: 600; font-size: 13px;
+      font-family: inherit; margin-top: 4px;
+    }
+    .chx-capture button:disabled { opacity: .5; cursor: not-allowed; }
   `;
   const styleEl = document.createElement('style');
   styleEl.textContent = css;
@@ -118,27 +143,23 @@
       <div class="chx-head">
         <div>
           <strong>Support</strong>
-          <div class="chx-head__sub">We usually reply within a few hours</div>
+          <div class="chx-head__sub" id="chxHeadSub">We usually reply within a few hours</div>
         </div>
         <button class="chx-close" type="button" id="chxClose" aria-label="Close">×</button>
       </div>
-      <div class="chx-msgs" id="chxMsgs"></div>
-      <form class="chx-form" id="chxForm">
-        <input id="chxInput" autocomplete="off" placeholder="Type a message…" maxlength="4000" />
-        <button type="submit" id="chxSend">Send</button>
-      </form>
+      <div class="chx-body" id="chxBody"></div>
     </div>
   `;
   document.body.appendChild(root);
 
-  const $count   = document.getElementById('chxCount');
-  const $panel   = document.getElementById('chxPanel');
-  const $toggle  = document.getElementById('chxToggle');
-  const $msgs    = document.getElementById('chxMsgs');
-  const $input   = document.getElementById('chxInput');
-  const $form    = document.getElementById('chxForm');
-  const $send    = document.getElementById('chxSend');
+  const $count  = document.getElementById('chxCount');
+  const $panel  = document.getElementById('chxPanel');
+  const $toggle = document.getElementById('chxToggle');
+  const $close  = document.getElementById('chxClose');
+  const $body   = document.getElementById('chxBody');
+  const $subhead = document.getElementById('chxHeadSub');
 
+  // ----- helpers -----
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => (
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -149,110 +170,270 @@
     const d = new Date(iso);
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
+  function uuid() {
+    // RFC4122 v4-ish, good enough for visitor ids
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
-  let messages = [];
+  // ----- bubble open/close -----
+  let panelOpen = false;
+  $toggle.addEventListener('click', async () => {
+    $panel.style.display = 'flex';
+    $toggle.style.display = 'none';
+    $count.style.display = 'none';
+    panelOpen = true;
+    await onOpen();
+  });
+  $close.addEventListener('click', () => {
+    $panel.style.display = 'none';
+    $toggle.style.display = '';
+    panelOpen = false;
+    updateBadge();
+  });
 
-  function render() {
-    if (!messages.length) {
-      $msgs.innerHTML = `
-        <div class="chx-empty">
-          <strong>Hi 👋</strong>
-          Send us a message and our team will get back to you here.
-        </div>`;
-      return;
+  // ----- shared message rendering -----
+  function renderMsgs(msgs) {
+    if (!msgs.length) {
+      return `<div class="chx-empty">
+        <strong>Hi 👋</strong>
+        Send us a message and our team will get back to you here.
+      </div>`;
     }
-    $msgs.innerHTML = messages.map(m => `
+    return msgs.map(m => `
       <div class="chx-msg chx-msg--${m.from_admin ? 'admin' : 'me'}">
         <div class="chx-bub">${escapeHtml(m.body)}</div>
         <div class="chx-meta">${escapeHtml(fmtTime(m.created_at))}</div>
       </div>
     `).join('');
-    $msgs.scrollTop = $msgs.scrollHeight;
   }
 
+  // ============================================================
+  // AUTHENTICATED MODE — when there's a Supabase session
+  // ============================================================
+  async function setupAuthed(user) {
+    let messages = [];
+
+    function render() {
+      $body.innerHTML = `
+        <div class="chx-msgs" id="chxMsgs">${renderMsgs(messages)}</div>
+        <form class="chx-form" id="chxForm">
+          <input id="chxInput" autocomplete="off" placeholder="Type a message…" maxlength="4000" />
+          <button type="submit" id="chxSend">Send</button>
+        </form>`;
+      const $msgs = document.getElementById('chxMsgs');
+      $msgs.scrollTop = $msgs.scrollHeight;
+      document.getElementById('chxForm').addEventListener('submit', onSend);
+    }
+
+    async function load() {
+      const { data, error } = await sb
+        .from('chat_messages')
+        .select('id, sender_id, body, from_admin, read_by_user, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+      if (error) return;
+      messages = data || [];
+      if (panelOpen) render(); else updateBadge();
+    }
+
+    async function markRead() {
+      await sb.from('chat_messages').update({ read_by_user: true })
+        .eq('user_id', user.id).eq('from_admin', true).eq('read_by_user', false);
+      messages.forEach(m => { if (m.from_admin) m.read_by_user = true; });
+    }
+
+    async function onSend(e) {
+      e.preventDefault();
+      const input = document.getElementById('chxInput');
+      const send  = document.getElementById('chxSend');
+      const body  = input.value.trim();
+      if (!body) return;
+      send.disabled = true; input.disabled = true;
+      const { error } = await sb.from('chat_messages').insert({
+        user_id: user.id, sender_id: user.id, body,
+        from_admin: false, read_by_user: true, read_by_admin: false,
+      });
+      send.disabled = false; input.disabled = false;
+      if (error) {
+        if (/relation .* does not exist|schema cache/.test(error.message)) {
+          alert('Chat isn\'t fully set up yet — run db/chat.sql + db/chat-anonymous.sql in Supabase.');
+        } else {
+          alert('Could not send: ' + error.message);
+        }
+        return;
+      }
+      input.value = ''; input.focus();
+      await load();
+    }
+
+    window.__chxState = {
+      mode: 'authed',
+      onOpen: async () => { render(); await markRead(); document.getElementById('chxInput')?.focus(); },
+      unread: () => messages.filter(m => m.from_admin && !m.read_by_user).length,
+    };
+
+    sb.channel('chat-user-' + user.id)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'chat_messages',
+        filter: `user_id=eq.${user.id}`,
+      }, () => load())
+      .subscribe();
+
+    await load();
+  }
+
+
+  // ============================================================
+  // ANONYMOUS MODE — visitor with no session
+  // ============================================================
+  async function setupAnon() {
+    let visitorId    = localStorage.getItem('chx_visitor_id');
+    let visitorName  = localStorage.getItem('chx_visitor_name');
+    let visitorEmail = localStorage.getItem('chx_visitor_email');
+    if (!visitorId) {
+      visitorId = uuid();
+      localStorage.setItem('chx_visitor_id', visitorId);
+    }
+    let messages = [];
+
+    function renderCapture() {
+      $body.innerHTML = `
+        <div class="chx-capture">
+          <h4>Before we begin</h4>
+          <p>Tell us who you are so our team can follow up by email if needed.</p>
+          <input id="chxName"  placeholder="Your name"   autocomplete="name"  value="${escapeHtml(visitorName || '')}"  maxlength="120" />
+          <input id="chxEmail" placeholder="Email address" autocomplete="email" type="email" value="${escapeHtml(visitorEmail || '')}" maxlength="200" />
+          <button id="chxStart" type="button">Start chatting</button>
+        </div>`;
+      document.getElementById('chxStart').addEventListener('click', () => {
+        const n = document.getElementById('chxName').value.trim();
+        const em = document.getElementById('chxEmail').value.trim();
+        if (!n)  return document.getElementById('chxName').focus();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return document.getElementById('chxEmail').focus();
+        visitorName = n; visitorEmail = em;
+        localStorage.setItem('chx_visitor_name', n);
+        localStorage.setItem('chx_visitor_email', em);
+        renderChat();
+        document.getElementById('chxInput')?.focus();
+      });
+    }
+
+    function renderChat() {
+      $body.innerHTML = `
+        <div class="chx-msgs" id="chxMsgs">${renderMsgs(messages)}</div>
+        <form class="chx-form" id="chxForm">
+          <input id="chxInput" autocomplete="off" placeholder="Type a message…" maxlength="4000" />
+          <button type="submit" id="chxSend">Send</button>
+        </form>`;
+      const $msgs = document.getElementById('chxMsgs');
+      $msgs.scrollTop = $msgs.scrollHeight;
+      document.getElementById('chxForm').addEventListener('submit', onSend);
+    }
+
+    async function load() {
+      const { data, error } = await sb
+        .from('chat_messages')
+        .select('id, body, from_admin, read_by_user, created_at')
+        .eq('visitor_id', visitorId)
+        .order('created_at', { ascending: true });
+      if (error) {
+        // table or columns missing — render empty
+        return;
+      }
+      messages = data || [];
+      if (panelOpen) {
+        const $msgs = document.getElementById('chxMsgs');
+        if ($msgs) { $msgs.innerHTML = renderMsgs(messages); $msgs.scrollTop = $msgs.scrollHeight; }
+      } else {
+        updateBadge();
+      }
+    }
+
+    async function markRead() {
+      if (!messages.some(m => m.from_admin && !m.read_by_user)) return;
+      await sb.from('chat_messages').update({ read_by_user: true })
+        .eq('visitor_id', visitorId).eq('from_admin', true).eq('read_by_user', false);
+      messages.forEach(m => { if (m.from_admin) m.read_by_user = true; });
+    }
+
+    async function onSend(e) {
+      e.preventDefault();
+      const input = document.getElementById('chxInput');
+      const send  = document.getElementById('chxSend');
+      const body  = input.value.trim();
+      if (!body) return;
+      send.disabled = true; input.disabled = true;
+      const { error } = await sb.from('chat_messages').insert({
+        user_id:       null,
+        sender_id:     null,
+        visitor_id:    visitorId,
+        visitor_name:  visitorName,
+        visitor_email: visitorEmail,
+        body,
+        from_admin:    false,
+        read_by_user:  true,
+        read_by_admin: false,
+      });
+      send.disabled = false; input.disabled = false;
+      if (error) {
+        if (/relation .* does not exist|schema cache|column .* does not exist/.test(error.message)) {
+          alert('Chat isn\'t fully set up yet — run db/chat.sql + db/chat-anonymous.sql in Supabase.');
+        } else {
+          alert('Could not send: ' + error.message);
+        }
+        return;
+      }
+      input.value = ''; input.focus();
+      await load();
+    }
+
+    window.__chxState = {
+      mode: 'anon',
+      onOpen: async () => {
+        if (!visitorName || !visitorEmail) renderCapture();
+        else { renderChat(); await markRead(); document.getElementById('chxInput')?.focus(); }
+      },
+      unread: () => messages.filter(m => m.from_admin && !m.read_by_user).length,
+    };
+
+    sb.channel('chat-visitor-' + visitorId)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'chat_messages',
+        filter: `visitor_id=eq.${visitorId}`,
+      }, () => load())
+      .subscribe();
+
+    await load();
+  }
+
+
+  // ----- shared open + unread badge -----
+  async function onOpen() {
+    if (window.__chxState?.onOpen) await window.__chxState.onOpen();
+  }
   function updateBadge() {
-    const unread = messages.filter(m => m.from_admin && !m.read_by_user).length;
-    if (unread > 0 && $panel.style.display === 'none') {
+    if (!window.__chxState) return;
+    const unread = window.__chxState.unread() || 0;
+    if (unread > 0 && !panelOpen) {
       $count.textContent = unread;
       $count.style.display = '';
     } else {
       $count.style.display = 'none';
     }
   }
+  setInterval(updateBadge, 4000);
 
-  async function load() {
-    const { data, error } = await sb
-      .from('chat_messages')
-      .select('id, sender_id, body, from_admin, read_by_user, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true });
-    if (error) { return; }
-    messages = data || [];
-    render();
-    updateBadge();
+
+  // ----- decide mode -----
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    await setupAuthed(user);
+  } else {
+    await setupAnon();
   }
-
-  async function markRead() {
-    await sb
-      .from('chat_messages')
-      .update({ read_by_user: true })
-      .eq('user_id', user.id)
-      .eq('from_admin', true)
-      .eq('read_by_user', false);
-    messages.forEach(m => { if (m.from_admin) m.read_by_user = true; });
-    updateBadge();
-  }
-
-  $toggle.addEventListener('click', async () => {
-    $panel.style.display = 'flex';
-    $toggle.style.display = 'none';
-    await markRead();
-    $input.focus();
-  });
-
-  document.getElementById('chxClose').addEventListener('click', () => {
-    $panel.style.display = 'none';
-    $toggle.style.display = '';
-    updateBadge();
-  });
-
-  $form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const body = $input.value.trim();
-    if (!body) return;
-    $send.disabled = true; $input.disabled = true;
-    const { error } = await sb.from('chat_messages').insert({
-      user_id:      user.id,
-      sender_id:    user.id,
-      body,
-      from_admin:   false,
-      read_by_user: true,
-      read_by_admin: false,
-    });
-    $send.disabled = false; $input.disabled = false;
-    if (error) {
-      if (/relation .* does not exist|schema cache/.test(error.message)) {
-        alert('Chat isn\'t set up yet — please ask the admin to run db/chat.sql in Supabase.');
-      } else {
-        alert('Could not send: ' + error.message);
-      }
-      return;
-    }
-    $input.value = '';
-    $input.focus();
-    // realtime will push the new row, but reload anyway for instant local echo
-    await load();
-  });
-
-  // ----- Realtime: new messages in this user's thread -----
-  sb.channel('chat-user-' + user.id)
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'chat_messages',
-      filter: `user_id=eq.${user.id}`,
-    }, () => load())
-    .subscribe();
-
-  await load();
 })();

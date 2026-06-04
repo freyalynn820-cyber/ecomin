@@ -2019,14 +2019,18 @@ function denyAccess(title, text, link) {
 
 
   // ============ Live chat (admin) ============
+  // Handles both authenticated-user threads (keyed on user_id) and
+  // anonymous-visitor threads (keyed on visitor_id). Threads have a
+  // composite key: 'user:<uuid>' or 'visitor:<id>'.
+
   const $chatThreads  = document.getElementById('chatThreads');
   const $chatMessages = document.getElementById('chatMessages');
   const $chatHeader   = document.getElementById('chatHeaderText');
   const $chatForm     = document.getElementById('chatReplyForm');
   const $chatInput    = document.getElementById('chatReply');
-  let chatSelectedUser = null;          // user_id of selected thread
-  let chatEmailMap     = {};            // user_id -> email
-  let chatThreads      = [];            // [{ user_id, last, unread, body }]
+  let chatSelectedKey = null;           // 'user:<uuid>' or 'visitor:<id>'
+  let chatEmailMap    = {};             // user_id -> { email, display }
+  let chatThreads     = [];             // [{ key, kind, id, last, unread, body, name, email, last_from_admin }]
 
   function fmtChatTime(iso) {
     if (!iso) return '';
@@ -2038,33 +2042,51 @@ function denyAccess(title, text, link) {
     return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
   }
 
+  function threadKey(m) {
+    return m.user_id ? 'user:' + m.user_id : 'visitor:' + m.visitor_id;
+  }
+
   async function loadChatThreads() {
     const { data, error } = await sb
       .from('chat_messages')
-      .select('id, user_id, sender_id, body, from_admin, read_by_admin, created_at')
+      .select('id, user_id, sender_id, visitor_id, visitor_name, visitor_email, body, from_admin, read_by_admin, created_at')
       .order('created_at', { ascending: false });
     if (error) {
-      $chatThreads.innerHTML = `<div style="padding:18px;color:var(--danger);font-size:12px">${escapeHtml(error.message)}<br><span style="color:var(--muted)">Run <code>db/chat.sql</code> in Supabase SQL Editor.</span></div>`;
+      $chatThreads.innerHTML = `<div style="padding:18px;color:var(--danger);font-size:12px">${escapeHtml(error.message)}<br><span style="color:var(--muted)">Run <code>db/chat.sql</code> then <code>db/chat-anonymous.sql</code> in Supabase SQL Editor.</span></div>`;
       document.getElementById('chatBadge').textContent = '0';
       return;
     }
     const rows = data || [];
-    // Group by user_id, keep latest + count unread (admin-side).
     const map = new Map();
     let totalUnread = 0;
     for (const m of rows) {
-      let t = map.get(m.user_id);
+      const key = threadKey(m);
+      let t = map.get(key);
       if (!t) {
-        t = { user_id: m.user_id, last: m.created_at, body: m.body, last_from_admin: m.from_admin, unread: 0 };
-        map.set(m.user_id, t);
+        t = {
+          key,
+          kind: m.user_id ? 'user' : 'visitor',
+          id:   m.user_id || m.visitor_id,
+          last: m.created_at,
+          body: m.body,
+          last_from_admin: m.from_admin,
+          unread: 0,
+          name:  m.visitor_name,
+          email: m.visitor_email,
+        };
+        map.set(key, t);
+      } else {
+        // Threads can have multiple visitor_name updates; keep the most recent non-null.
+        if (!t.name  && m.visitor_name)  t.name  = m.visitor_name;
+        if (!t.email && m.visitor_email) t.email = m.visitor_email;
       }
       if (!m.from_admin && !m.read_by_admin) { t.unread++; totalUnread++; }
     }
     chatThreads = [...map.values()].sort((a, b) => (b.last || '').localeCompare(a.last || ''));
     document.getElementById('chatBadge').textContent = totalUnread;
 
-    // Fetch emails for these users
-    const userIds = chatThreads.map(t => t.user_id);
+    // Look up profile emails for authenticated-user threads.
+    const userIds = chatThreads.filter(t => t.kind === 'user').map(t => t.id);
     if (userIds.length) {
       const { data: profs } = await sb.from('profiles').select('id, email, first_name, last_name').in('id', userIds);
       (profs || []).forEach(p => {
@@ -2073,28 +2095,41 @@ function denyAccess(title, text, link) {
       });
     }
     renderThreads();
-    // If the currently-selected thread still exists, refresh its messages.
-    if (chatSelectedUser && map.has(chatSelectedUser)) {
-      await openThread(chatSelectedUser, { silent: true });
+    if (chatSelectedKey && map.has(chatSelectedKey)) {
+      await openThread(chatSelectedKey, { silent: true });
     }
+  }
+
+  function threadInfo(t) {
+    if (t.kind === 'user') {
+      const m = chatEmailMap[t.id];
+      if (m) return { display: m.display, email: m.email, tagText: '' };
+      return { display: 'User', email: t.id.slice(0, 8) + '…', tagText: '' };
+    }
+    return {
+      display: t.name || 'Visitor',
+      email:   t.email || '(no email)',
+      tagText: 'VISITOR',
+    };
   }
 
   function renderThreads() {
     if (!chatThreads.length) {
-      $chatThreads.innerHTML = '<div style="padding:30px 14px;text-align:center;color:var(--muted);font-size:13px;line-height:1.5">No conversations yet.<br><span style="font-size:12px">When a user sends a chat, they\'ll appear here.</span></div>';
+      $chatThreads.innerHTML = '<div style="padding:30px 14px;text-align:center;color:var(--muted);font-size:13px;line-height:1.5">No conversations yet.<br><span style="font-size:12px">Users and visitors will appear here when they send their first message.</span></div>';
       return;
     }
     $chatThreads.innerHTML = chatThreads.map(t => {
-      const info = chatEmailMap[t.user_id] || { email: t.user_id.slice(0,8) + '…', display: 'User' };
+      const info = threadInfo(t);
       const initials = (info.display[0] || '?').toUpperCase();
-      const isActive = chatSelectedUser === t.user_id;
+      const isActive = chatSelectedKey === t.key;
       const unreadBadge = t.unread ? `<span style="background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;min-width:18px;text-align:center;display:inline-block">${t.unread}</span>` : '';
+      const visitorTag = info.tagText ? `<span style="background:rgba(244,185,54,.18);color:#7a5a0d;font-size:9px;font-weight:700;letter-spacing:.5px;border-radius:4px;padding:1px 5px;margin-left:6px">${escapeHtml(info.tagText)}</span>` : '';
       return `
-        <button type="button" data-user="${t.user_id}" style="display:flex;width:100%;padding:12px 14px;border:none;background:${isActive ? 'rgba(18,86,227,.08)' : 'transparent'};border-bottom:1px solid var(--line);text-align:left;cursor:pointer;gap:10px;align-items:flex-start;font-family:inherit;border-left:3px solid ${isActive ? 'var(--primary)' : 'transparent'}">
-          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--leaf));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto">${escapeHtml(initials)}</div>
+        <button type="button" data-key="${escapeHtml(t.key)}" style="display:flex;width:100%;padding:12px 14px;border:none;background:${isActive ? 'rgba(18,86,227,.08)' : 'transparent'};border-bottom:1px solid var(--line);text-align:left;cursor:pointer;gap:10px;align-items:flex-start;font-family:inherit;border-left:3px solid ${isActive ? 'var(--primary)' : 'transparent'}">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,${t.kind === 'visitor' ? '#f4b936,#ea7a1f' : 'var(--primary),var(--leaf)'});color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 auto">${escapeHtml(initials)}</div>
           <div style="flex:1;min-width:0">
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px">
-              <strong style="font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(info.display)}</strong>
+              <strong style="font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(info.display)}${visitorTag}</strong>
               <span style="font-size:10px;color:var(--muted);font-family:var(--mono);flex:0 0 auto">${escapeHtml(fmtChatTime(t.last))}</span>
             </div>
             <div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${t.last_from_admin ? '<span style="color:var(--primary)">You: </span>' : ''}${escapeHtml((t.body || '').slice(0, 80))}</div>
@@ -2102,25 +2137,31 @@ function denyAccess(title, text, link) {
           ${unreadBadge}
         </button>`;
     }).join('');
-    $chatThreads.querySelectorAll('button[data-user]').forEach(btn => {
-      btn.addEventListener('click', () => openThread(btn.dataset.user));
+    $chatThreads.querySelectorAll('button[data-key]').forEach(btn => {
+      btn.addEventListener('click', () => openThread(btn.dataset.key));
     });
   }
 
-  async function openThread(userId, opts = {}) {
-    chatSelectedUser = userId;
+  function getThread(key) { return chatThreads.find(t => t.key === key); }
+
+  async function openThread(key, opts = {}) {
+    chatSelectedKey = key;
     if (!opts.silent) renderThreads();
-    const info = chatEmailMap[userId] || { email: userId.slice(0, 8), display: 'User' };
+    const t = getThread(key) || { kind: 'user', id: key.replace(/^user:|^visitor:/, '') };
+    const info = threadInfo(t);
+
     $chatHeader.style.color = 'var(--ink)';
     $chatHeader.style.fontWeight = '600';
-    $chatHeader.innerHTML = escapeHtml(info.display) + ' <span style="color:var(--muted);font-weight:500;font-size:12px;font-family:var(--mono);margin-left:6px">' + escapeHtml(info.email) + '</span>';
+    const tag = info.tagText ? `<span style="background:rgba(244,185,54,.18);color:#7a5a0d;font-size:10px;font-weight:700;letter-spacing:.5px;border-radius:4px;padding:2px 6px;margin-left:8px;vertical-align:middle">${escapeHtml(info.tagText)}</span>` : '';
+    $chatHeader.innerHTML = escapeHtml(info.display) + tag +
+      ' <span style="color:var(--muted);font-weight:500;font-size:12px;font-family:var(--mono);margin-left:6px">' + escapeHtml(info.email) + '</span>';
     $chatForm.style.display = 'flex';
 
-    const { data, error } = await sb
-      .from('chat_messages')
+    let query = sb.from('chat_messages')
       .select('id, sender_id, body, from_admin, read_by_admin, created_at')
-      .eq('user_id', userId)
       .order('created_at', { ascending: true });
+    query = t.kind === 'user' ? query.eq('user_id', t.id) : query.eq('visitor_id', t.id);
+    const { data, error } = await query;
     if (error) {
       $chatMessages.innerHTML = `<div style="color:var(--danger);font-size:13px">${escapeHtml(error.message)}</div>`;
       return;
@@ -2134,7 +2175,6 @@ function denyAccess(title, text, link) {
     `).join('');
     $chatMessages.scrollTop = $chatMessages.scrollHeight;
 
-    // Mark from-user messages as read by admin
     const unreadIds = msgs.filter(m => !m.from_admin && !m.read_by_admin).map(m => m.id);
     if (unreadIds.length) {
       await sb.from('chat_messages').update({ read_by_admin: true }).in('id', unreadIds);
@@ -2144,34 +2184,36 @@ function denyAccess(title, text, link) {
 
   $chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!chatSelectedUser) return;
+    if (!chatSelectedKey) return;
+    const t = getThread(chatSelectedKey);
+    if (!t) return;
     const body = $chatInput.value.trim();
     if (!body) return;
     const submitBtn = $chatForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    const { error } = await sb.from('chat_messages').insert({
-      user_id:       chatSelectedUser,
+    const payload = {
       sender_id:     u.id,
       body,
       from_admin:    true,
       read_by_user:  false,
       read_by_admin: true,
-    });
+    };
+    if (t.kind === 'user') {
+      payload.user_id = t.id;
+    } else {
+      payload.visitor_id = t.id;
+    }
+    const { error } = await sb.from('chat_messages').insert(payload);
     submitBtn.disabled = false;
     if (error) { alert('Could not send: ' + error.message); return; }
     $chatInput.value = '';
     $chatInput.focus();
     await loadChatThreads();
-    await openThread(chatSelectedUser, { silent: true });
+    await openThread(chatSelectedKey, { silent: true });
   });
 
-  // Realtime: any new chat message refreshes threads (and the open thread)
   sb.channel('chat-admin')
-    .on('postgres_changes', {
-      event: '*',
-      schema: 'public',
-      table: 'chat_messages',
-    }, () => loadChatThreads())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => loadChatThreads())
     .subscribe();
 
   await loadChatThreads();
