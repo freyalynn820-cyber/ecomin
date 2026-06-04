@@ -14,8 +14,8 @@
 
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return;
-  // The admin side has its own chat panel, no widget needed.
-  if (user.app_metadata?.role === 'admin') return;
+  // Note: admins also see the bubble on user pages (useful for testing).
+  // The dedicated admin panel lives at /admin/ → Chat.
 
   // ----- inject CSS -----
   const css = `
