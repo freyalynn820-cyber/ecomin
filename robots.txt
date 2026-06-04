@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Private / gated areas — no useful content for crawlers
+Disallow: /admin/
+Disallow: /account/
+Disallow: /dashboard.html
+Disallow: /db/
+Disallow: /docs/
+Disallow: /reset-password.html
+
+Sitemap: https://corehash.cc/sitemap.xml
