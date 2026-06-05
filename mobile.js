@@ -242,6 +242,42 @@
 
       /* Active-vault row: 2 columns instead of 5 */
       .vrow { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+
+      /* ===== Deposit page specifics ===== */
+      /* Order banner: stack vertically, kill text-align:right baked into inline style */
+      #orderBanner > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 14px 16px !important;
+        gap: 10px !important;
+      }
+      #orderBanner > div > div { width: 100%; text-align: left !important; }
+      #orderPrice { font-size: 22px !important; }
+
+      /* Wallet card + address row + QR code */
+      .wallet-card { padding: 16px !important; }
+      .wallet-card__head { flex-wrap: wrap; gap: 6px; }
+      .addr-wrap {
+        padding: 8px 10px !important;
+        flex-wrap: wrap !important;
+      }
+      .addr-wrap code {
+        flex: 1 1 100% !important;
+        font-size: 11px !important;
+        white-space: normal !important;
+        word-break: break-all !important;
+        text-overflow: clip !important;
+      }
+      .copy-btn { width: 100%; margin-top: 4px; }
+      .qr-wrap img { width: 150px !important; height: 150px !important; }
+
+      /* Asset chips: smaller on phones */
+      .asset-chips { margin: 0 16px 12px !important; }
+      .asset-chips .chip { font-size: 12px !important; padding: 6px 10px !important; }
+
+      /* The amount-input row in the deposit form (number + unit + Max button) */
+      .form-row__r > input,
+      .form-row__r > select { max-width: 100% !important; }
     }
   `;
   const styleEl = document.createElement('style');
